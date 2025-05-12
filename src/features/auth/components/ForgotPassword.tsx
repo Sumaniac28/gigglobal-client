@@ -1,14 +1,15 @@
-import { ChangeEvent, FC, ReactElement, useState } from 'react';
+import { ChangeEvent, FC, lazy, LazyExoticComponent, ReactElement, Suspense, useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
-import Alert from 'src/shared/alert/Alert';
 import Button from 'src/shared/button/Button';
 import TextInput from 'src/shared/inputs/TextInput';
 import { IModalBgProps } from 'src/shared/modals/interfaces/modal.interface';
 import ModalBg from 'src/shared/modals/ModalBg';
-import { IResponse } from 'src/shared/shared.interface';
+import { IAlertProps, IResponse } from 'src/shared/shared.interface';
 
 import { AUTH_FETCH_STATUS } from 'src/features/auth/interfaces/auth.interface';
 import { useForgotPasswordMutation } from 'src/features/auth/services/auth.service';
+
+const Alert: LazyExoticComponent<FC<IAlertProps>> = lazy(() => import('src/shared/alert/Alert'));
 
 const ForgotPasswordModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement => {
   const [alertMessage, setAlertMessage] = useState<string>('');
@@ -42,7 +43,11 @@ const ForgotPasswordModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactEle
             />
           </div>
 
-          {alertMessage && <Alert type={status} message={alertMessage} />}
+          {alertMessage && (
+            <Suspense>
+              <Alert type={status} message={alertMessage} />
+            </Suspense>
+          )}
 
           <div className="mb-5 w-full text-center text-base font-normal text-[#4B5563]">
             Please enter your email address and we'll send you a link to reset your password.

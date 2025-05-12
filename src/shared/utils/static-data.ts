@@ -1,6 +1,7 @@
 import collaborate from 'src/assets/GigGlobal Logo.png';
 import { IAuthUser } from 'src/features/auth/interfaces/auth.interface';
 import { ICategory } from 'src/features/home/interfaces/home.interface';
+import { ISliderImagesText } from 'src/shared/shared.interface';
 
 export const categories: ICategory[] = [
   {
@@ -140,18 +141,18 @@ export const initialAuthUserValues: IAuthUser = {
 // };
 
 export const sliderImages: string[] = [
-  'https://fiverr-res.cloudinary.com/q_auto,f_auto,w_1400,dpr_1.0/v1/attachments/generic_asset/asset/50218c41d277f7d85feeaf3efb4549bd-1599072608122/bg-signup-1400-x1.png',
-  'https://fiverr-res.cloudinary.com/q_auto,f_auto,w_1160,dpr_1.0/v1/attachments/generic_asset/asset/b49b1963f5f9008f5ff88bd449ec18f7-1608035772453/logo-maker-banner-wide-desktop-1352-2x.png',
-  'https://fiverr-res.cloudinary.com/image/upload/w_430/q_auto,f_auto/v1/attachments/generic_asset/asset/10f680cb84a2f3ef4473ecfdede3a1ba-1593438129320/business%20logo%20design-fiverr%20guide.jpg',
-  'https://fiverr-res.cloudinary.com/image/upload/w_430/f_auto,q_auto/v1/attachments/generic_asset/asset/b9495125dbb3432bf13275690d91a4f8-1656002118855/how%20to%20make%20a%20logo.jpg'
+  'https://img.freepik.com/free-photo/medium-shot-man-working-late-night-laptop_23-2150280979.jpg',
+  'https://img.freepik.com/free-photo/young-smiling-pretty-caucasian-schoolgirl-wearing-glasses-sits-desk-with-school-tools-thumbs-up-holds-phone-isolated-green-space-with-copy-space_141793-60111.jpg',
+  'https://img.freepik.com/free-photo/team-painters-collaborate-new-rustic-masterpiece-art-craft-atelier_482257-106538.jpg',
+  'https://img.freepik.com/free-photo/smiling-businesswoman-shaking-hand-male-partner-group-meeting_1163-4637.jpg'
 ];
 
-// export const sliderImagesText: ISliderImagesText[] = [
-//   { header: 'Leading the Way to Excellence', subHeader: 'Your Journey, Our Expertise' },
-//   { header: 'Turning Ideas into Impactful Content', subHeader: 'Innovate. Create. Elevate.' },
-//   { header: 'Turning Magic into Results', subHeader: 'Spelling Success, One Task at a Time' },
-//   { header: 'Creating Futures, Delivering Now', subHeader: 'Your Vision, Our Innovation' }
-// ];
+export const sliderImagesText: ISliderImagesText[] = [
+  { header: 'Leading the Way to Excellence', subHeader: 'Your Journey, Our Expertise' },
+  { header: 'Turning Ideas into Impactful Content', subHeader: 'Innovate. Create. Elevate.' },
+  { header: 'Turning Magic into Results', subHeader: 'Spelling Success, One Task at a Time' },
+  { header: 'Creating Futures, Delivering Now', subHeader: 'Your Vision, Our Innovation' }
+];
 
 export const PASSWORD_TYPE = {
   TEXT: 'text',
@@ -188,3 +189,58 @@ export const STATIC_DATA = {
   LANGUAGE: 'language',
   LEVEL: 'level'
 };
+
+export const faqs = [
+  {
+    question: 'How do I hire a freelancer?',
+    answer:
+      "You can browse categories or search directly for freelancers. Once you find someone suitable, click 'Contact' or 'Order Now' to begin."
+  },
+  {
+    question: 'How do I start selling my services?',
+    answer: 'Register as a seller, set up your profile and gigs, and wait for buyers to reach out or place orders directly.'
+  },
+  {
+    question: 'Is there a fee for using the platform?',
+    answer: "Buyers don't pay any extra fees. Sellers are charged a small commission per transaction to keep the platform running."
+  },
+  {
+    question: 'How are payments handled?',
+    answer: 'All payments are securely processed and held in escrow until the buyer marks the order as complete.'
+  },
+  {
+    question: 'Can I cancel an order?',
+    answer: 'Yes, both buyers and sellers can request cancellations in case of mutual agreement or disputes.'
+  }
+];
+
+export const homeReviews = [
+  {
+    id: 1,
+    name: 'Jane Doe',
+    role: 'Graphic Designer',
+    avatar: 'https://placehold.co/80x80?text=JD',
+    text: 'Working with this platform has been a game-changer. Quality freelancers and seamless payments!'
+  },
+  {
+    id: 2,
+    name: 'John Smith',
+    role: 'Web Developer',
+    avatar: 'https://placehold.co/80x80?text=JS',
+    text: 'I consistently find top-tier clients here. The user experience is super smooth.'
+  },
+  {
+    id: 3,
+    name: 'Alice Nguyen',
+    role: 'Content Writer',
+    avatar: 'https://placehold.co/80x80?text=AN',
+    text: 'The escrow system gives me peace of mind. Highly recommend for both buyers and sellers.'
+  },
+  {
+    id: 4,
+    name: 'Carlos Ruiz',
+    role: 'SEO Specialist',
+    avatar: 'https://placehold.co/80x80?text=CR',
+    text: 'Great community and fast payouts. My go-to place for finding gigs!'
+  }
+];

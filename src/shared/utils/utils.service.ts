@@ -1,5 +1,9 @@
+import { Dispatch } from '@reduxjs/toolkit';
 import countries, { LocalizedCountryNames } from 'i18n-iso-countries';
 import enLocale from 'i18n-iso-countries/langs/en.json';
+import { NavigateFunction } from 'react-router-dom';
+import { logout } from 'src/features/auth/reducers/logout.reducer';
+import { authApi } from 'src/features/auth/services/auth.service';
 
 countries.registerLocale(enLocale);
 
@@ -71,4 +75,24 @@ export const getDataFromLocalStorage = (key: string) => {
 
 export const deleteFromLocalStorage = (key: string): void => {
   window.localStorage.removeItem(key);
+};
+
+export const applicationLogout = (dispatch: Dispatch, navigate: NavigateFunction) => {
+  const loggedInUsername: string = getDataFromSessionStorage('loggedInuser');
+  dispatch(logout());
+  if (loggedInUsername) {
+    dispatch(authApi.endpoints.removeLoggedInUser.initiate(`${loggedInUsername}`, { track: false }) as never);
+  }
+  dispatch(authApi.util.resetApiState());
+  dispatch(authApi.endpoints.logout.initiate() as never);
+  saveToSessionStorage(JSON.stringify(false), JSON.stringify(''));
+  deleteFromLocalStorage('becomeASeller');
+  navigate('/');
+};
+
+export const rating = (num: number): number => {
+  if (num) {
+    return Math.round(num * 10) / 10;
+  }
+  return 0.0;
 };

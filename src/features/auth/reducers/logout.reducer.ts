@@ -1,14 +1,12 @@
-import { createSlice, Slice } from '@reduxjs/toolkit';
-
-import { IReduxLogout } from 'src/features/auth/interfaces/auth.interface';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const initialValue = true;
 
-const logoutSlice: Slice = createSlice({
+const logoutSlice = createSlice({
   name: 'logout',
   initialState: initialValue,
   reducers: {
-    updateLogout: (state: boolean, action: IReduxLogout): boolean => {
+    updateLogout: (state: boolean, action: PayloadAction<boolean>): boolean => {
       state = action.payload;
       return state;
     },
@@ -19,4 +17,4 @@ const logoutSlice: Slice = createSlice({
 });
 
 export const { updateLogout, logout } = logoutSlice.actions;
-export const logoutReducer = logoutSlice.reducer;
+export default logoutSlice.reducer;

@@ -1,8 +1,6 @@
-import { ChangeEvent, FC, ReactElement, useRef, useState } from 'react';
+import { ChangeEvent, FC, lazy, LazyExoticComponent, ReactElement, Suspense, useRef, useState } from 'react';
 import { FaCamera, FaChevronLeft, FaEye, FaEyeSlash, FaTimes } from 'react-icons/fa';
-import Alert from 'src/shared/alert/Alert';
 import Button from 'src/shared/button/Button';
-import Dropdown from 'src/shared/dropdown/Dropdown';
 import TextInput from 'src/shared/inputs/TextInput';
 import { IModalBgProps } from 'src/shared/modals/interfaces/modal.interface';
 import ModalBg from 'src/shared/modals/ModalBg';
@@ -13,10 +11,13 @@ import { checkImage, readAsBase64 } from 'src/shared/utils/image-utils.service';
 import { useAppDispatch } from 'src/store/store';
 import { useSignUpMutation } from 'src/features/auth/services/auth.service';
 import { registerUserSchema } from 'src/features/auth/schemes/auth.schema';
-import { IResponse } from 'src/shared/shared.interface';
+import { IAlertProps, IDropdownProps, IResponse } from 'src/shared/shared.interface';
 import { useAuthSchema } from 'src/features/auth/hooks/useAuthSchema';
 import { addAuthUser } from 'src/features/auth/reducers/auth.reducer';
 import { updateLogout } from 'src/features/auth/reducers/logout.reducer';
+
+const Dropdown: LazyExoticComponent<FC<IDropdownProps>> = lazy(() => import('src/shared/dropdown/Dropdown'));
+const Alert: LazyExoticComponent<FC<IAlertProps>> = lazy(() => import('src/shared/alert/Alert'));
 
 const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement => {
   const mobileOrientation = useMobileOrientation();
@@ -115,7 +116,7 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
           </ol>
         </div>
 
-        <div className="px-5">{alertMessage && <Alert type="error" message={alertMessage} />}</div>
+        <div className="px-5">{alertMessage && <Suspense><Alert type="error" message={alertMessage} /></Suspense>}</div>
 
         {step === 1 && (
           <div className="relative px-5 py-5">
@@ -197,7 +198,8 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
                 Country
               </label>
               <div id="country" className="relative mb-5 mt-2">
-                <Dropdown
+                <Suspense>
+                  <Dropdown
                   text={country}
                   maxHeight="200"
                   mainClassNames="absolute bg-white text-[#111111] z-50 border border-[#E5E7EB]"
@@ -209,6 +211,7 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
                     setUserInfo({ ...userInfo, country: item });
                   }}
                 />
+                </Suspense>
               </div>
             </div>
 
