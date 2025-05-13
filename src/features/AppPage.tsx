@@ -6,6 +6,8 @@ import { addAuthUser } from 'src/features/auth/reducers/auth.reducer';
 import { applicationLogout, saveToSessionStorage } from 'src/shared/utils/utils.service';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { IHomeHeaderProps } from 'src/shared/header/interfaces/header.interface';
+import { useGetCurrentBuyerByUsernameQuery } from './buyer/services/buyer.service';
+import { addBuyer } from './buyer/reducers/buyer.reducer';
 
 const Home: LazyExoticComponent<FC> = lazy(() => import('src/features/home/components/Home'));
 const HomeHeader: LazyExoticComponent<FC<IHomeHeaderProps>> = lazy(() => import('src/shared/header/components/HomeHeader'));
@@ -13,7 +15,8 @@ const HomeHeader: LazyExoticComponent<FC<IHomeHeaderProps>> = lazy(() => import(
 const AppPage: FC = (): ReactElement => {
   const authUser = useAppSelector((state) => state.authUser);
   const [tokenIsValid, setTokenIsValid] = useState<boolean>(false);
-  const { data, isError } = useCheckCurrentUserQuery();
+  const { data: currentUserData, isError } = useCheckCurrentUserQuery();
+  const { data: buyerData } = useGetCurrentBuyerByUsernameQuery();
   const dispatch = useAppDispatch();
   const appLogout = useAppSelector((state) => state.logout);
   const navigate: NavigateFunction = useNavigate();
@@ -21,22 +24,23 @@ const AppPage: FC = (): ReactElement => {
 
   const checkUser = useCallback(async () => {
     try {
-      if (data && data.user && !appLogout) {
+      if (currentUserData && currentUserData.user && !appLogout) {
         setTokenIsValid(true);
-        dispatch(addAuthUser({ authInfo: data.user }));
-
-        //dispatch buyer info and dispatch seller info
-        saveToSessionStorage(JSON.stringify(true), JSON.stringify(data.user?.username));
+        dispatch(addAuthUser({ authInfo: currentUserData.user }));
+        if (buyerData?.buyer) {
+          dispatch(addBuyer(buyerData.buyer));
+        }
+        saveToSessionStorage(JSON.stringify(true), JSON.stringify(currentUserData.user?.username));
       }
     } catch (error) {}
-  }, [data, dispatch, appLogout, authUser.username]);
+  }, [currentUserData, dispatch, appLogout, authUser.username, buyerData]);
 
   const logoutUser = useCallback(async () => {
-    if ((!data && appLogout) || isError) {
+    if ((!currentUserData && appLogout) || isError) {
       setTokenIsValid(false);
       applicationLogout(dispatch, navigate);
     }
-  }, [data, dispatch, navigate, appLogout, isError]);
+  }, [currentUserData, dispatch, navigate, appLogout, isError]);
 
   useEffect(() => {
     checkUser();

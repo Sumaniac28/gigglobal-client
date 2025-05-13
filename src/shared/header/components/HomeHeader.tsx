@@ -1,4 +1,4 @@
-import { FC, lazy, ReactElement, useRef, useState } from 'react';
+import { FC, lazy, ReactElement, Suspense, useRef, useState } from 'react';
 import { FaAngleLeft, FaAngleRight, FaBars, FaRegBell, FaRegEnvelope, FaTimes } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import Button from 'src/shared/button/Button';
@@ -11,8 +11,11 @@ import Banner from 'src/shared/banner/Banner';
 import { addAuthUser } from 'src/features/auth/reducers/auth.reducer';
 import { IResponse } from 'src/shared/shared.interface';
 import { useResendEmailMutation } from 'src/features/auth/services/auth.service';
+import useDetectOutsideClick from 'src/shared/hooks/useDetectOutsideClick';
+import { ISellerDocument } from 'src/features/sellers/interfaces/seller.interface';
 
 const HomeHeaderSideBar = lazy<FC<IHeaderSideBarProps>>(() => import('src/shared/header/components/mobile/HomeHeaderSidebar'));
+const SettingsDropdown = lazy<FC<IHomeHeaderProps>>(() => import('src/shared/header/components/SettingsDropdown'));
 
 const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactElement => {
   const settingsDropdownRef = useRef<HTMLDivElement | null>(null);
@@ -21,6 +24,7 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
   const orderDropdownRef = useRef<HTMLDivElement | null>(null);
   const navElement = useRef<HTMLDivElement | null>(null);
   const authUser = useAppSelector((state) => state.authUser);
+  const buyer = useAppSelector((state) => state.buyer);
   const logout = useAppSelector((state) => state.logout);
   const dispatch = useAppDispatch();
   const [resendEmail] = useResendEmailMutation();
@@ -28,9 +32,14 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
   const isNotificationDropdownOpen = false;
   const isMessageDropdownOpen = false;
   const isOrderDropdownOpen = false;
-  const isSettingsDropdown = false;
+
+  const [isSettingsDropdown, setIsSettingsDropdown] = useDetectOutsideClick(settingsDropdownRef, false);
 
   const [openSidebar, setOpenSidebar] = useState(false);
+
+  const toggleDropdown = (): void => {
+    setIsSettingsDropdown(!isSettingsDropdown);
+  };
 
   const onResendEmail = async (): Promise<void> => {
     try {
@@ -48,7 +57,11 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
 
   return (
     <>
-      {openSidebar && <HomeHeaderSideBar setOpenSidebar={setOpenSidebar} />}
+      {openSidebar && (
+        <Suspense>
+          <HomeHeaderSideBar setOpenSidebar={setOpenSidebar} />
+        </Suspense>
+      )}
 
       <nav className="navbar relative z-[120] w-full border-b border-[#E5E7EB] bg-[#111111] shadow-2xl shadow-gray-600/5 backdrop-blur dark:shadow-none">
         {!logout && authUser && !authUser.emailVerified && (
@@ -137,6 +150,7 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
                 <li className="relative flex items-center">
                   <Button
                     className="flex items-center gap-2 px-2 hover:text-[#14B8A6] transition-colors duration-300"
+                    onClick={toggleDropdown}
                     label={
                       <>
                         <img
@@ -151,8 +165,27 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
                       </>
                     }
                   />
-                  <Transition ref={settingsDropdownRef} show={isSettingsDropdown}>
-                    <div className="absolute -right-48 z-50 mt-5 w-96"></div>
+                  <Transition
+                    ref={settingsDropdownRef}
+                    show={isSettingsDropdown}
+                    enter="transition ease-out duration-100"
+                    enterFrom="opacity-0 translate-y-1"
+                    enterTo="opacity-100 translate-y-0"
+                    leave="transition ease-in duration-150"
+                    leaveFrom="opacity-100 translate-y-0"
+                    leaveTo="opacity-0 translate-y-1"
+                  >
+                    <div className="absolute -right-48 z-50 mt-5 w-96">
+                      <Suspense>
+                        <SettingsDropdown
+                          seller={{} as ISellerDocument}
+                          buyer={buyer}
+                          authUser={authUser}
+                          type="buyer"
+                          setIsDropdownOpen={setIsSettingsDropdown}
+                        />
+                      </Suspense>
+                    </div>
                   </Transition>
                 </li>
               </ul>

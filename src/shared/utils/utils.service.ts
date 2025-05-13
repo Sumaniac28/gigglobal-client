@@ -1,9 +1,12 @@
 import { Dispatch } from '@reduxjs/toolkit';
+import millify from 'millify';
 import countries, { LocalizedCountryNames } from 'i18n-iso-countries';
 import enLocale from 'i18n-iso-countries/langs/en.json';
 import { NavigateFunction } from 'react-router-dom';
 import { logout } from 'src/features/auth/reducers/logout.reducer';
 import { authApi } from 'src/features/auth/services/auth.service';
+import { IOrderDocument } from 'src/features/order/interfaces/order.interface';
+import { filter } from 'lodash';
 
 countries.registerLocale(enLocale);
 
@@ -95,4 +98,16 @@ export const rating = (num: number): number => {
     return Math.round(num * 10) / 10;
   }
   return 0.0;
+};
+
+export const shortenLargeNumbers = (data: number | undefined): string => {
+  if (data === undefined) {
+    return '0';
+  }
+  return millify(data, { precision: 0 });
+};
+
+export const orderTypes = (status: string, orders: IOrderDocument[]): number => {
+  const orderList: IOrderDocument[] = filter(orders, (order: IOrderDocument) => lowerCase(order.status) === lowerCase(status));
+  return orderList.length;
 };

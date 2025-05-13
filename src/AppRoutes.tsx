@@ -1,4 +1,4 @@
-import { FC, lazy, LazyExoticComponent, Suspense } from 'react';
+import { FC, lazy, LazyExoticComponent, ReactNode, Suspense } from 'react';
 import { useRoutes, RouteObject } from 'react-router-dom';
 import ProtectedRoute from 'src/features/ProtectedRoute';
 
@@ -7,7 +7,13 @@ const Home: LazyExoticComponent<FC> = lazy(() => import('src/features/home/compo
 const ResetPassword: LazyExoticComponent<FC> = lazy(() => import('src/features/auth/components/ResetPassword'));
 const ConfirmEmail: LazyExoticComponent<FC> = lazy(() => import('src/features/auth/components/ConfirmEmail'));
 const Error: LazyExoticComponent<FC> = lazy(() => import('src/features/error/Error'));
+const BuyerDashboard: LazyExoticComponent<FC> = lazy(() => import('src/features/buyer/components/Dashboard'));
 
+const Layout = ({ backgroundColor = '#F9FAFB', children }: { backgroundColor: string; children: ReactNode }): JSX.Element => (
+  <div style={{ backgroundColor }} className="flex flex-grow">
+    {children}
+  </div>
+);
 const AppRouter: FC = () => {
   const routes: RouteObject[] = [
     {
@@ -39,7 +45,17 @@ const AppRouter: FC = () => {
       element: (
         <Suspense>
           <ProtectedRoute>
-            <Home />
+              <Home />
+          </ProtectedRoute>
+        </Suspense>
+      )
+    },
+    {
+      path: '/users/:username/:buyerId/orders',
+      element: (
+        <Suspense>
+          <ProtectedRoute>
+              <BuyerDashboard />
           </ProtectedRoute>
         </Suspense>
       )
