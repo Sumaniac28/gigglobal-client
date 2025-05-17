@@ -14,7 +14,7 @@ const Testimonials: LazyExoticComponent<FC> = lazy(() => import('src/features/in
 const Index: FC = (): ReactElement => {
   return (
     <div className="flex flex-col relative">
-      <Suspense>
+      <Suspense fallback={null}>
         <IndexHeader navClass="navbar peer-checked:navbar-active sticky top-0 z-50 w-full border-b border-gray-100 shadow-2xl shadow-gray-600/5 backdrop-blur" />
         <Hero />
         <GigTabs />

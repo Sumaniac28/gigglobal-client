@@ -18,8 +18,7 @@ const BuyerDashboard: FC = (): ReactElement => {
   return (
     <div className="container mx-auto mt-8 px-4 sm:px-6 md:px-12 lg:px-6 bg-[#F9FAFB]">
       <div className="flex flex-col flex-wrap">
-        <div className="mb-6 px-2 text-xl font-semibold text-[#111111] sm:px-0 sm:text-2xl lg:text-4xl">Manage Orders</div>
-
+        <div className="mb-6 px-2 text-xl font-semibold font-themeFont text-[#111111] sm:px-0 sm:text-2xl lg:text-4xl">Manage Orders</div>
         <div className="p-0">
           <ul className="flex w-full cursor-pointer list-none  sm:flex-row rounded-md overflow-hidden border border-[#E5E7EB] bg-white">
             <li

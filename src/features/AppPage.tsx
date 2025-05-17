@@ -3,24 +3,31 @@ import Index from 'src/features/index/Index';
 import { useAppDispatch, useAppSelector } from 'src/store/store';
 import { useCheckCurrentUserQuery } from 'src/features/auth/services/auth.service';
 import { addAuthUser } from 'src/features/auth/reducers/auth.reducer';
-import { applicationLogout, saveToSessionStorage } from 'src/shared/utils/utils.service';
+import { applicationLogout, getDataFromLocalStorage, saveToSessionStorage } from 'src/shared/utils/utils.service';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { IHomeHeaderProps } from 'src/shared/header/interfaces/header.interface';
-import { useGetCurrentBuyerByUsernameQuery } from './buyer/services/buyer.service';
-import { addBuyer } from './buyer/reducers/buyer.reducer';
+import { useGetCurrentBuyerByUsernameQuery } from 'src/features/buyer/services/buyer.service';
+import { addBuyer } from 'src/features/buyer/reducers/buyer.reducer';
+import { useGetSellerByUsernameQuery } from 'src/features/sellers/services/seller.service';
+import { addSeller } from 'src/features/sellers/reducers/seller.reducer';
 
 const Home: LazyExoticComponent<FC> = lazy(() => import('src/features/home/components/Home'));
 const HomeHeader: LazyExoticComponent<FC<IHomeHeaderProps>> = lazy(() => import('src/shared/header/components/HomeHeader'));
+const CircularPageLoader: LazyExoticComponent<FC> = lazy(() => import('src/shared/page-loader/CircularPageLoader'));
 
 const AppPage: FC = (): ReactElement => {
   const authUser = useAppSelector((state) => state.authUser);
-  const [tokenIsValid, setTokenIsValid] = useState<boolean>(false);
-  const { data: currentUserData, isError } = useCheckCurrentUserQuery();
-  const { data: buyerData } = useGetCurrentBuyerByUsernameQuery();
-  const dispatch = useAppDispatch();
   const appLogout = useAppSelector((state) => state.logout);
+  // const showCategoryContainer = useAppSelector((state) => state.showCategoryContainer);
+  const showCategoryContainer = true;
+  const [tokenIsValid, setTokenIsValid] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
   const navigate: NavigateFunction = useNavigate();
-  const showCategoryContainer = true; // This is a placeholder. Replace with actual logic if needed.
+  const { data: currentUserData, isError } = useCheckCurrentUserQuery(undefined, { skip: authUser.id === null });
+  const { data: buyerData, isLoading: isBuyerLoading } = useGetCurrentBuyerByUsernameQuery(undefined, { skip: authUser.id === null });
+  const { data: sellerData, isLoading: isSellerLoading } = useGetSellerByUsernameQuery(`${authUser.username}`, {
+    skip: authUser.id === null
+  });
 
   const checkUser = useCallback(async () => {
     try {
@@ -30,10 +37,19 @@ const AppPage: FC = (): ReactElement => {
         if (buyerData?.buyer) {
           dispatch(addBuyer(buyerData.buyer));
         }
-        saveToSessionStorage(JSON.stringify(true), JSON.stringify(currentUserData.user?.username));
+        if (sellerData?.seller) {
+          dispatch(addSeller(sellerData.seller));
+        }
+        saveToSessionStorage(JSON.stringify(true), JSON.stringify(authUser.username));
+        const becomeASeller = getDataFromLocalStorage('becomeASeller');
+        if (becomeASeller) {
+          navigate('/seller_onboarding');
+        }
       }
-    } catch (error) {}
-  }, [currentUserData, dispatch, appLogout, authUser.username, buyerData]);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [currentUserData, navigate, dispatch, appLogout, authUser.username, buyerData, sellerData]);
 
   const logoutUser = useCallback(async () => {
     if ((!currentUserData && appLogout) || isError) {
@@ -51,10 +67,20 @@ const AppPage: FC = (): ReactElement => {
     return !tokenIsValid && !authUser.id ? (
       <Index />
     ) : (
-      <Suspense fallback={<div>Loading...</div>}>
-        <HomeHeader showCategoryContainer={showCategoryContainer} />
-        <Home />
-      </Suspense>
+      <>
+        {isBuyerLoading && isSellerLoading ? (
+          <Suspense>
+            <CircularPageLoader />
+          </Suspense>
+        ) : (
+          <>
+            <Suspense>
+              <HomeHeader showCategoryContainer={showCategoryContainer} />
+              <Home />
+            </Suspense>
+          </>
+        )}
+      </>
     );
   } else {
     return <Index />;

@@ -1,4 +1,4 @@
-import { FC, lazy, LazyExoticComponent, ReactNode, Suspense } from 'react';
+import { FC, lazy, LazyExoticComponent, Suspense } from 'react';
 import { useRoutes, RouteObject } from 'react-router-dom';
 import ProtectedRoute from 'src/features/ProtectedRoute';
 
@@ -8,12 +8,14 @@ const ResetPassword: LazyExoticComponent<FC> = lazy(() => import('src/features/a
 const ConfirmEmail: LazyExoticComponent<FC> = lazy(() => import('src/features/auth/components/ConfirmEmail'));
 const Error: LazyExoticComponent<FC> = lazy(() => import('src/features/error/Error'));
 const BuyerDashboard: LazyExoticComponent<FC> = lazy(() => import('src/features/buyer/components/Dashboard'));
+const AddSeller: LazyExoticComponent<FC> = lazy(() => import('src/features/sellers/components/add/AddSeller'));
+const CurrentSellerProfile: LazyExoticComponent<FC> = lazy(() => import('src/features/sellers/components/profile/CurrentSellerProfile'));
 
-const Layout = ({ backgroundColor = '#F9FAFB', children }: { backgroundColor: string; children: ReactNode }): JSX.Element => (
-  <div style={{ backgroundColor }} className="flex flex-grow">
-    {children}
-  </div>
-);
+// const Layout = ({ backgroundColor = '#F9FAFB', children }: { backgroundColor: string; children: ReactNode }): JSX.Element => (
+//   <div style={{ backgroundColor }} className="flex flex-grow">
+//     {children}
+//   </div>
+// );
 const AppRouter: FC = () => {
   const routes: RouteObject[] = [
     {
@@ -45,7 +47,7 @@ const AppRouter: FC = () => {
       element: (
         <Suspense>
           <ProtectedRoute>
-              <Home />
+            <Home />
           </ProtectedRoute>
         </Suspense>
       )
@@ -55,7 +57,27 @@ const AppRouter: FC = () => {
       element: (
         <Suspense>
           <ProtectedRoute>
-              <BuyerDashboard />
+            <BuyerDashboard />
+          </ProtectedRoute>
+        </Suspense>
+      )
+    },
+    {
+      path: '/seller_onboarding',
+      element: (
+        <Suspense>
+          <ProtectedRoute>
+            <AddSeller />
+          </ProtectedRoute>
+        </Suspense>
+      )
+    },
+     {
+      path: '/seller_profile/:username/:sellerId/edit',
+      element: (
+        <Suspense>
+          <ProtectedRoute>
+              <CurrentSellerProfile />
           </ProtectedRoute>
         </Suspense>
       )

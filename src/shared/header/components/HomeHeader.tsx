@@ -7,15 +7,14 @@ import { categories, replaceSpacesWithDash } from 'src/shared/utils/utils.servic
 import { v4 as uuidv4 } from 'uuid';
 import { Transition } from '@headlessui/react';
 import { useAppDispatch, useAppSelector } from 'src/store/store';
-import Banner from 'src/shared/banner/Banner';
 import { addAuthUser } from 'src/features/auth/reducers/auth.reducer';
-import { IResponse } from 'src/shared/shared.interface';
+import { IBannerProps, IResponse } from 'src/shared/shared.interface';
 import { useResendEmailMutation } from 'src/features/auth/services/auth.service';
 import useDetectOutsideClick from 'src/shared/hooks/useDetectOutsideClick';
-import { ISellerDocument } from 'src/features/sellers/interfaces/seller.interface';
 
 const HomeHeaderSideBar = lazy<FC<IHeaderSideBarProps>>(() => import('src/shared/header/components/mobile/HomeHeaderSidebar'));
 const SettingsDropdown = lazy<FC<IHomeHeaderProps>>(() => import('src/shared/header/components/SettingsDropdown'));
+const Banner = lazy<FC<IBannerProps>>(() => import('src/shared/banner/Banner'));
 
 const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactElement => {
   const settingsDropdownRef = useRef<HTMLDivElement | null>(null);
@@ -25,6 +24,7 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
   const navElement = useRef<HTMLDivElement | null>(null);
   const authUser = useAppSelector((state) => state.authUser);
   const buyer = useAppSelector((state) => state.buyer);
+  const seller = useAppSelector((state) => state.seller);
   const logout = useAppSelector((state) => state.logout);
   const dispatch = useAppDispatch();
   const [resendEmail] = useResendEmailMutation();
@@ -65,13 +65,15 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
 
       <nav className="navbar relative z-[120] w-full border-b border-[#E5E7EB] bg-[#111111] shadow-2xl shadow-gray-600/5 backdrop-blur dark:shadow-none">
         {!logout && authUser && !authUser.emailVerified && (
-          <Banner
-            bgColor="bg-warning"
-            showLink={true}
-            linkText="Resend email"
-            text="Please verify your email before you proceed."
-            onClick={onResendEmail}
-          />
+          <Suspense>
+            <Banner
+              bgColor="bg-warning"
+              showLink={true}
+              linkText="Resend email"
+              text="Please verify your email before you proceed."
+              onClick={onResendEmail}
+            />
+          </Suspense>
         )}
 
         <div className="w-full px-4 sm:px-6 lg:px-8 xl:container mx-auto">
@@ -136,15 +138,18 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
                   </Transition>
                 </li>
 
-                {/* Become a Seller */}
-                <li className="relative flex items-center">
-                  <Link
-                    to="/seller_onboarding"
-                    className="ml-auto flex h-9 items-center justify-center rounded-full bg-[#14B8A6] text-white text-xs md:text-sm sm:text-base font-bold px-4 sm:px-6 hover:bg-[#0F766E] transition-colors duration-300"
-                  >
-                    Become a Seller
-                  </Link>
-                </li>
+                {buyer && !buyer.isSeller && (
+                  <li className="relative flex items-center">
+                    <Link
+                      to="/seller_onboarding"
+                      className="ml-auto flex h-9 items-center justify-center rounded-full bg-[#14B8A6] text-white text-xs md:text-sm sm:text-base font-bold px-4 sm:px-6 hover:bg-[#0F766E] transition-colors duration-300"
+                    >
+                      Become a Seller
+                    </Link>
+                  </li>
+                )}
+
+                {/* Divider */}
 
                 {/* Profile Dropdown */}
                 <li className="relative flex items-center">
@@ -178,7 +183,7 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
                     <div className="absolute -right-48 z-50 mt-5 w-96">
                       <Suspense>
                         <SettingsDropdown
-                          seller={{} as ISellerDocument}
+                          seller={seller}
                           buyer={buyer}
                           authUser={authUser}
                           type="buyer"

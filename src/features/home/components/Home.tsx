@@ -10,13 +10,13 @@ const ContactFooter: LazyExoticComponent<FC> = lazy(() => import('src/shared/con
 const Home: FC = (): ReactElement => {
   return (
     <div className="m-auto w-screen relative min-h-screen xl:container">
-     <Suspense>
-       <HomeSlider />
-      <HomeGigsView gigs={[]} title="Because you viewed a a gig on" subTitle="" category="Programming and Tech" />
-      <StatsGrid />
-      <FeaturedExperts sellers={[]} />
-      <ContactFooter />
-     </Suspense>
+      <Suspense fallback={null}>
+        <HomeSlider />
+        <HomeGigsView gigs={[]} title="Because you viewed a a gig on" subTitle="" category="Programming and Tech" />
+        <StatsGrid />
+        <FeaturedExperts sellers={[]} />
+        <ContactFooter />
+      </Suspense>
     </div>
   );
 };

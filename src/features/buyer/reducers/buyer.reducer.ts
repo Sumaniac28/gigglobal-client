@@ -1,7 +1,7 @@
-import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { emptyBuyerData } from 'src/shared/utils/static-data';
 
-import { IBuyerDocument, IReduxBuyer } from 'src/features/buyer/interfaces/buyer.interface';
+import { IBuyerDocument } from 'src/features/buyer/interfaces/buyer.interface';
 
 const initialValue: IBuyerDocument = emptyBuyerData;
 

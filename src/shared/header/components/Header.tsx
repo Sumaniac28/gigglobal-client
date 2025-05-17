@@ -20,8 +20,8 @@ const Header: FC<IHeader> = ({ navClass }): ReactElement => {
   });
   return (
     <>
-      <Suspense fallback={null}>
-        {showModal.login && (
+      {showModal.login && (
+        <Suspense>
           <LoginModal
             onClose={() => setShowModal((item: IHeaderModalProps) => ({ ...item, login: false }))}
             onToggle={() => setShowModal((item: IHeaderModalProps) => ({ ...item, login: false, register: true }))}
@@ -29,23 +29,29 @@ const Header: FC<IHeader> = ({ navClass }): ReactElement => {
               setShowModal((item: IHeaderModalProps) => ({ ...item, login: false, forgotPassword: true, register: false }))
             }
           />
-        )}
-        {showModal.register && (
+        </Suspense>
+      )}
+      {showModal.register && (
+        <Suspense>
           <RegisterModal
             onClose={() => setShowModal((item: IHeaderModalProps) => ({ ...item, register: false }))}
             onToggle={() => setShowModal((item: IHeaderModalProps) => ({ ...item, register: false, login: true }))}
           />
-        )}
-        {showModal.forgotPassword && (
+        </Suspense>
+      )}
+      {showModal.forgotPassword && (
+        <Suspense>
           <ForgotPasswordModal
             onClose={() => setShowModal((item: IHeaderModalProps) => ({ ...item, forgotPassword: false }))}
             onToggle={() => setShowModal((item: IHeaderModalProps) => ({ ...item, login: true, forgotPassword: false }))}
           />
-        )}
-        {openSidebar && (
+        </Suspense>
+      )}
+      {openSidebar && (
+        <Suspense>
           <HeaderSidebar setShowLoginModal={setShowModal} setShowRegisterModal={setShowModal} setOpenSidebar={setOpenSidebar} />
-        )}
-      </Suspense>
+        </Suspense>
+      )}
       <nav className={`${navClass} bg-[#111111]`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
           <Link to="/" className="flex items-center gap-3">

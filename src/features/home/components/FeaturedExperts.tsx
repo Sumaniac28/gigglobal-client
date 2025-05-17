@@ -25,6 +25,8 @@ const FeaturedExperts: FC<IFeaturedExpertProps> = ({ sellers }): ReactElement =>
         <button
           onClick={() => scroll('left')}
           className="absolute left-0 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white p-2 shadow-md ring-1 ring-[#E5E7EB] hover:bg-[#F3F4F6] focus:outline-none"
+          title="Scroll left"
+          aria-label="Scroll left"
         >
           <FaArrowLeft className="text-[#14B8A6]" />
         </button>
@@ -32,6 +34,8 @@ const FeaturedExperts: FC<IFeaturedExpertProps> = ({ sellers }): ReactElement =>
         <button
           onClick={() => scroll('right')}
           className="absolute right-0 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white p-2 shadow-md ring-1 ring-[#E5E7EB] hover:bg-[#F3F4F6] focus:outline-none"
+          title="Scroll right"
+          aria-label="Scroll right"
         >
           <FaArrowRight className="text-[#14B8A6]" />
         </button>

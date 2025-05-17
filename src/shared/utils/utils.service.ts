@@ -111,3 +111,21 @@ export const orderTypes = (status: string, orders: IOrderDocument[]): number => 
   const orderList: IOrderDocument[] = filter(orders, (order: IOrderDocument) => lowerCase(order.status) === lowerCase(status));
   return orderList.length;
 };
+
+export const yearsList = (maxOffset: number): string[] => {
+  const years: string[] = [];
+  const currentYear: number = new Date().getFullYear();
+  for (let i = 0; i <= maxOffset; i++) {
+    const year: number = currentYear - i;
+    years.push(`${year}`);
+  }
+  return years;
+};
+
+export const degreeList = (): string[] => {
+  return ['Associate', 'B.A.', 'B.Sc.', 'M.A.', 'M.B.A.', 'M.Sc.', 'J.D.', 'M.D.', 'Ph.D.', 'LLB', 'Certificate', 'Other'];
+};
+
+export const languageLevel = (): string[] => {
+  return ['Basic', 'Conversational', 'Fluent', 'Native'];
+};
