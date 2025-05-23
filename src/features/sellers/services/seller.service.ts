@@ -27,6 +27,9 @@ export const sellerApi = api.injectEndpoints({
       },
       invalidatesTags: ['Seller']
     }),
+    verifyOwnership: build.query<{ authorized: boolean }, string>({
+      query: (sellerId: string) => `seller/ownership/${sellerId}`
+    }),
     updateSeller: build.mutation<IResponse, { sellerId: string; seller: ISellerDocument }>({
       query(body) {
         return {
@@ -45,5 +48,6 @@ export const {
   useGetRandomSellersQuery,
   useGetSellerByIdQuery,
   useCreateSellerMutation,
-  useUpdateSellerMutation
+  useUpdateSellerMutation,
+  useVerifyOwnershipQuery
 } = sellerApi;

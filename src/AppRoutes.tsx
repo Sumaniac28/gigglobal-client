@@ -10,6 +10,8 @@ const Error: LazyExoticComponent<FC> = lazy(() => import('src/features/error/Err
 const BuyerDashboard: LazyExoticComponent<FC> = lazy(() => import('src/features/buyer/components/Dashboard'));
 const AddSeller: LazyExoticComponent<FC> = lazy(() => import('src/features/sellers/components/add/AddSeller'));
 const CurrentSellerProfile: LazyExoticComponent<FC> = lazy(() => import('src/features/sellers/components/profile/CurrentSellerProfile'));
+const ContactFooter: LazyExoticComponent<FC> = lazy(() => import('src/shared/contactFooter/ContactFooter'));
+const SellerProfile: LazyExoticComponent<FC> = lazy(() => import('src/features/sellers/components/profile/SellerProfile'));
 
 // const Layout = ({ backgroundColor = '#F9FAFB', children }: { backgroundColor: string; children: ReactNode }): JSX.Element => (
 //   <div style={{ backgroundColor }} className="flex flex-grow">
@@ -72,12 +74,23 @@ const AppRouter: FC = () => {
         </Suspense>
       )
     },
-     {
+    {
       path: '/seller_profile/:username/:sellerId/edit',
       element: (
         <Suspense>
           <ProtectedRoute>
-              <CurrentSellerProfile />
+            <CurrentSellerProfile />
+            <ContactFooter />
+          </ProtectedRoute>
+        </Suspense>
+      )
+    },
+    {
+      path: '/seller_profile/:username/:sellerId/view',
+      element: (
+        <Suspense>
+          <ProtectedRoute>
+            <SellerProfile />
           </ProtectedRoute>
         </Suspense>
       )

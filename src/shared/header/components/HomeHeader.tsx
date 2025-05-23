@@ -3,7 +3,7 @@ import { FaAngleLeft, FaAngleRight, FaBars, FaRegBell, FaRegEnvelope, FaTimes } 
 import { Link } from 'react-router-dom';
 import Button from 'src/shared/button/Button';
 import { IHeaderSideBarProps, IHomeHeaderProps } from 'src/shared/header/interfaces/header.interface';
-import { categories, replaceSpacesWithDash } from 'src/shared/utils/utils.service';
+import { categories, replaceSpacesWithDash, showErrorToast, showSuccessToast } from 'src/shared/utils/utils.service';
 import { v4 as uuidv4 } from 'uuid';
 import { Transition } from '@headlessui/react';
 import { useAppDispatch, useAppSelector } from 'src/store/store';
@@ -45,12 +45,9 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
     try {
       const result: IResponse = await resendEmail({ userId: authUser.id as number, email: `${authUser.email}` }).unwrap();
       dispatch(addAuthUser({ authInfo: result.user }));
-      // showSuccessToast('Email sent successfully.');
-
-      // show success toast
+      showSuccessToast('Email sent successfully.');
     } catch (error) {
-      // showErrorToast('Error sending email.');
-      // show error toast
+      showErrorToast('Error sending email.');
       console.error('Error sending email:', error);
     }
   };

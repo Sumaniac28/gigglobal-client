@@ -7,6 +7,7 @@ import { logout } from 'src/features/auth/reducers/logout.reducer';
 import { authApi } from 'src/features/auth/services/auth.service';
 import { IOrderDocument } from 'src/features/order/interfaces/order.interface';
 import { filter } from 'lodash';
+import { toast } from 'react-toastify';
 
 countries.registerLocale(enLocale);
 
@@ -128,4 +129,30 @@ export const degreeList = (): string[] => {
 
 export const languageLevel = (): string[] => {
   return ['Basic', 'Conversational', 'Fluent', 'Native'];
+};
+
+export const showSuccessToast = (message: string): void => {
+  toast.success(message, {
+    position: 'bottom-right',
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: false,
+    progress: undefined,
+    theme: 'colored'
+  });
+};
+
+export const showErrorToast = (message: string): void => {
+  toast.error(message, {
+    position: 'bottom-right',
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: false,
+    progress: undefined,
+    theme: 'colored'
+  });
 };
