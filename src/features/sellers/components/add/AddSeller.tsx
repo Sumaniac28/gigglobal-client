@@ -24,17 +24,28 @@ import { IBuyerDocument } from 'src/features/buyer/interfaces/buyer.interface';
 import { IResponse } from 'src/shared/shared.interface';
 import { addSeller } from 'src/features/sellers/reducers/seller.reducer';
 import { addBuyer } from 'src/features/buyer/reducers/buyer.reducer';
-import { deleteFromLocalStorage } from 'src/shared/utils/utils.service';
+import { deleteFromLocalStorage, showErrorToast } from 'src/shared/utils/utils.service';
 import CircularPageLoader from 'src/shared/page-loader/CircularPageLoader';
 import Button from 'src/shared/button/Button';
 
-const SellerExperienceFields : LazyExoticComponent<FC<IExperienceProps>> = lazy(() => import('src/features/sellers/components/add/components/SellerExperienceFields'));
-const SellerEducationFields : LazyExoticComponent<FC<IEducationProps>> = lazy(() => import('src/features/sellers/components/add/components/SellerEducationFields'));
-const SellerCertificateFields : LazyExoticComponent<FC<ICertificateProps>> = lazy(() => import('src/features/sellers/components/add/components/SellerCertificateFileds'));
-const SellerSocialLinksFields : LazyExoticComponent<FC<ISocialLinksProps>> = lazy(() => import('src/features/sellers/components/add/components/SellerSocialLinksFields'));
-const SellerSkillField : LazyExoticComponent<FC<ISkillProps>> = lazy(() => import('src/features/sellers/components/add/components/SellerSkillField'));
-const SellerLanguageFields : LazyExoticComponent<FC<ILanguageProps>> = lazy(() => import('src/features/sellers/components/add/components/SellerLanguageFields'));
-
+const SellerExperienceFields: LazyExoticComponent<FC<IExperienceProps>> = lazy(
+  () => import('src/features/sellers/components/add/components/SellerExperienceFields')
+);
+const SellerEducationFields: LazyExoticComponent<FC<IEducationProps>> = lazy(
+  () => import('src/features/sellers/components/add/components/SellerEducationFields')
+);
+const SellerCertificateFields: LazyExoticComponent<FC<ICertificateProps>> = lazy(
+  () => import('src/features/sellers/components/add/components/SellerCertificateFileds')
+);
+const SellerSocialLinksFields: LazyExoticComponent<FC<ISocialLinksProps>> = lazy(
+  () => import('src/features/sellers/components/add/components/SellerSocialLinksFields')
+);
+const SellerSkillField: LazyExoticComponent<FC<ISkillProps>> = lazy(
+  () => import('src/features/sellers/components/add/components/SellerSkillField')
+);
+const SellerLanguageFields: LazyExoticComponent<FC<ILanguageProps>> = lazy(
+  () => import('src/features/sellers/components/add/components/SellerLanguageFields')
+);
 
 const AddSeller: FC = (): ReactElement => {
   const authUser = useAppSelector((state) => state.authUser);
@@ -130,12 +141,11 @@ const AddSeller: FC = (): ReactElement => {
           dispatch(addBuyer(updateBuyer));
           navigate(`/seller_profile/${lowerCase(`${authUser.username}`)}/${response.seller._id}/edit`);
         } else {
-          console.error('Seller data is missing in the response.');
+          showErrorToast('Error creating seller profile. Please try again later.');
         }
       }
     } catch (error) {
-      // showErrorToast('Error creating seller profile.');
-      console.error('Error creating seller profile:', error);
+      showErrorToast('Error creating seller profile.');
     }
   };
 

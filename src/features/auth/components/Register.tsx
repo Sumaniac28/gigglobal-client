@@ -15,6 +15,8 @@ import { IAlertProps, IDropdownProps, IResponse } from 'src/shared/shared.interf
 import { useAuthSchema } from 'src/features/auth/hooks/useAuthSchema';
 import { addAuthUser } from 'src/features/auth/reducers/auth.reducer';
 import { updateLogout } from 'src/features/auth/reducers/logout.reducer';
+import { updateHeader } from 'src/shared/header/reducers/header.reducer';
+import { updateCategoryContainer } from 'src/shared/header/reducers/category.reducer';
 
 const Dropdown: LazyExoticComponent<FC<IDropdownProps>> = lazy(() => import('src/shared/dropdown/Dropdown'));
 const Alert: LazyExoticComponent<FC<IAlertProps>> = lazy(() => import('src/shared/alert/Alert'));
@@ -65,8 +67,8 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
         setAlertMessage('');
         dispatch(addAuthUser({ authInfo: result.user }));
         dispatch(updateLogout(false));
-        // dispatch(updateHeader('home'));
-        // dispatch(updateCategoryContainer(true));
+        dispatch(updateHeader('home'));
+        dispatch(updateCategoryContainer(true));
         saveToSessionStorage(JSON.stringify(true), JSON.stringify(result.user?.username));
       }
     } catch (error) {

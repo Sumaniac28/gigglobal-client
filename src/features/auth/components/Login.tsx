@@ -15,6 +15,8 @@ import { IAlertProps, IResponse } from 'src/shared/shared.interface';
 import { useAppDispatch } from 'src/store/store';
 import { saveToSessionStorage } from 'src/shared/utils/utils.service';
 import { updateLogout } from 'src/features/auth/reducers/logout.reducer';
+import { updateHeader } from 'src/shared/header/reducers/header.reducer';
+import { updateCategoryContainer } from 'src/shared/header/reducers/category.reducer';
 
 const Alert: LazyExoticComponent<FC<IAlertProps>> = lazy(() => import('src/shared/alert/Alert'));
 
@@ -45,8 +47,8 @@ const LoginModal: FC<IModalBgProps> = ({ onClose, onToggle, onTogglePassword }):
           setAlertMessage('');
           dispatch(addAuthUser({ authInfo: result.user }));
           dispatch(updateLogout(false));
-          // dispatch(updateHeader('home'));
-          // dispatch(updateCategoryContainer(true));
+          dispatch(updateHeader('home'));
+          dispatch(updateCategoryContainer(true));
           saveToSessionStorage(JSON.stringify(true), JSON.stringify(result.user?.username));
         }
       }

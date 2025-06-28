@@ -10,16 +10,15 @@ import { useGetCurrentBuyerByUsernameQuery } from 'src/features/buyer/services/b
 import { addBuyer } from 'src/features/buyer/reducers/buyer.reducer';
 import { useGetSellerByUsernameQuery } from 'src/features/sellers/services/seller.service';
 import { addSeller } from 'src/features/sellers/reducers/seller.reducer';
+import CircularPageLoader from 'src/shared/page-loader/CircularPageLoader';
 
 const Home: LazyExoticComponent<FC> = lazy(() => import('src/features/home/components/Home'));
 const HomeHeader: LazyExoticComponent<FC<IHomeHeaderProps>> = lazy(() => import('src/shared/header/components/HomeHeader'));
-const CircularPageLoader: LazyExoticComponent<FC> = lazy(() => import('src/shared/page-loader/CircularPageLoader'));
 
 const AppPage: FC = (): ReactElement => {
   const authUser = useAppSelector((state) => state.authUser);
   const appLogout = useAppSelector((state) => state.logout);
-  // const showCategoryContainer = useAppSelector((state) => state.showCategoryContainer);
-  const showCategoryContainer = true;
+  const showCategoryContainer = useAppSelector((state) => state.showCategoryContainer);
   const [tokenIsValid, setTokenIsValid] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const navigate: NavigateFunction = useNavigate();
@@ -69,9 +68,7 @@ const AppPage: FC = (): ReactElement => {
     ) : (
       <>
         {isBuyerLoading && isSellerLoading ? (
-          <Suspense>
-            <CircularPageLoader />
-          </Suspense>
+          <CircularPageLoader />
         ) : (
           <>
             <Suspense>

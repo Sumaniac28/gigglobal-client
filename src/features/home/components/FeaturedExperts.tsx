@@ -2,6 +2,10 @@ import { FC, ReactElement, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { IFeaturedExpertProps } from 'src/features/home/interfaces/home.interface';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { ISellerDocument } from 'src/features/sellers/interfaces/seller.interface';
+import { v4 as uuidv4 } from 'uuid';
+import StarRating from 'src/shared/rating/StarRating';
+import { lowerCase, rating } from 'src/shared/utils/utils.service';
 
 const FeaturedExperts: FC<IFeaturedExpertProps> = ({ sellers }): ReactElement => {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -42,27 +46,35 @@ const FeaturedExperts: FC<IFeaturedExpertProps> = ({ sellers }): ReactElement =>
 
         {/* Scrollable Container */}
         <div ref={scrollRef} className="scrollbar-hide flex gap-6 overflow-x-auto scroll-smooth px-1 py-4">
-          {[1, 2, 3, 4, 5, 6].map((item) => (
+          {sellers.map((seller: ISellerDocument) => (
             <div
-              key={item}
+              key={uuidv4()}
               className="min-w-[250px] flex-shrink-0 rounded-xl border border-[#E5E7EB] bg-white p-6 shadow-sm transition-transform duration-200 hover:scale-[1.02] hover:shadow-md sm:min-w-[280px] lg:min-w-[300px]"
             >
               <div className="flex flex-col items-center text-center">
                 <img
-                  src="https://placehold.co/100x100?text=Img"
+                  src={seller.profilePicture || 'https://placehold.co/100x100?text=Img'}
                   alt="Expert"
                   className="mb-4 h-24 w-24 rounded-full object-cover shadow-md"
                 />
-                <h3 className="text-lg font-semibold text-[#111111]">Danny</h3>
-                <p className="mt-1 text-sm text-[#4B5563]">This is what I do</p>
+                <h3 className="text-lg font-semibold text-[#111111]">{seller.username}</h3>
+                <p className="mt-1 text-sm text-[#4B5563]">{seller.oneliner}</p>
 
-                <div className="mt-3 flex items-center gap-2 text-sm">
-                  <span className="rounded bg-[#14B8A6] px-2 py-0.5 font-medium text-white">5.0</span>
-                  <span className="text-[#4B5563]">Expert Rating</span>
+                <div className="flex justify-center w-full gap-x-1 self-center h-6">
+                  <div className="mt-1 w-20 gap-x-2">
+                    <StarRating value={rating(parseInt(`${seller.ratingSum}`) / parseInt(`${seller.ratingsCount}`))} size={14} />
+                  </div>
+                  {parseInt(`${seller.ratingsCount}`) > 0 && (
+                    <div className="ml-2 flex self-center gap-1 rounded bg-orange-400 px-1 text-xs">
+                      <span className="font-bold text-white">
+                        {rating(parseInt(`${seller.ratingSum}`) / parseInt(`${seller.ratingsCount}`))}
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 <Link
-                  to="/profile"
+                  to={`/seller_profile/${lowerCase(`${seller.username}`)}/${seller._id}/view`}
                   className="mt-4 inline-block rounded-md bg-[#14B8A6] px-5 py-2 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#0F766E]"
                 >
                   View Profile

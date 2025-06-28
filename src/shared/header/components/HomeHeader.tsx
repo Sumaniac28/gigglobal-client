@@ -11,6 +11,8 @@ import { addAuthUser } from 'src/features/auth/reducers/auth.reducer';
 import { IBannerProps, IResponse } from 'src/shared/shared.interface';
 import { useResendEmailMutation } from 'src/features/auth/services/auth.service';
 import useDetectOutsideClick from 'src/shared/hooks/useDetectOutsideClick';
+import { updateHeader } from '../reducers/header.reducer';
+import { updateCategoryContainer } from '../reducers/category.reducer';
 
 const HomeHeaderSideBar = lazy<FC<IHeaderSideBarProps>>(() => import('src/shared/header/components/mobile/HomeHeaderSidebar'));
 const SettingsDropdown = lazy<FC<IHomeHeaderProps>>(() => import('src/shared/header/components/SettingsDropdown'));
@@ -87,7 +89,14 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
               </div>
 
               {/* Logo */}
-              <Link to="/" className="relative z-10 flex text-lg sm:text-xl md:text-2xl font-themeFont font-semibold text-white">
+              <Link
+                to="/"
+                onClick={() => {
+                  dispatch(updateHeader('home'));
+                  dispatch(updateCategoryContainer(true));
+                }}
+                className="relative z-10 flex text-lg sm:text-xl md:text-2xl font-themeFont font-semibold text-white"
+              >
                 GigGlobal
               </Link>
             </div>

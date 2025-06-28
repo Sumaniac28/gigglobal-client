@@ -4,6 +4,7 @@ import { IHeader, IHeaderModalProps, IHeaderSideBarProps } from 'src/shared/head
 import { IButtonProps } from 'src/shared/shared.interface';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import { IModalBgProps } from 'src/shared/modals/interfaces/modal.interface';
+import { saveToLocalStorage } from 'src/shared/utils/utils.service';
 
 const Button = lazy<FC<IButtonProps>>(() => import('src/shared/button/Button'));
 const LoginModal = lazy<FC<IModalBgProps>>(() => import('src/features/auth/components/Login'));
@@ -72,7 +73,13 @@ const Header: FC<IHeader> = ({ navClass }): ReactElement => {
 
           {/* Desktop Menu - Hidden by Default */}
           <div className="hidden lg:flex items-center gap-8">
-            <div className="bg-gradient-to-r from-[#14B8A6] to-[#0F766E] text-white text-sm font-semibold px-5 py-2 rounded-full shadow-md hover:from-[#0F766E] hover:to-[#14B8A6] transition-all duration-300 cursor-pointer">
+            <div
+              className="bg-gradient-to-r from-[#14B8A6] to-[#0F766E] text-white text-sm font-semibold px-5 py-2 rounded-full shadow-md hover:from-[#0F766E] hover:to-[#14B8A6] transition-all duration-300 cursor-pointer"
+              onClick={() => {
+                setShowModal((item: IHeaderModalProps) => ({ ...item, register: true, login: false, forgotPassword: false }));
+                saveToLocalStorage('becomeASeller', 'true');
+              }}
+            >
               Become a Seller
             </div>
             <div

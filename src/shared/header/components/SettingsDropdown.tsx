@@ -4,6 +4,8 @@ import { applicationLogout, lowerCase } from 'src/shared/utils/utils.service';
 import { useAppDispatch } from 'src/store/store';
 
 import { IHomeHeaderProps } from 'src/shared/header/interfaces/header.interface';
+import { updateHeader } from '../reducers/header.reducer';
+import { updateCategoryContainer } from '../reducers/category.reducer';
 
 const SettingsDropdown: FC<IHomeHeaderProps> = ({ seller, authUser, buyer, type, setIsDropdownOpen }): ReactElement => {
   const navigate: NavigateFunction = useNavigate();
@@ -27,6 +29,8 @@ const SettingsDropdown: FC<IHomeHeaderProps> = ({ seller, authUser, buyer, type,
                 if (setIsDropdownOpen) {
                   setIsDropdownOpen(false);
                 }
+                dispatch(updateHeader('sellerDashboard'));
+                dispatch(updateCategoryContainer(true));
               }}
               className="block w-full cursor-pointer rounded-md bg-[#14B8A6] px-4 py-2 text-center font-semibold text-white transition-colors duration-200 hover:bg-[#0F766E] focus:outline-none"
             >
@@ -43,6 +47,8 @@ const SettingsDropdown: FC<IHomeHeaderProps> = ({ seller, authUser, buyer, type,
                 if (setIsDropdownOpen) {
                   setIsDropdownOpen(false);
                 }
+                dispatch(updateHeader('home'));
+                dispatch(updateCategoryContainer(true));
               }}
             >
               Add a new gig
@@ -58,6 +64,8 @@ const SettingsDropdown: FC<IHomeHeaderProps> = ({ seller, authUser, buyer, type,
                 if (setIsDropdownOpen) {
                   setIsDropdownOpen(false);
                 }
+                dispatch(updateHeader('home'));
+                dispatch(updateCategoryContainer(true));
               }}
             >
               Dashboard
@@ -73,6 +81,8 @@ const SettingsDropdown: FC<IHomeHeaderProps> = ({ seller, authUser, buyer, type,
                 if (setIsDropdownOpen) {
                   setIsDropdownOpen(false);
                 }
+                dispatch(updateHeader('home'));
+                dispatch(updateCategoryContainer(true));
               }}
             >
               Profile
@@ -87,6 +97,8 @@ const SettingsDropdown: FC<IHomeHeaderProps> = ({ seller, authUser, buyer, type,
               if (setIsDropdownOpen) {
                 setIsDropdownOpen(false);
               }
+              dispatch(updateHeader('home'));
+              dispatch(updateCategoryContainer(false));
             }}
           >
             Settings

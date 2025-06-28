@@ -156,3 +156,8 @@ export const showErrorToast = (message: string): void => {
     theme: 'colored'
   });
 };
+
+export const sellerOrderList = (status: string, orders: IOrderDocument[]): IOrderDocument[] => {
+  const orderList: IOrderDocument[] = filter(orders, (order: IOrderDocument) => lowerCase(order.status) === lowerCase(status));
+  return orderList;
+};

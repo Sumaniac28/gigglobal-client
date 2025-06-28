@@ -15,8 +15,8 @@ export interface IProtectedRouteProps {
 
 const ProtectedRoute: FC<IProtectedRouteProps> = ({ children }): ReactElement => {
   const authUser = useAppSelector((state) => state.authUser);
-  const showCategoryContainer = true; // This is a placeholder. Replace with actual logic if needed.
-  const header = 'home'; // This is a placeholder. Replace with actual logic if needed.
+  const showCategoryContainer = useAppSelector((state) => state.showCategoryContainer);
+  const header = useAppSelector((state) => state.header);
   const [tokenIsValid, setTokenIsValid] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const navigate: NavigateFunction = useNavigate();
