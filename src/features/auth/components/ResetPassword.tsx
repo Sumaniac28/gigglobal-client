@@ -1,17 +1,14 @@
-import { ChangeEvent, FC, FormEvent, lazy, LazyExoticComponent, ReactElement, Suspense, useState } from 'react';
+import { ChangeEvent, FC, FormEvent, ReactElement, Suspense, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Button from 'src/shared/button/Button';
 import TextInput from 'src/shared/inputs/TextInput';
-import { IAlertProps, IResponse } from 'src/shared/shared.interface';
-
+import { IResponse } from 'src/shared/shared.interface';
 import { useAuthSchema } from 'src/features/auth/hooks/useAuthSchema';
 import { AUTH_FETCH_STATUS, IResetPassword } from 'src/features/auth/interfaces/auth.interface';
 import { resetPasswordSchema } from 'src/features/auth/schemes/auth.schema';
 import { useResetPasswordMutation } from 'src/features/auth/services/auth.service';
-import { IHeader } from 'src/shared/header/interfaces/header.interface';
-
-const IndexHeader: LazyExoticComponent<FC<IHeader>> = lazy(() => import('src/shared/header/components/Header'));
-const Alert: LazyExoticComponent<FC<IAlertProps>> = lazy(() => import('src/shared/alert/Alert'));
+import IndexHeader from 'src/shared/header/components/Header';
+import Alert from 'src/shared/alert/Alert';
 
 const ResetPassword: FC = (): ReactElement => {
   const [alertMessage, setAlertMessage] = useState<string>('');
@@ -52,7 +49,11 @@ const ResetPassword: FC = (): ReactElement => {
         <div className="relative px-5 py-5">
           <h2 className="text-center text-xl font-bold leading-tight tracking-tight text-[#111111] md:text-2xl mb-2">Reset Password</h2>
 
-          {alertMessage && <Suspense><Alert type={status} message={alertMessage} /></Suspense>}
+          {alertMessage && (
+            <Suspense>
+              <Alert type={status} message={alertMessage} />
+            </Suspense>
+          )}
 
           <form className="mt-4 space-y-4 md:space-y-5 lg:mt-5">
             <div>

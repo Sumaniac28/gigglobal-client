@@ -1,7 +1,13 @@
-import { FC, ReactElement, useRef } from 'react';
-
+import { FC, lazy, ReactElement, Suspense, useRef } from 'react';
 import { IHomeProps } from 'src/features/home/interfaces/home.interface';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { ISellerGig } from 'src/features/gigs/interfaces/gig.interface';
+import { v4 as uuidv4 } from 'uuid';
+import { Link } from 'react-router-dom';
+import { socket } from 'src/sockets/socket.service';
+import { replaceSpacesWithDash } from 'src/shared/utils/utils.service';
+
+const GigCardDisplayItem = lazy(() => import('src/shared/gigs/GigCardDisplayItem'));
 
 const HomeGigsView: FC<IHomeProps> = ({ gigs, title, subTitle, category }): ReactElement => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -26,12 +32,9 @@ const HomeGigsView: FC<IHomeProps> = ({ gigs, title, subTitle, category }): Reac
         </div>
         {category && (
           <div className="flex justify-center sm:justify-end">
-            <a
-              href={`/categories/${category.replace(/\s+/g, '-').toLowerCase()}`}
-              className="rounded-md bg-[#14B8A6] px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#0F766E]"
-            >
+            <Link onClick={() => socket.emit('getLoggedInUsers', '')} to={`/categories/${replaceSpacesWithDash(category)}`}>
               {category}
-            </a>
+            </Link>
           </div>
         )}
       </header>
@@ -55,30 +58,10 @@ const HomeGigsView: FC<IHomeProps> = ({ gigs, title, subTitle, category }): Reac
 
         {/* Scrollable Cards */}
         <div ref={scrollContainerRef} className="flex gap-5 overflow-x-auto scroll-smooth px-1 py-4 sm:px-4 scrollbar-hide">
-          {[...Array(10)].map((_, index) => (
-            <div
-              key={index}
-              className="min-w-[85%] max-w-[85%] flex-shrink-0 rounded-xl border border-[#E5E7EB] bg-white transition-transform duration-200 hover:scale-[1.02] hover:shadow-md sm:min-w-[250px] sm:max-w-[250px] md:min-w-[280px] md:max-w-[280px]"
-            >
-              <div className="relative h-44 w-full overflow-hidden rounded-t-xl">
-                <img
-                  src="https://placehold.co/330x220?text=Gig+Cover"
-                  alt="Gig cover"
-                  className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
-                />
-              </div>
-              <div className="flex flex-col gap-2 p-4">
-                <div className="flex items-center gap-3">
-                  <img
-                    src="https://placehold.co/40x40?text=Img"
-                    alt="Profile"
-                    className="h-9 w-9 rounded-full object-cover ring-1 ring-[#E5E7EB]"
-                  />
-                  <span className="text-sm font-semibold text-[#111111]">User Name</span>
-                </div>
-                <p className="text-sm text-[#4B5563] leading-snug">A short and clean gig description that’s inviting and readable.</p>
-              </div>
-            </div>
+          {gigs.map((gig: ISellerGig) => (
+            <Suspense fallback={<div className="w-60 h-40 bg-gray-100 animate-pulse" />}>
+              <GigCardDisplayItem key={uuidv4()} gig={gig} linkTarget={false} showEditIcon={false} />
+            </Suspense>
           ))}
         </div>
       </div>

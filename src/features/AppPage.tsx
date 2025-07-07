@@ -1,19 +1,19 @@
-import { FC, lazy, LazyExoticComponent, ReactElement, Suspense, useCallback, useEffect, useState } from 'react';
+import { FC, ReactElement, useCallback, useEffect, useState } from 'react';
 import Index from 'src/features/index/Index';
 import { useAppDispatch, useAppSelector } from 'src/store/store';
 import { useCheckCurrentUserQuery } from 'src/features/auth/services/auth.service';
 import { addAuthUser } from 'src/features/auth/reducers/auth.reducer';
 import { applicationLogout, getDataFromLocalStorage, saveToSessionStorage } from 'src/shared/utils/utils.service';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
-import { IHomeHeaderProps } from 'src/shared/header/interfaces/header.interface';
 import { useGetCurrentBuyerByUsernameQuery } from 'src/features/buyer/services/buyer.service';
 import { addBuyer } from 'src/features/buyer/reducers/buyer.reducer';
 import { useGetSellerByUsernameQuery } from 'src/features/sellers/services/seller.service';
 import { addSeller } from 'src/features/sellers/reducers/seller.reducer';
 import CircularPageLoader from 'src/shared/page-loader/CircularPageLoader';
+import { socket } from 'src/sockets/socket.service';
 
-const Home: LazyExoticComponent<FC> = lazy(() => import('src/features/home/components/Home'));
-const HomeHeader: LazyExoticComponent<FC<IHomeHeaderProps>> = lazy(() => import('src/shared/header/components/HomeHeader'));
+import Home from 'src/features/home/components/Home';
+import HomeHeader from 'src/shared/header/components/HomeHeader';
 
 const AppPage: FC = (): ReactElement => {
   const authUser = useAppSelector((state) => state.authUser);
@@ -44,6 +44,9 @@ const AppPage: FC = (): ReactElement => {
         if (becomeASeller) {
           navigate('/seller_onboarding');
         }
+        if (authUser.username !== null) {
+          socket.emit('loggedInUsers', authUser.username);
+        }
       }
     } catch (error) {
       console.log(error);
@@ -71,10 +74,8 @@ const AppPage: FC = (): ReactElement => {
           <CircularPageLoader />
         ) : (
           <>
-            <Suspense>
-              <HomeHeader showCategoryContainer={showCategoryContainer} />
-              <Home />
-            </Suspense>
+            <HomeHeader showCategoryContainer={showCategoryContainer} />
+            <Home />
           </>
         )}
       </>

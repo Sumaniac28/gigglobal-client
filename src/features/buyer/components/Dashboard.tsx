@@ -1,6 +1,7 @@
-import { FC, lazy, LazyExoticComponent, ReactElement, Suspense, useState } from 'react';
+import { FC, lazy, LazyExoticComponent, ReactElement, Suspense, useEffect, useState } from 'react';
 import { IOrderDocument, IOrderTableProps } from 'src/features/order/interfaces/order.interface';
 import { orderTypes, shortenLargeNumbers } from 'src/shared/utils/utils.service';
+import { socket, socketService } from 'src/sockets/socket.service';
 
 const BUYER_GIG_STATUS = {
   ACTIVE: 'active',
@@ -15,6 +16,10 @@ const BuyerTable: LazyExoticComponent<FC<IOrderTableProps>> = lazy(() => import(
 const BuyerDashboard: FC = (): ReactElement => {
   const [type, setType] = useState<string>(BUYER_GIG_STATUS.ACTIVE);
   let orders: IOrderDocument[] = [];
+  useEffect(() => {
+    socketService.setupSocketConnection();
+    socket.emit('getLoggedInUsers', '');
+  }, []);
   return (
     <div className="container mx-auto mt-8 px-4 sm:px-6 md:px-12 lg:px-6 bg-[#F9FAFB]">
       <div className="flex flex-col flex-wrap">

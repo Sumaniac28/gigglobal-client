@@ -13,6 +13,7 @@ import { useResendEmailMutation } from 'src/features/auth/services/auth.service'
 import useDetectOutsideClick from 'src/shared/hooks/useDetectOutsideClick';
 import { updateHeader } from '../reducers/header.reducer';
 import { updateCategoryContainer } from '../reducers/category.reducer';
+import HeaderSearchInput from './HeaderSearchInput';
 
 const HomeHeaderSideBar = lazy<FC<IHeaderSideBarProps>>(() => import('src/shared/header/components/mobile/HomeHeaderSidebar'));
 const SettingsDropdown = lazy<FC<IHomeHeaderProps>>(() => import('src/shared/header/components/SettingsDropdown'));
@@ -77,9 +78,7 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
 
         <div className="w-full px-4 sm:px-6 lg:px-8 xl:container mx-auto">
           <div className="flex w-full flex-wrap items-center justify-between py-3 lg:py-5 gap-y-4">
-            {/* Logo and Menu Button Section */}
             <div className="flex w-full lg:w-1/2 items-center justify-between lg:justify-start">
-              {/* Hamburger Menu - visible below lg */}
               <div className="flex lg:hidden order-2">
                 <Button
                   className="flex items-center p-2"
@@ -88,7 +87,6 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
                 />
               </div>
 
-              {/* Logo */}
               <Link
                 to="/"
                 onClick={() => {
@@ -99,12 +97,11 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
               >
                 GigGlobal
               </Link>
+              <HeaderSearchInput/>
             </div>
 
-            {/* Nav Menu - visible lg and up */}
             <div className="hidden lg:flex w-full lg:w-1/2 items-center justify-end">
               <ul className="flex flex-row items-center text-sm sm:text-base font-medium space-x-4">
-                {/* Notification */}
                 <li className="relative flex items-center">
                   <Button
                     className="px-2 hover:text-[#14B8A6] transition-colors duration-300"
@@ -120,7 +117,6 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
                   </Transition>
                 </li>
 
-                {/* Messages */}
                 <li className="relative flex items-center">
                   <Button
                     className="relative px-2 hover:text-[#14B8A6] transition-colors duration-300"
@@ -136,7 +132,6 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
                   </Transition>
                 </li>
 
-                {/* Orders */}
                 <li className="relative flex items-center">
                   <Button className="px-2 hover:text-[#14B8A6] transition-colors duration-300" label={<span>Orders</span>} />
                   <Transition ref={orderDropdownRef} show={isOrderDropdownOpen}>
@@ -155,9 +150,6 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
                   </li>
                 )}
 
-                {/* Divider */}
-
-                {/* Profile Dropdown */}
                 <li className="relative flex items-center">
                   <Button
                     className="flex items-center gap-2 px-2 hover:text-[#14B8A6] transition-colors duration-300"
@@ -204,7 +196,6 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
           </div>
         </div>
 
-        {/* Categories Container */}
         {showCategoryContainer && (
           <div className="z-40 hidden sm:flex w-full border-x-0 border-b-0 border border-[#E5E7EB] bg-[#F9FAFB]">
             <div className="container mx-auto flex items-center px-4 sm:px-6 md:justify-start lg:justify-center">

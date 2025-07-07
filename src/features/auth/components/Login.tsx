@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, lazy, LazyExoticComponent, ReactElement, Suspense, useState } from 'react';
+import { ChangeEvent, FC, ReactElement, Suspense, useState } from 'react';
 import { FaEye, FaEyeSlash, FaTimes } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import Button from 'src/shared/button/Button';
@@ -11,14 +11,13 @@ import { useSignInMutation } from 'src/features/auth/services/auth.service';
 import { useAuthSchema } from 'src/features/auth/hooks/useAuthSchema';
 import { loginUserSchema } from 'src/features/auth/schemes/auth.schema';
 import { addAuthUser } from 'src/features/auth/reducers/auth.reducer';
-import { IAlertProps, IResponse } from 'src/shared/shared.interface';
+import { IResponse } from 'src/shared/shared.interface';
 import { useAppDispatch } from 'src/store/store';
 import { saveToSessionStorage } from 'src/shared/utils/utils.service';
 import { updateLogout } from 'src/features/auth/reducers/logout.reducer';
 import { updateHeader } from 'src/shared/header/reducers/header.reducer';
 import { updateCategoryContainer } from 'src/shared/header/reducers/category.reducer';
-
-const Alert: LazyExoticComponent<FC<IAlertProps>> = lazy(() => import('src/shared/alert/Alert'));
+import Alert from 'src/shared/alert/Alert';
 
 const LoginModal: FC<IModalBgProps> = ({ onClose, onToggle, onTogglePassword }): ReactElement => {
   const mobileOrientation = useMobileOrientation();
@@ -72,7 +71,11 @@ const LoginModal: FC<IModalBgProps> = ({ onClose, onToggle, onTogglePassword }):
             />
           </div>
 
-          {alertMessage && <Suspense><Alert type="error" message={alertMessage} /></Suspense>}
+          {alertMessage && (
+            <Suspense>
+              <Alert type="error" message={alertMessage} />
+            </Suspense>
+          )}
 
           <div>
             <label htmlFor="email or username" className="text-sm font-bold leading-tight tracking-normal text-[#111111]">

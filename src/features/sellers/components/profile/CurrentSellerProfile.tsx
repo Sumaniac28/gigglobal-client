@@ -7,7 +7,12 @@ import { addSeller } from 'src/features/sellers/reducers/seller.reducer';
 import { IBreadCrumbProps, IButtonProps, IResponse } from 'src/shared/shared.interface';
 import equal from 'react-fast-compare';
 import { showErrorToast, showSuccessToast } from 'src/shared/utils/utils.service';
-import { useSellerOwnershipGuard } from '../../hooks/useSellerOwnershipGuard';
+import { v4 as uuidv4 } from 'uuid';
+import GigCardDisplayItem from 'src/shared/gigs/GigCardDisplayItem';
+import GigViewReviews from 'src/features/gigs/components/view/components/GigViewLeft/GigViewReviews';
+import { IReviewDocument } from 'src/features/order/interfaces/review.interface';
+import { ISellerGig } from 'src/features/gigs/interfaces/gig.interface';
+import { useGetGigsBySellerIdQuery } from 'src/features/gigs/services/gigs.service';
 
 const ProfileHeader: LazyExoticComponent<FC<IProfileHeaderProps>> = lazy(
   () => import('src/features/sellers/components/profile/components/ProfileHeader')
@@ -33,16 +38,12 @@ const CurrentSellerProfile: FC = (): ReactElement => {
   const [showEdit, setShowEdit] = useState<boolean>(true);
   const [type, setType] = useState<string>('Overview');
   const { sellerId } = useParams();
-
-  // console.log('CurrentSellerProfile', sellerId);
-
-  useSellerOwnershipGuard(sellerId ?? '');
-
   const dispatch = useAppDispatch();
-
+  const { data, isSuccess: isSellerGigSuccess, isLoading: isSellerGigLoading } = useGetGigsBySellerIdQuery(`${sellerId}`);
   const [updateSeller, { isLoading }] = useUpdateSellerMutation();
+  let reviews: IReviewDocument[] = [];
 
-  const isDataLoading: boolean = false; // Placeholder for actual loading state
+  const isDataLoading: boolean = isSellerGigLoading && !isSellerGigSuccess;
 
   const onUpdateSeller = async (): Promise<void> => {
     try {
@@ -117,9 +118,14 @@ const CurrentSellerProfile: FC = (): ReactElement => {
               </Suspense>
             )}
             {type === 'Active Gigs' && (
-              <div className="grid gap-x-6 pt-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">Active Gigs</div>
+              <div className="grid gap-x-6 pt-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                {data?.gigs &&
+                  data?.gigs.map((gig: ISellerGig) => (
+                    <GigCardDisplayItem key={uuidv4()} gig={gig} linkTarget={false} showEditIcon={true} />
+                  ))}
+              </div>
             )}
-            {type === 'Ratings & Reviews' && <p>Ratings and Reviews</p>}
+            {type === 'Ratings & Reviews' && <GigViewReviews showRatings={false} reviews={reviews} hasFetchedReviews={true} />}
           </div>
         </div>
       )}

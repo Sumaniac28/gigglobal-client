@@ -59,7 +59,6 @@ const Header: FC<IHeader> = ({ navClass }): ReactElement => {
             <span className="text-xl sm:text-2xl font-semibold font-themeFont tracking-wide text-white">GigGlobal</span>
           </Link>
 
-          {/* Mobile Menu Button - Visible by Default */}
           <div className="flex items-center lg:hidden">
             <Suspense fallback={null}>
               <Button
@@ -71,13 +70,12 @@ const Header: FC<IHeader> = ({ navClass }): ReactElement => {
             </Suspense>
           </div>
 
-          {/* Desktop Menu - Hidden by Default */}
           <div className="hidden lg:flex items-center gap-8">
             <div
               className="bg-gradient-to-r from-[#14B8A6] to-[#0F766E] text-white text-sm font-semibold px-5 py-2 rounded-full shadow-md hover:from-[#0F766E] hover:to-[#14B8A6] transition-all duration-300 cursor-pointer"
               onClick={() => {
                 setShowModal((item: IHeaderModalProps) => ({ ...item, register: true, login: false, forgotPassword: false }));
-                saveToLocalStorage('becomeASeller', 'true');
+                saveToLocalStorage('becomeASeller', JSON.stringify(true));
               }}
             >
               Become a Seller

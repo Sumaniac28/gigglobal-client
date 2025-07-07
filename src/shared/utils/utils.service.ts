@@ -161,3 +161,32 @@ export const sellerOrderList = (status: string, orders: IOrderDocument[]): IOrde
   const orderList: IOrderDocument[] = filter(orders, (order: IOrderDocument) => lowerCase(order.status) === lowerCase(status));
   return orderList;
 };
+export const expectedGigDelivery = (): string[] => {
+  return [
+    '1 Day Delivery',
+    '2 Days Delivery',
+    '3 Days Delivery',
+    '4 Days Delivery',
+    '5 Days Delivery',
+    '6 Days Delivery',
+    '7 Days Delivery',
+    '10 Days Delivery',
+    '14 Days Delivery',
+    '21 Days Delivery',
+    '30 Days Delivery',
+    '45 Days Delivery',
+    '60 Days Delivery',
+    '75 Days Delivery',
+    '90 Days Delivery'
+  ];
+};
+export const reactQuillUtils = () => {
+  const modules = {
+    toolbar: [
+      ['bold', 'italic'],
+      [{ list: 'ordered' }, { list: 'bullet' }]
+    ]
+  };
+  const formats: string[] = ['bold', 'italic', 'list', 'bullet'];
+  return { modules, formats };
+};

@@ -6,10 +6,13 @@ import DashboardHeader from 'src/shared/header/components/DashboardHeader';
 
 import { ISellerDocument } from '../../interfaces/seller.interface';
 import { useGetSellerByIdQuery } from '../../services/seller.service';
+import { useGetGigsBySellerIdQuery, useGetSellerPausedGigsQuery } from 'src/features/gigs/services/gigs.service';
 
 const Seller: FC = (): ReactElement => {
   const { sellerId } = useParams<string>();
   const { data, isSuccess } = useGetSellerByIdQuery(`${sellerId}`);
+  const { data: sellerGigs, isSuccess: isSellerGigsSuccess } = useGetGigsBySellerIdQuery(`${sellerId}`);
+  const { data: sellerPausedGigs, isSuccess: isSellerPausedGigsSuccess } = useGetSellerPausedGigsQuery(`${sellerId}`);
   let gigs: ISellerGig[] = [];
   let pausedGigs: ISellerGig[] = [];
   let orders: IOrderDocument[] = [];
@@ -17,6 +20,14 @@ const Seller: FC = (): ReactElement => {
 
   if (isSuccess) {
     seller = data?.seller as ISellerDocument;
+  }
+
+  if (isSellerGigsSuccess) {
+    gigs = sellerGigs?.gigs as ISellerGig[];
+  }
+
+  if (isSellerPausedGigsSuccess) {
+    pausedGigs = sellerPausedGigs?.gigs as ISellerGig[];
   }
 
   return (

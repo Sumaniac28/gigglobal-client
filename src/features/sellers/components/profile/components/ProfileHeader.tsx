@@ -56,7 +56,6 @@ const ProfileHeader: FC<IProfileHeaderProps> = ({ sellerProfile, showHeaderInfo,
       {showHeaderInfo && (
         <div className="mt-5 mb-5 w-full border border-[#333] bg-white px-6 py-8 shadow-lg backdrop-blur-md sm:px-10 md:px-12">
           <div className="flex flex-col gap-6 md:flex-row md:items-start lg:items-center">
-            {/* Profile Image */}
             <div className="mx-auto flex-shrink-0">
               <div className="h-24 w-24 md:h-28 md:w-28 lg:h-32 lg:w-32">
                 <LazyLoadImage
@@ -70,10 +69,8 @@ const ProfileHeader: FC<IProfileHeaderProps> = ({ sellerProfile, showHeaderInfo,
               </div>
             </div>
 
-            {/* Seller Info */}
             <div className="flex flex-1 flex-col gap-6">
               <div className="flex flex-col items-center text-center md:items-start md:text-left">
-                {/* Full Name */}
                 <div className="flex items-center font-themeFont text-2xl font-semibold text-gray-900 sm:text-4xl">
                   {!showItemEdit.fullname && sellerProfile?.fullName}
                   {showEditIcons && !showItemEdit.fullname && (
@@ -84,7 +81,6 @@ const ProfileHeader: FC<IProfileHeaderProps> = ({ sellerProfile, showHeaderInfo,
                   )}
                 </div>
 
-                {/* Editable Fullname */}
                 {showItemEdit.fullname && (
                   <div className="mt-2 flex flex-col gap-2 sm:flex-row">
                     <Suspense>
@@ -118,6 +114,7 @@ const ProfileHeader: FC<IProfileHeaderProps> = ({ sellerProfile, showHeaderInfo,
                           className="rounded bg-red-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-600"
                           label="Cancel"
                           onClick={() => {
+                            setSellerProfileItem({ ...sellerProfileItem, fullname: `${sellerProfile?.fullName}` });
                             setShowItemEdit({ ...showItemEdit, fullname: false });
                           }}
                         />
@@ -126,10 +123,8 @@ const ProfileHeader: FC<IProfileHeaderProps> = ({ sellerProfile, showHeaderInfo,
                   </div>
                 )}
 
-                {/* Username */}
                 <span className="mt-1 text-lg text-gray-500">@{lowerCase(`${sellerProfile?.username}`)}</span>
 
-                {/* Oneliner */}
                 <div className="mt-1 flex items-center gap-2 text-xl text-gray-700">
                   {!showItemEdit.oneliner && sellerProfile?.oneliner}
                   {showEditIcons && !showItemEdit.oneliner && (
@@ -140,7 +135,6 @@ const ProfileHeader: FC<IProfileHeaderProps> = ({ sellerProfile, showHeaderInfo,
                   )}
                 </div>
 
-                {/* Editable Oneliner */}
                 {showItemEdit.oneliner && (
                   <div className="mt-2 flex flex-col gap-2 sm:flex-row">
                     <Suspense>
@@ -187,7 +181,6 @@ const ProfileHeader: FC<IProfileHeaderProps> = ({ sellerProfile, showHeaderInfo,
                   </div>
                 )}
 
-                {/* Ratings */}
                 <div className="mt-3 flex items-center gap-2">
                   <div className="text-yellow-500">
                     <StarRating
@@ -206,23 +199,22 @@ const ProfileHeader: FC<IProfileHeaderProps> = ({ sellerProfile, showHeaderInfo,
                   )}
                 </div>
               </div>
-              {/* Grid Info (inside header) */}
-              <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
-                {gridInfo.map((info: IGigInfo) => (
-                  <div
-                    key={uuidv4()}
-                    style={{ backgroundColor: info.bgColor }}
-                    className="flex flex-col items-center justify-center rounded-xl px-4 py-6 text-white shadow-md"
-                  >
-                    <span className="text-2xl font-bold">{info.total}</span>
-                    <span className="text-sm font-medium opacity-90">{info.title}</span>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         </div>
       )}
+      <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        {gridInfo.map((info: IGigInfo) => (
+          <div
+            key={uuidv4()}
+            style={{ backgroundColor: info.bgColor }}
+            className="flex flex-col items-center justify-center rounded-xl px-4 py-6 text-white shadow-md"
+          >
+            <span className="text-2xl font-bold">{info.total}</span>
+            <span className="text-sm font-medium opacity-90">{info.title}</span>
+          </div>
+        ))}
+      </div>
     </>
   );
 };

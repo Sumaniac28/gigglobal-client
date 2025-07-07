@@ -1,6 +1,7 @@
 import { FC, lazy, LazyExoticComponent, Suspense } from 'react';
 import { useRoutes, RouteObject } from 'react-router-dom';
 import ProtectedRoute from 'src/features/ProtectedRoute';
+import { IGigsProps } from './features/gigs/interfaces/gig.interface';
 
 const AppPage: LazyExoticComponent<FC> = lazy(() => import('src/features/AppPage'));
 const Home: LazyExoticComponent<FC> = lazy(() => import('src/features/home/components/Home'));
@@ -14,6 +15,12 @@ const ContactFooter: LazyExoticComponent<FC> = lazy(() => import('src/shared/con
 const SellerProfile: LazyExoticComponent<FC> = lazy(() => import('src/features/sellers/components/profile/SellerProfile'));
 const Seller: LazyExoticComponent<FC> = lazy(() => import('src/features/sellers/components/dashboard/Seller'));
 const SellerDashboard: LazyExoticComponent<FC> = lazy(() => import('src/features/sellers/components/dashboard/SellerDashboard'));
+const AddGig: LazyExoticComponent<FC> = lazy(() => import('src/features/gigs/components/gig/Add'));
+const GigView: LazyExoticComponent<FC> = lazy(() => import('src/features/gigs/components/view/GigView'));
+const Gigs: LazyExoticComponent<FC<IGigsProps>> = lazy(() => import('src/features/gigs/components/gigs/Gigs'));
+const EditGig: LazyExoticComponent<FC> = lazy(() => import('src/features/gigs/components/gig/Edit'));
+const GigInfoDisplay: LazyExoticComponent<FC> = lazy(() => import('src/features/index/gig-tabs/GigInfoDisplay'));
+const GigsIndexDisplay: LazyExoticComponent<FC<IGigsProps>> = lazy(() => import('src/features/index/gig-tabs/GigsIndexDisplay'));
 
 // const Layout = ({ backgroundColor = '#F9FAFB', children }: { backgroundColor: string; children: ReactNode }): JSX.Element => (
 //   <div style={{ backgroundColor }} className="flex flex-grow">
@@ -93,6 +100,7 @@ const AppRouter: FC = () => {
         <Suspense>
           <ProtectedRoute>
             <SellerProfile />
+            <ContactFooter />
           </ProtectedRoute>
         </Suspense>
       )
@@ -110,8 +118,82 @@ const AppRouter: FC = () => {
         {
           path: 'seller_dashboard',
           element: <SellerDashboard />
-        },
+        }
       ]
+    },
+    {
+      path: '/manage_gigs/new/:sellerId',
+      element: (
+        <Suspense>
+          <ProtectedRoute>
+            <AddGig />
+          </ProtectedRoute>
+        </Suspense>
+      )
+    },
+    {
+      path: '/manage_gigs/edit/:gigId',
+      element: (
+        <Suspense>
+          <ProtectedRoute>
+            <EditGig />
+          </ProtectedRoute>
+        </Suspense>
+      )
+    },
+    {
+      path: '/gig/:username/:title/:sellerId/:gigId/view',
+      element: (
+        <Suspense>
+          <ProtectedRoute>
+            <GigView />
+          </ProtectedRoute>
+        </Suspense>
+      )
+    },
+    {
+      path: '/categories/:category',
+      element: (
+        <Suspense>
+          <ProtectedRoute>
+            <Gigs type="categories" />
+          </ProtectedRoute>
+        </Suspense>
+      )
+    },
+    {
+      path: '/search/categories/:category',
+      element: (
+        <Suspense>
+          <GigsIndexDisplay type="categories" />
+        </Suspense>
+      )
+    },
+    {
+      path: '/gigs/search',
+      element: (
+        <Suspense>
+          <GigsIndexDisplay type="search" />
+        </Suspense>
+      )
+    },
+    {
+      path: '/gig/:gigId/:title',
+      element: (
+        <Suspense>
+          <GigInfoDisplay />
+        </Suspense>
+      )
+    },
+    {
+      path: '/search/gigs',
+      element: (
+        <Suspense>
+          <ProtectedRoute>
+            <Gigs type="search" />
+          </ProtectedRoute>
+        </Suspense>
+      )
     },
     {
       path: '*',

@@ -1,15 +1,13 @@
-import { ChangeEvent, FC, lazy, LazyExoticComponent, ReactElement, Suspense, useState } from 'react';
+import { ChangeEvent, FC, ReactElement, Suspense, useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import Button from 'src/shared/button/Button';
 import TextInput from 'src/shared/inputs/TextInput';
 import { IModalBgProps } from 'src/shared/modals/interfaces/modal.interface';
 import ModalBg from 'src/shared/modals/ModalBg';
-import { IAlertProps, IResponse } from 'src/shared/shared.interface';
-
+import { IResponse } from 'src/shared/shared.interface';
 import { AUTH_FETCH_STATUS } from 'src/features/auth/interfaces/auth.interface';
 import { useForgotPasswordMutation } from 'src/features/auth/services/auth.service';
-
-const Alert: LazyExoticComponent<FC<IAlertProps>> = lazy(() => import('src/shared/alert/Alert'));
+import Alert from 'src/shared/alert/Alert';
 
 const ForgotPasswordModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement => {
   const [alertMessage, setAlertMessage] = useState<string>('');

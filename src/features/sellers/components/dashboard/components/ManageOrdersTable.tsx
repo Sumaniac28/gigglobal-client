@@ -1,14 +1,15 @@
-import { FC, ReactElement, useRef, useState } from 'react';
+import { FC, lazy, ReactElement, Suspense, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { IOrderDocument, IOrderMessage, IOrderTableProps } from 'src/features/order/interfaces/order.interface';
 import Button from 'src/shared/button/Button';
 import { updateHeader } from 'src/shared/header/reducers/header.reducer';
-import ApprovalModal from 'src/shared/modals/ApprovalModal';
 import { IApprovalModalContent } from 'src/shared/modals/interfaces/modal.interface';
 import { TimeAgo } from 'src/shared/utils/timeago.utils';
 import { lowerCase, showErrorToast, showSuccessToast } from 'src/shared/utils/utils.service';
 import { useAppDispatch } from 'src/store/store';
 import { v4 as uuidv4 } from 'uuid';
+
+const ApprovalModal = lazy(() => import('src/shared/modals/ApprovalModal'));
 
 const ManageOrdersTable: FC<IOrderTableProps> = ({ type, orders, orderTypes }): ReactElement => {
   const dispatch = useAppDispatch();
@@ -39,7 +40,9 @@ const ManageOrdersTable: FC<IOrderTableProps> = ({ type, orders, orderTypes }): 
   return (
     <>
       {showCancelModal && (
-        <ApprovalModal approvalModalContent={approvalModalContent} onClose={() => setShowCancelModal(false)} onClick={onCancelOrder} />
+        <Suspense fallback={<div>Loading...</div>}>
+          <ApprovalModal approvalModalContent={approvalModalContent} onClose={() => setShowCancelModal(false)} onClick={onCancelOrder} />
+        </Suspense>
       )}
       <div className="flex flex-col">
         <div className="border-grey border border-b-0 px-3 py-3">

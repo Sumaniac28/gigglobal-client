@@ -1,13 +1,12 @@
-import { FC, lazy, LazyExoticComponent, ReactElement, ReactNode, useCallback, useEffect, useState } from 'react';
+import { FC, ReactElement, ReactNode, useCallback, useEffect, useState } from 'react';
 import { Navigate, NavigateFunction, useNavigate } from 'react-router-dom';
 import { applicationLogout, saveToSessionStorage } from 'src/shared/utils/utils.service';
 import { useAppDispatch, useAppSelector } from 'src/store/store';
 
 import { addAuthUser } from 'src/features/auth/reducers/auth.reducer';
 import { useCheckCurrentUserQuery } from 'src/features/auth/services/auth.service';
-import { IHomeHeaderProps } from 'src/shared/header/interfaces/header.interface';
 
-const HomeHeader: LazyExoticComponent<FC<IHomeHeaderProps>> = lazy(() => import('src/shared/header/components/HomeHeader'));
+import HomeHeader from 'src/shared/header/components/HomeHeader';
 
 export interface IProtectedRouteProps {
   children: ReactNode;
