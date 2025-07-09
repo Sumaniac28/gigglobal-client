@@ -14,35 +14,31 @@ import useDetectOutsideClick from 'src/shared/hooks/useDetectOutsideClick';
 import { updateHeader } from '../reducers/header.reducer';
 import { updateCategoryContainer } from '../reducers/category.reducer';
 import HeaderSearchInput from './HeaderSearchInput';
+import MessageDropdown from './MessageDropdown';
 
 const HomeHeaderSideBar = lazy<FC<IHeaderSideBarProps>>(() => import('src/shared/header/components/mobile/HomeHeaderSidebar'));
 const SettingsDropdown = lazy<FC<IHomeHeaderProps>>(() => import('src/shared/header/components/SettingsDropdown'));
 const Banner = lazy<FC<IBannerProps>>(() => import('src/shared/banner/Banner'));
 
 const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactElement => {
+  const authUser = useAppSelector((state) => state.authUser);
+  const seller = useAppSelector((state) => state.seller);
+  const logout = useAppSelector((state) => state.logout);
+  const buyer = useAppSelector((state) => state.buyer);
   const settingsDropdownRef = useRef<HTMLDivElement | null>(null);
   const messageDropdownRef = useRef<HTMLDivElement | null>(null);
   const notificationDropdownRef = useRef<HTMLDivElement | null>(null);
   const orderDropdownRef = useRef<HTMLDivElement | null>(null);
   const navElement = useRef<HTMLDivElement | null>(null);
-  const authUser = useAppSelector((state) => state.authUser);
-  const buyer = useAppSelector((state) => state.buyer);
-  const seller = useAppSelector((state) => state.seller);
-  const logout = useAppSelector((state) => state.logout);
+  const [openSidebar, setOpenSidebar] = useState<boolean>(false);
+  // const [authUsername, setAuthUsername] = useState<string>('');
   const dispatch = useAppDispatch();
   const [resendEmail] = useResendEmailMutation();
 
-  const isNotificationDropdownOpen = false;
-  const isMessageDropdownOpen = false;
-  const isOrderDropdownOpen = false;
-
   const [isSettingsDropdown, setIsSettingsDropdown] = useDetectOutsideClick(settingsDropdownRef, false);
-
-  const [openSidebar, setOpenSidebar] = useState(false);
-
-  const toggleDropdown = (): void => {
-    setIsSettingsDropdown(!isSettingsDropdown);
-  };
+  const [isMessageDropdownOpen, setIsMessageDropdownOpen] = useDetectOutsideClick(messageDropdownRef, false);
+  const [isNotificationDropdownOpen, setIsNotificationDropdownOpen] = useDetectOutsideClick(notificationDropdownRef, false);
+  const [isOrderDropdownOpen, setIsOrderDropdownOpen] = useDetectOutsideClick(orderDropdownRef, false);
 
   const onResendEmail = async (): Promise<void> => {
     try {
@@ -51,9 +47,56 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
       showSuccessToast('Email sent successfully.');
     } catch (error) {
       showErrorToast('Error sending email.');
-      console.error('Error sending email:', error);
     }
   };
+
+  const toggleDropdown = (): void => {
+    setIsSettingsDropdown(!isSettingsDropdown);
+    setIsMessageDropdownOpen(false);
+    setIsNotificationDropdownOpen(false);
+    setIsOrderDropdownOpen(false);
+  };
+
+  const toggleMessageDropdown = (): void => {
+    setIsMessageDropdownOpen(!isMessageDropdownOpen);
+    setIsNotificationDropdownOpen(false);
+    setIsOrderDropdownOpen(false);
+    setIsSettingsDropdown(false);
+    dispatch(updateHeader('home'));
+    dispatch(updateCategoryContainer(true));
+  };
+
+  // const toggleOrdersDropdown = (): void => {
+  //   setIsOrderDropdownOpen(!isOrderDropdownOpen);
+  //   setIsMessageDropdownOpen(false);
+  //   setIsNotificationDropdownOpen(false);
+  //   setIsSettingsDropdown(false);
+  //   dispatch(updateHeader('home'));
+  //   dispatch(updateCategoryContainer(true));
+  // };
+
+  // const toggleNotificationDropdown = (): void => {
+  //   setIsNotificationDropdownOpen(!isNotificationDropdownOpen);
+  //   setIsOrderDropdownOpen(false);
+  //   setIsMessageDropdownOpen(false);
+  //   setIsSettingsDropdown(false);
+  //   dispatch(updateHeader('home'));
+  //   dispatch(updateCategoryContainer(true));
+  // };
+
+  // const slideLeft = (): void => {
+  //   if (navElement.current) {
+  //     const maxScrollLeft = navElement.current.scrollWidth + navElement.current.clientWidth; // maximum scroll position
+  //     navElement.current.scrollLeft = navElement.current.scrollLeft < maxScrollLeft ? navElement.current.scrollLeft - 1000 : maxScrollLeft;
+  //   }
+  // };
+
+  // const slideRight = (): void => {
+  //   if (navElement.current) {
+  //     const maxScrollLeft = navElement.current.scrollWidth - navElement.current.clientWidth; // maximum scroll position
+  //     navElement.current.scrollLeft = navElement.current.scrollLeft < maxScrollLeft ? navElement.current.scrollLeft + 1000 : maxScrollLeft;
+  //   }
+  // };
 
   return (
     <>
@@ -97,7 +140,7 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
               >
                 GigGlobal
               </Link>
-              <HeaderSearchInput/>
+              <HeaderSearchInput />
             </div>
 
             <div className="hidden lg:flex w-full lg:w-1/2 items-center justify-end">
@@ -119,16 +162,28 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
 
                 <li className="relative flex items-center">
                   <Button
-                    className="relative px-2 hover:text-[#14B8A6] transition-colors duration-300"
+                    className="relative px-4"
+                    onClick={toggleMessageDropdown}
                     label={
                       <>
                         <FaRegEnvelope />
-                        <span className="absolute -top-1 right-0 mr-2 inline-flex h-[6px] w-[6px] rounded-full bg-[#14B8A6]"></span>
                       </>
                     }
                   />
-                  <Transition ref={messageDropdownRef} show={isMessageDropdownOpen}>
-                    <div className="absolute right-0 mt-5 w-96"></div>
+                  <Transition
+                    ref={messageDropdownRef}
+                    show={isMessageDropdownOpen}
+                    enter="transition ease-out duration-200"
+                    enterFrom="opacity-0 translate-y-1"
+                    enterTo="opacity-100 translate-y-0"
+                    leave="transition ease-in duration-150"
+                    leaveFrom="opacity-100 translate-y-0"
+                    leaveTo="opacity-0 translate-y-1"
+                  >
+                    <div className="absolute right-0 mt-5 w-96">
+                      {' '}
+                      <MessageDropdown setIsMessageDropdownOpen={setIsMessageDropdownOpen} />
+                    </div>
                   </Transition>
                 </li>
 

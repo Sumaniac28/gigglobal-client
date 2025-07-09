@@ -11,6 +11,7 @@ import buyerReducer from 'src/features/buyer/reducers/buyer.reducer';
 import sellerReducer from 'src/features/sellers/reducers/seller.reducer';
 import headerReducer from 'src/shared/header/reducers/header.reducer';
 import categoryReducer from 'src/shared/header/reducers/category.reducer';
+import notificationReducer from 'src/shared/header/reducers/notification.reducer';
 
 import { api } from './api';
 
@@ -27,7 +28,8 @@ export const combineReducer = combineReducers({
   seller: sellerReducer,
   logout: logoutReducer,
   header: headerReducer,
-  showCategoryContainer: categoryReducer
+  showCategoryContainer: categoryReducer,
+  notification: notificationReducer
 });
 
 export const rootReducers: Reducer<RootState> = (state, action) => {

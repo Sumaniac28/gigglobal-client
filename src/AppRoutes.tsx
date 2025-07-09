@@ -21,6 +21,7 @@ const Gigs: LazyExoticComponent<FC<IGigsProps>> = lazy(() => import('src/feature
 const EditGig: LazyExoticComponent<FC> = lazy(() => import('src/features/gigs/components/gig/Edit'));
 const GigInfoDisplay: LazyExoticComponent<FC> = lazy(() => import('src/features/index/gig-tabs/GigInfoDisplay'));
 const GigsIndexDisplay: LazyExoticComponent<FC<IGigsProps>> = lazy(() => import('src/features/index/gig-tabs/GigsIndexDisplay'));
+const Chat: LazyExoticComponent<FC> = lazy(() => import('src/features/chat/components/Chat'));
 
 // const Layout = ({ backgroundColor = '#F9FAFB', children }: { backgroundColor: string; children: ReactNode }): JSX.Element => (
 //   <div style={{ backgroundColor }} className="flex flex-grow">
@@ -191,6 +192,26 @@ const AppRouter: FC = () => {
         <Suspense>
           <ProtectedRoute>
             <Gigs type="search" />
+          </ProtectedRoute>
+        </Suspense>
+      )
+    },
+    {
+      path: '/inbox',
+      element: (
+        <Suspense>
+          <ProtectedRoute>
+            <Chat />
+          </ProtectedRoute>
+        </Suspense>
+      )
+    },
+    {
+      path: '/inbox/:username/:conversationId',
+      element: (
+        <Suspense>
+          <ProtectedRoute>
+            <Chat />
           </ProtectedRoute>
         </Suspense>
       )

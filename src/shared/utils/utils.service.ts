@@ -8,6 +8,7 @@ import { authApi } from 'src/features/auth/services/auth.service';
 import { IOrderDocument } from 'src/features/order/interfaces/order.interface';
 import { filter } from 'lodash';
 import { toast } from 'react-toastify';
+import axios, { AxiosResponse } from 'axios';
 
 countries.registerLocale(enLocale);
 
@@ -189,4 +190,43 @@ export const reactQuillUtils = () => {
   };
   const formats: string[] = ['bold', 'italic', 'list', 'bullet'];
   return { modules, formats };
+};
+
+export const generateRandomNumber = (length: number): number => {
+  return Math.floor(Math.random() * (9 * Math.pow(10, length - 1))) + Math.pow(10, length - 1);
+};
+
+export const bytesToSize = (bytes: number): string => {
+  const sizes: string[] = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  if (bytes === 0) {
+    return 'n/a';
+  }
+  const i = parseInt(`${Math.floor(Math.log(bytes) / Math.log(1024))}`, 10);
+  if (i === 0) {
+    return `${bytes} ${sizes[i]}`;
+  }
+  return `${(bytes / 1024 ** i).toFixed(1)} ${sizes[i]}`;
+};
+
+export const getFileBlob = async (url: string): Promise<AxiosResponse> => {
+  const response: AxiosResponse = await axios.get(url, { responseType: 'blob' });
+  return response;
+};
+
+export const downloadFile = (blobUrl: string, fileName: string): void => {
+  const link: HTMLAnchorElement = document.createElement('a');
+  link.href = blobUrl;
+  link.setAttribute('download', `${fileName}`);
+  // Append to html link element page
+  document.body.appendChild(link);
+  // Start download
+  link.click();
+  // Clean up and remove link
+  if (link.parentNode) {
+    link.parentNode.removeChild(link);
+  }
+};
+
+export const isFetchBaseQueryError = (error: unknown): boolean => {
+  return typeof error === 'object' && error !== null && 'status' in error && 'data' in error;
 };

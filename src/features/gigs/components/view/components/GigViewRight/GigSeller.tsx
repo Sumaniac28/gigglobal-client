@@ -1,6 +1,8 @@
 import { FC, ReactElement, useContext, useState } from 'react';
 import { FaArrowRight } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import ChatBox from 'src/features/chat/components/chatbox/ChatBox';
+import { IChatBuyerProps, IChatSellerProps } from 'src/features/chat/interfaces/chat.interface';
 import { GigContext } from 'src/features/gigs/context/GigContext';
 import { ILanguage } from 'src/features/sellers/interfaces/seller.interface';
 import Button from 'src/shared/button/Button';
@@ -14,10 +16,22 @@ import { v4 as uuidv4 } from 'uuid';
 
 const GigSeller: FC = (): ReactElement => {
   const authUser = useAppSelector((state) => state.authUser);
+  const buyer = useAppSelector((state) => state.buyer);
   const { gig, seller } = useContext(GigContext);
   const [approvalModalContent, setApprovalModalContent] = useState<IApprovalModalContent>();
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showChatBox, setShowChatBox] = useState<boolean>(false);
+  const chatSeller: IChatSellerProps = {
+    username: `${seller.username}`,
+    _id: `${seller._id}`,
+    profilePicture: `${seller.profilePicture}`,
+    responseTime: parseInt(`${seller.responseTime}`)
+  };
+  const chatBuyer: IChatBuyerProps = {
+    username: `${buyer.username}`,
+    _id: `${buyer._id}`,
+    profilePicture: `${buyer.profilePicture}`
+  };
 
   return (
     <>
@@ -112,7 +126,7 @@ const GigSeller: FC = (): ReactElement => {
             />
           </div>
         </div>
-        {showChatBox && <div>Chat box placeholder</div>}
+        {showChatBox && <ChatBox seller={chatSeller} buyer={chatBuyer} gigId={`${gig.id}`} onClose={() => setShowChatBox(false)} />}
       </div>
     </>
   );
