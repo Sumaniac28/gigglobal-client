@@ -13,6 +13,7 @@ import GigViewReviews from 'src/features/gigs/components/view/components/GigView
 import { IReviewDocument } from 'src/features/order/interfaces/review.interface';
 import { ISellerGig } from 'src/features/gigs/interfaces/gig.interface';
 import { useGetGigsBySellerIdQuery } from 'src/features/gigs/services/gigs.service';
+import { useGetReviewsBySellerIdQuery } from 'src/features/order/services/review.service';
 
 const ProfileHeader: LazyExoticComponent<FC<IProfileHeaderProps>> = lazy(
   () => import('src/features/sellers/components/profile/components/ProfileHeader')
@@ -40,10 +41,14 @@ const CurrentSellerProfile: FC = (): ReactElement => {
   const { sellerId } = useParams();
   const dispatch = useAppDispatch();
   const { data, isSuccess: isSellerGigSuccess, isLoading: isSellerGigLoading } = useGetGigsBySellerIdQuery(`${sellerId}`);
+  const { data: sellerData, isSuccess: isGigReviewSuccess, isLoading: isGigReviewLoading } = useGetReviewsBySellerIdQuery(`${sellerId}`);
   const [updateSeller, { isLoading }] = useUpdateSellerMutation();
   let reviews: IReviewDocument[] = [];
+  if (isGigReviewSuccess) {
+    reviews = sellerData.reviews as IReviewDocument[];
+  }
 
-  const isDataLoading: boolean = isSellerGigLoading && !isSellerGigSuccess;
+  const isDataLoading: boolean = isSellerGigLoading && isGigReviewLoading && !isSellerGigSuccess && !isGigReviewSuccess;
 
   const onUpdateSeller = async (): Promise<void> => {
     try {
@@ -52,14 +57,12 @@ const CurrentSellerProfile: FC = (): ReactElement => {
         dispatch(addSeller(response.seller));
         setSellerProfile(response.seller as ISellerDocument);
         setShowEdit(false);
-        showSuccessToast('Profile updated successfully.');
+        showSuccessToast('Seller profile updated successfully.');
       } else {
-        showErrorToast('Error updating profile.');
-        console.error('Error updating profile:', response);
+        showErrorToast('Error updating profile: Seller data missing.');
       }
     } catch (error) {
       showErrorToast('Error updating profile.');
-      console.error('Error updating profile:', error);
     }
   };
 

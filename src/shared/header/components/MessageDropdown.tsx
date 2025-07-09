@@ -7,13 +7,14 @@ import { useGetConversationListQuery, useMarkMessagesAsReadMutation } from 'src/
 import { TimeAgo } from 'src/shared/utils/timeago.utils';
 import { lowerCase, showErrorToast } from 'src/shared/utils/utils.service';
 import { useAppSelector } from 'src/store/store';
+import { IReduxState } from 'src/store/store.interface';
 import { v4 as uuidv4 } from 'uuid';
 
 import { IHomeHeaderProps } from '../interfaces/header.interface';
 
 const MessageDropdown: FC<IHomeHeaderProps> = ({ setIsMessageDropdownOpen }): ReactElement => {
-  const seller = useAppSelector((state) => state.seller);
-  const authUser = useAppSelector((state) => state.authUser);
+  const seller = useAppSelector((state: IReduxState) => state.seller);
+  const authUser = useAppSelector((state: IReduxState) => state.authUser);
   const navigate: NavigateFunction = useNavigate();
   const [conversations, setConversations] = useState<IMessageDocument[]>([]);
   const { data, isSuccess } = useGetConversationListQuery(`${authUser.username}`, { refetchOnMountOrArgChange: true });

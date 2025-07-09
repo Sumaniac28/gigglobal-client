@@ -22,6 +22,9 @@ const EditGig: LazyExoticComponent<FC> = lazy(() => import('src/features/gigs/co
 const GigInfoDisplay: LazyExoticComponent<FC> = lazy(() => import('src/features/index/gig-tabs/GigInfoDisplay'));
 const GigsIndexDisplay: LazyExoticComponent<FC<IGigsProps>> = lazy(() => import('src/features/index/gig-tabs/GigsIndexDisplay'));
 const Chat: LazyExoticComponent<FC> = lazy(() => import('src/features/chat/components/Chat'));
+const Order: LazyExoticComponent<FC> = lazy(() => import('src/features/order/components/Order'));
+const Checkout: LazyExoticComponent<FC> = lazy(() => import('src/features/order/components/Checkout'));
+const Requirement: LazyExoticComponent<FC> = lazy(() => import('src/features/order/components/Requirement'));
 
 // const Layout = ({ backgroundColor = '#F9FAFB', children }: { backgroundColor: string; children: ReactNode }): JSX.Element => (
 //   <div style={{ backgroundColor }} className="flex flex-grow">
@@ -212,6 +215,36 @@ const AppRouter: FC = () => {
         <Suspense>
           <ProtectedRoute>
             <Chat />
+          </ProtectedRoute>
+        </Suspense>
+      )
+    },
+    {
+      path: '/gig/checkout/:gigId',
+      element: (
+        <Suspense>
+          <ProtectedRoute>
+            <Checkout />
+          </ProtectedRoute>
+        </Suspense>
+      )
+    },
+    {
+      path: '/gig/order/requirement/:gigId',
+      element: (
+        <Suspense>
+          <ProtectedRoute>
+            <Requirement />
+          </ProtectedRoute>
+        </Suspense>
+      )
+    },
+    {
+      path: '/orders/:orderId/activities',
+      element: (
+        <Suspense>
+          <ProtectedRoute>
+            <Order />
           </ProtectedRoute>
         </Suspense>
       )

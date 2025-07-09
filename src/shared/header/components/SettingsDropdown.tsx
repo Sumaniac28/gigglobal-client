@@ -3,9 +3,9 @@ import { Link, NavigateFunction, useNavigate } from 'react-router-dom';
 import { applicationLogout, lowerCase } from 'src/shared/utils/utils.service';
 import { useAppDispatch } from 'src/store/store';
 
-import { IHomeHeaderProps } from 'src/shared/header/interfaces/header.interface';
-import { updateHeader } from '../reducers/header.reducer';
+import { IHomeHeaderProps } from '../interfaces/header.interface';
 import { updateCategoryContainer } from '../reducers/category.reducer';
+import { updateHeader } from '../reducers/header.reducer';
 
 const SettingsDropdown: FC<IHomeHeaderProps> = ({ seller, authUser, buyer, type, setIsDropdownOpen }): ReactElement => {
   const navigate: NavigateFunction = useNavigate();
@@ -19,8 +19,8 @@ const SettingsDropdown: FC<IHomeHeaderProps> = ({ seller, authUser, buyer, type,
   };
 
   return (
-    <div className="w-44 divide-y divide-[#E5E7EB] rounded-md border border-[#E5E7EB] bg-white shadow-md">
-      <ul className="py-2 text-sm text-[#4B5563]" aria-labelledby="avatarButton">
+    <div className="border-grey w-44 divide-y divide-gray-100 rounded border bg-white shadow-md">
+      <ul className="text-gray-700s py-2 text-sm" aria-labelledby="avatarButton">
         {buyer && buyer.isSeller && (
           <li className="mx-3 mb-1">
             <Link
@@ -32,7 +32,7 @@ const SettingsDropdown: FC<IHomeHeaderProps> = ({ seller, authUser, buyer, type,
                 dispatch(updateHeader('sellerDashboard'));
                 dispatch(updateCategoryContainer(true));
               }}
-              className="block w-full cursor-pointer rounded-md bg-[#14B8A6] px-4 py-2 text-center font-semibold text-white transition-colors duration-200 hover:bg-[#0F766E] focus:outline-none"
+              className="block w-full cursor-pointer rounded bg-sky-500 px-4s py-2 text-center font-bold text-white hover:bg-sky-400 focus:outline-none"
             >
               {type === 'buyer' ? 'Switch to Selling' : 'Switch to Buying'}
             </Link>
@@ -42,7 +42,7 @@ const SettingsDropdown: FC<IHomeHeaderProps> = ({ seller, authUser, buyer, type,
           <li>
             <Link
               to={`/manage_gigs/new/${seller?._id}`}
-              className="block px-4 py-2 transition-colors duration-200 hover:text-[#0F766E]"
+              className="block px-4 py-2 hover:text-sky-400"
               onClick={() => {
                 if (setIsDropdownOpen) {
                   setIsDropdownOpen(false);
@@ -59,7 +59,7 @@ const SettingsDropdown: FC<IHomeHeaderProps> = ({ seller, authUser, buyer, type,
           <li>
             <Link
               to={`/users/${buyer?.username}/${buyer?._id}/orders`}
-              className="block px-4 py-2 transition-colors duration-200 hover:text-[#0F766E]"
+              className="block px-4 py-2 hover:text-sky-400"
               onClick={() => {
                 if (setIsDropdownOpen) {
                   setIsDropdownOpen(false);
@@ -76,7 +76,7 @@ const SettingsDropdown: FC<IHomeHeaderProps> = ({ seller, authUser, buyer, type,
           <li>
             <Link
               to={`/seller_profile/${lowerCase(`${seller?.username}`)}/${seller?._id}/edit`}
-              className="block px-4 py-2 transition-colors duration-200 hover:text-[#0F766E]"
+              className="block px-4 py-2 hover:text-sky-400"
               onClick={() => {
                 if (setIsDropdownOpen) {
                   setIsDropdownOpen(false);
@@ -92,7 +92,7 @@ const SettingsDropdown: FC<IHomeHeaderProps> = ({ seller, authUser, buyer, type,
         <li>
           <Link
             to={`${lowerCase(`${buyer?.username}/edit`)}`}
-            className="block px-4 py-2 transition-colors duration-200 hover:text-[#0F766E]"
+            className="block px-4 py-2 hover:text-sky-400"
             onClick={() => {
               if (setIsDropdownOpen) {
                 setIsDropdownOpen(false);
@@ -105,12 +105,8 @@ const SettingsDropdown: FC<IHomeHeaderProps> = ({ seller, authUser, buyer, type,
           </Link>
         </li>
       </ul>
-
       <div className="py-1">
-        <div
-          onClick={() => onLogout()}
-          className="block cursor-pointer px-4 py-2 text-sm text-[#4B5563] transition-colors duration-200 hover:text-[#0F766E]"
-        >
+        <div onClick={() => onLogout()} className="block px-4 py-2 text-sm hover:text-sky-400">
           Sign out
         </div>
       </div>

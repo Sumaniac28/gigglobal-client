@@ -1,5 +1,7 @@
 import { FC, lazy, LazyExoticComponent, ReactElement, Suspense, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { IOrderDocument, IOrderTableProps } from 'src/features/order/interfaces/order.interface';
+import { useGetOrdersByBuyerIdQuery } from 'src/features/order/services/order.service';
 import { orderTypes, shortenLargeNumbers } from 'src/shared/utils/utils.service';
 import { socket, socketService } from 'src/sockets/socket.service';
 
@@ -15,7 +17,13 @@ const BuyerTable: LazyExoticComponent<FC<IOrderTableProps>> = lazy(() => import(
 
 const BuyerDashboard: FC = (): ReactElement => {
   const [type, setType] = useState<string>(BUYER_GIG_STATUS.ACTIVE);
+  const { buyerId } = useParams<string>();
+  const { data, isSuccess } = useGetOrdersByBuyerIdQuery(`${buyerId}`);
   let orders: IOrderDocument[] = [];
+  if (isSuccess) {
+    orders = data.orders as IOrderDocument[];
+  }
+
   useEffect(() => {
     socketService.setupSocketConnection();
     socket.emit('getLoggedInUsers', '');

@@ -1,6 +1,7 @@
 import { FC, lazy, ReactElement, Suspense, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { IOrderDocument, IOrderMessage, IOrderTableProps } from 'src/features/order/interfaces/order.interface';
+import { useCancelOrderMutation } from 'src/features/order/services/order.service';
 import Button from 'src/shared/button/Button';
 import { updateHeader } from 'src/shared/header/reducers/header.reducer';
 import { IApprovalModalContent } from 'src/shared/modals/interfaces/modal.interface';
@@ -16,7 +17,7 @@ const ManageOrdersTable: FC<IOrderTableProps> = ({ type, orders, orderTypes }): 
   const [approvalModalContent, setApprovalModalContent] = useState<IApprovalModalContent>();
   const [showCancelModal, setShowCancelModal] = useState<boolean>(false);
   const selectedOrder = useRef<IOrderDocument>();
-  //   const [cancelOrder] = useCancelOrderMutation();
+  const [cancelOrder] = useCancelOrderMutation();
 
   const onCancelOrder = async (): Promise<void> => {
     try {
@@ -26,11 +27,11 @@ const ManageOrdersTable: FC<IOrderTableProps> = ({ type, orders, orderTypes }): 
         purchasedGigs: selectedOrder.current?.gigId
       };
       setShowCancelModal(false);
-      //   await cancelOrder({
-      //     paymentIntentId: `${selectedOrder.current?.paymentIntent}`,
-      //     orderId: `${selectedOrder.current?.orderId}`,
-      //     body: orderData
-      //   });
+      await cancelOrder({
+        paymentIntentId: `${selectedOrder.current?.paymentIntent}`,
+        orderId: `${selectedOrder.current?.orderId}`,
+        body: orderData
+      });
       showSuccessToast('Order cancelled successfully.');
     } catch (error) {
       showErrorToast('Error cancelling order. Try again.');
