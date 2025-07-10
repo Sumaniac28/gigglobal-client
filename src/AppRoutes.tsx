@@ -25,6 +25,7 @@ const Chat: LazyExoticComponent<FC> = lazy(() => import('src/features/chat/compo
 const Order: LazyExoticComponent<FC> = lazy(() => import('src/features/order/components/Order'));
 const Checkout: LazyExoticComponent<FC> = lazy(() => import('src/features/order/components/Checkout'));
 const Requirement: LazyExoticComponent<FC> = lazy(() => import('src/features/order/components/Requirement'));
+const Settings: LazyExoticComponent<FC> = lazy(() => import('src/features/settings/components/Settings'));
 
 // const Layout = ({ backgroundColor = '#F9FAFB', children }: { backgroundColor: string; children: ReactNode }): JSX.Element => (
 //   <div style={{ backgroundColor }} className="flex flex-grow">
@@ -245,6 +246,16 @@ const AppRouter: FC = () => {
         <Suspense>
           <ProtectedRoute>
             <Order />
+          </ProtectedRoute>
+        </Suspense>
+      )
+    },
+    {
+      path: '/:username/edit',
+      element: (
+        <Suspense>
+          <ProtectedRoute>
+            <Settings />
           </ProtectedRoute>
         </Suspense>
       )
