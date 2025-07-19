@@ -77,38 +77,40 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
 
   return (
     <ModalBg>
-      <div className="relative top-[10%] mx-auto w-11/12 max-w-md rounded bg-[#F9FAFB] md:w-2/3 border border-[#E5E7EB]">
-        <div className="relative px-5 py-5">
-          <div className="flex justify-between text-2xl font-bold text-[#111111]">
+      <div className="relative top-[2%] mx-auto w-11/12 max-w-md rounded-xl bg-surface border border-default shadow-xl backdrop-blur-sm transition-all duration-300 md:w-2/3 md:max-w-lg">
+        {/* Header */}
+        <div className="relative px-6 py-6 md:px-8 md:py-6">
+          <div className="flex items-center justify-between">
             {step > 1 && (
               <Button
-                className="cursor-pointer rounded text-[#4B5563] hover:text-[#111111]"
+                className="cursor-pointer rounded-lg p-2 text-muted hover:text-primary hover:bg-background transition-all duration-300 ring-2 ring-transparent hover:ring-border-default"
                 role="button"
                 onClick={() => setStep(step - 1)}
-                label={<FaChevronLeft />}
+                label={<FaChevronLeft className="w-5 h-5" />}
               />
             )}
-            <h1 className="flex w-full justify-center text-[#111111]">Join GigGlobal</h1>
+            <h1 className="font-themeFont text-xl font-bold text-primary flex-1 text-center md:text-2xl">Join GigGlobal</h1>
             <Button
-              className="cursor-pointer rounded text-[#4B5563] hover:text-[#111111]"
+              className="cursor-pointer rounded-lg p-2 text-muted hover:text-primary hover:bg-background transition-all duration-300 ring-2 ring-transparent hover:ring-border-default"
               role="button"
               onClick={onClose}
-              label={<FaTimes />}
+              label={<FaTimes className="w-5 h-5" />}
             />
           </div>
         </div>
 
-        <div className="flex w-full items-center justify-center px-5 py-5">
-          <ol className="flex w-full">
-            <li className="flex w-full items-center text-[#111111] after:inline-block after:h-1 after:w-full after:border-4 after:border-b after:border-[#14B8A6] after:content-['']">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#14B8A6] font-bold text-white lg:h-12 lg:w-12">
+        {/* Progress Indicator */}
+        <div className="flex w-full items-center justify-center px-6 py-4 md:px-8">
+          <ol className="flex w-full max-w-sm">
+            <li className="flex w-full items-center text-primary after:inline-block after:h-1 after:w-full after:border-4 after:border-b after:border-primary after:content-[''] after:mx-4">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary font-semibold text-on-primary shadow-lg lg:h-12 lg:w-12 transition-all duration-300">
                 1
               </span>
             </li>
             <li className="flex items-center">
               <span
-                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-bold lg:h-12 lg:w-12 ${
-                  step === 2 ? 'bg-[#14B8A6] text-white' : 'bg-[#E5E7EB] text-[#4B5563]'
+                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-semibold shadow-lg lg:h-12 lg:w-12 transition-all duration-300 ${
+                  step === 2 ? 'bg-primary text-on-primary transform scale-110' : 'bg-background border-2 border-border-default text-muted'
                 }`}
               >
                 2
@@ -117,169 +119,201 @@ const RegisterModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactElement =
           </ol>
         </div>
 
-        <div className="px-5">
+        {/* Alert Message */}
+        <div className="px-6 md:px-8">
           {alertMessage && (
-            <Suspense>
-              <Alert type="error" message={alertMessage} />
-            </Suspense>
+            <div className="mb-4">
+              <Suspense>
+                <Alert type="error" message={alertMessage} />
+              </Suspense>
+            </div>
           )}
         </div>
 
+        {/* Step 1: Basic Information */}
         {step === 1 && (
-          <div className="relative px-5 py-5">
-            <div>
-              <label htmlFor="username" className="text-sm font-bold text-[#111111]">
-                Username
-              </label>
-              <TextInput
-                id="username"
-                name="username"
-                type="text"
-                value={userInfo.username}
-                className="mb-5 mt-2 flex h-10 w-full items-center rounded border border-[#E5E7EB] bg-white pl-3 text-sm font-normal text-[#111111] focus:border-[#14B8A6] focus:outline-none"
-                placeholder="Enter username"
-                onChange={(event: ChangeEvent) => {
-                  setUserInfo({ ...userInfo, username: (event.target as HTMLInputElement).value });
-                }}
-              />
-            </div>
-
-            <div>
-              <label htmlFor="email" className="text-sm font-bold text-[#111111]">
-                Email
-              </label>
-              <TextInput
-                id="email"
-                name="email"
-                type="email"
-                value={userInfo.email}
-                className="mb-5 mt-2 flex h-10 w-full items-center rounded border border-[#E5E7EB] bg-white pl-3 text-sm font-normal text-[#111111] focus:border-[#14B8A6] focus:outline-none"
-                placeholder="Enter email"
-                onChange={(event: ChangeEvent) => {
-                  setUserInfo({ ...userInfo, email: (event.target as HTMLInputElement).value });
-                }}
-              />
-            </div>
-
-            <div>
-              <label htmlFor="password" className="text-sm font-bold text-[#111111]">
-                Password
-              </label>
-              <div className="relative mb-5 mt-2">
-                <div className="absolute right-0 flex h-full items-center pr-3 text-[#14B8A6] cursor-pointer">
-                  {passwordType === 'password' ? (
-                    <FaEyeSlash onClick={() => setPasswordType('text')} />
-                  ) : (
-                    <FaEye onClick={() => setPasswordType('password')} />
-                  )}
-                </div>
+          <div className="relative px-6 py-6 md:px-8">
+            <div className="space-y-6">
+              {/* Username Field */}
+              <div>
+                <label htmlFor="username" className="block text-sm font-semibold leading-6 tracking-normal text-primary mb-2">
+                  Username
+                </label>
                 <TextInput
-                  id="password"
-                  name="password"
-                  type={passwordType}
-                  value={userInfo.password}
-                  className="flex h-10 w-full items-center rounded border border-[#E5E7EB] bg-white pl-3 text-sm font-normal text-[#111111] focus:border-[#14B8A6] focus:outline-none"
-                  placeholder="Enter password"
+                  id="username"
+                  name="username"
+                  type="text"
+                  value={userInfo.username}
+                  className="flex h-12 w-full items-center rounded-lg border border-default bg-surface px-4 text-sm font-normal text-primary placeholder-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-20 transition-all duration-300"
+                  placeholder="Enter username"
                   onChange={(event: ChangeEvent) => {
-                    setUserInfo({ ...userInfo, password: (event.target as HTMLInputElement).value });
+                    setUserInfo({ ...userInfo, username: (event.target as HTMLInputElement).value });
                   }}
                 />
               </div>
-            </div>
 
-            <Button
-              disabled={!userInfo.username || !userInfo.email || !userInfo.password}
-              className={`w-full rounded bg-[#14B8A6] px-8 py-2 text-center font-bold text-white hover:bg-[#0F766E] focus:outline-none ${
-                !userInfo.username || !userInfo.email || !userInfo.password ? 'cursor-not-allowed' : 'cursor-pointer'
-              }`}
-              label="Continue"
-              onClick={() => setStep(2)}
-            />
-          </div>
-        )}
+              {/* Email Field */}
+              <div>
+                <label htmlFor="email" className="block text-sm font-semibold leading-6 tracking-normal text-primary mb-2">
+                  Email
+                </label>
+                <TextInput
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={userInfo.email}
+                  className="flex h-12 w-full items-center rounded-lg border border-default bg-surface px-4 text-sm font-normal text-primary placeholder-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-20 transition-all duration-300"
+                  placeholder="Enter email"
+                  onChange={(event: ChangeEvent) => {
+                    setUserInfo({ ...userInfo, email: (event.target as HTMLInputElement).value });
+                  }}
+                />
+              </div>
 
-        {step === 2 && (
-          <div className="relative px-5 py-5">
-            <div className="h-24">
-              <label htmlFor="country" className="text-sm font-bold text-[#111111]">
-                Country
-              </label>
-              <div id="country" className="relative mb-5 mt-2">
-                <Suspense>
-                  <Dropdown
-                    text={country}
-                    maxHeight="200"
-                    mainClassNames="absolute bg-white text-[#111111] z-50 border border-[#E5E7EB]"
-                    showSearchInput={true}
-                    values={countriesList()}
-                    setValue={setCountry}
-                    onClick={(item: string) => {
-                      setCountry(item);
-                      setUserInfo({ ...userInfo, country: item });
+              {/* Password Field */}
+              <div>
+                <label htmlFor="password" className="block text-sm font-semibold leading-6 tracking-normal text-primary mb-2">
+                  Password
+                </label>
+                <div className="relative">
+                  <TextInput
+                    id="password"
+                    name="password"
+                    type={passwordType}
+                    value={userInfo.password}
+                    className="flex h-12 w-full items-center rounded-lg border border-default bg-surface px-4 pr-12 text-sm font-normal text-primary placeholder-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-20 transition-all duration-300"
+                    placeholder="Enter password"
+                    onChange={(event: ChangeEvent) => {
+                      setUserInfo({ ...userInfo, password: (event.target as HTMLInputElement).value });
                     }}
                   />
-                </Suspense>
-              </div>
-            </div>
-
-            <div className="relative">
-              <label htmlFor="profilePicture" className="text-sm font-bold text-[#111111]">
-                Profile Picture
-              </label>
-              <div
-                onMouseEnter={() => setShowImageSelect(true)}
-                onMouseLeave={() => setShowImageSelect(false)}
-                className="relative mb-5 mt-2 w-[20%] cursor-pointer"
-              >
-                {profileImage && (
-                  <img
-                    id="profilePicture"
-                    src={profileImage}
-                    alt="Profile Picture"
-                    className="h-20 w-20 rounded-full object-cover bg-white"
-                  />
-                )}
-                {!profileImage && <div className="h-20 w-20 rounded-full bg-[#E5E7EB]" />}
-                {showImageSelect && (
-                  <div
-                    onClick={() => fileInputRef.current?.click()}
-                    className="absolute left-0 top-0 flex h-20 w-20 items-center justify-center rounded-full bg-[#E5E7EB]"
-                  >
-                    <FaCamera className="text-[#4B5563]" />
+                  <div className="absolute right-0 top-0 flex h-full items-center pr-4 text-primary cursor-pointer hover:text-accent transition-colors duration-300">
+                    {passwordType === 'password' ? (
+                      <FaEyeSlash onClick={() => setPasswordType('text')} className="w-5 h-5" />
+                    ) : (
+                      <FaEye onClick={() => setPasswordType('password')} className="w-5 h-5" />
+                    )}
                   </div>
-                )}
-                <TextInput
-                  name="image"
-                  ref={fileInputRef}
-                  type="file"
-                  style={{ display: 'none' }}
-                  onClick={() => {
-                    if (fileInputRef.current) {
-                      fileInputRef.current.value = '';
-                    }
-                  }}
-                  onChange={handleFileChange}
+                </div>
+              </div>
+
+              {/* Continue Button */}
+              <div className="pt-2">
+                <Button
+                  disabled={!userInfo.username || !userInfo.email || !userInfo.password}
+                  className={`w-full rounded-lg bg-primary px-8 py-3 text-center font-themeFont font-semibold text-on-primary hover:bg-primary transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 text-base md:text-lg ${
+                    !userInfo.username || !userInfo.email || !userInfo.password
+                      ? 'cursor-not-allowed opacity-50 hover:bg-primary'
+                      : 'cursor-pointer shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
+                  }`}
+                  label="Continue"
+                  onClick={() => setStep(2)}
                 />
               </div>
             </div>
-
-            <Button
-              disabled={!userInfo.country || !userInfo.profilePicture}
-              className={`w-full rounded bg-[#14B8A6] px-8 py-2 text-center font-bold text-white hover:bg-[#0F766E] focus:outline-none ${
-                !userInfo.country || !userInfo.profilePicture ? 'cursor-not-allowed' : 'cursor-pointer'
-              }`}
-              label={`${isLoading ? 'SIGNUP IN PROGRESS...' : 'SIGNUP'}`}
-              onClick={onRegisterUser}
-            />
           </div>
         )}
 
-        <hr className="border-[#E5E7EB]" />
-        <div className="px-5 py-4">
-          <div className="ml-2 flex w-full justify-center text-sm font-medium text-[#4B5563]">
-            <div className="flex justify-center">
-              Already a member?{' '}
-              <p onClick={() => onToggle && onToggle(true)} className="ml-2 cursor-pointer text-[#14B8A6] hover:underline">
+        {/* Step 2: Additional Information */}
+        {step === 2 && (
+          <div className="relative px-6 py-6 md:px-8">
+            <div className="space-y-8">
+              {/* Country Field */}
+              <div>
+                <label htmlFor="country" className="block text-sm font-semibold leading-6 tracking-normal text-primary mb-2">
+                  Country
+                </label>
+                <div id="country" className="relative">
+                  <Suspense>
+                    <Dropdown
+                      text={country}
+                      maxHeight="200"
+                      mainClassNames="absolute bg-surface text-primary z-50 border border-default rounded-lg shadow-lg"
+                      showSearchInput={true}
+                      values={countriesList()}
+                      setValue={setCountry}
+                      onClick={(item: string) => {
+                        setCountry(item);
+                        setUserInfo({ ...userInfo, country: item });
+                      }}
+                    />
+                  </Suspense>
+                </div>
+              </div>
+
+              {/* Profile Picture Field */}
+              <div className="relative">
+                <label htmlFor="profilePicture" className="block text-sm font-semibold leading-6 tracking-normal text-primary mb-4">
+                  Profile Picture
+                </label>
+                <div
+                  onMouseEnter={() => setShowImageSelect(true)}
+                  onMouseLeave={() => setShowImageSelect(false)}
+                  className="relative w-24 cursor-pointer group"
+                >
+                  {profileImage && (
+                    <img
+                      id="profilePicture"
+                      src={profileImage}
+                      alt="Profile Picture"
+                      className="h-24 w-24 rounded-full object-cover bg-surface border-2 border-border-default shadow-lg group-hover:shadow-xl transition-all duration-300"
+                    />
+                  )}
+                  {!profileImage && (
+                    <div className="h-24 w-24 rounded-full bg-background border-2 border-border-default shadow-lg group-hover:shadow-xl transition-all duration-300" />
+                  )}
+                  {showImageSelect && (
+                    <div
+                      onClick={() => fileInputRef.current?.click()}
+                      className="absolute left-0 top-0 flex h-24 w-24 items-center justify-center rounded-full bg-primary bg-opacity-90 backdrop-blur-sm transition-all duration-300"
+                    >
+                      <FaCamera className="text-on-primary w-6 h-6" />
+                    </div>
+                  )}
+                  <TextInput
+                    name="image"
+                    ref={fileInputRef}
+                    type="file"
+                    style={{ display: 'none' }}
+                    onClick={() => {
+                      if (fileInputRef.current) {
+                        fileInputRef.current.value = '';
+                      }
+                    }}
+                    onChange={handleFileChange}
+                  />
+                </div>
+              </div>
+
+              {/* Sign Up Button */}
+              <div className="pt-2">
+                <Button
+                  disabled={!userInfo.country || !userInfo.profilePicture}
+                  className={`w-full rounded-lg bg-primary px-8 py-3 text-center font-themeFont font-semibold text-on-primary hover:bg-primary transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 text-base md:text-lg ${
+                    !userInfo.country || !userInfo.profilePicture
+                      ? 'cursor-not-allowed opacity-50 hover:bg-primary'
+                      : 'cursor-pointer shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
+                  }`}
+                  label={`${isLoading ? 'SIGNUP IN PROGRESS...' : 'SIGNUP'}`}
+                  onClick={onRegisterUser}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Divider */}
+        <hr className="border-default mx-6 md:mx-8" />
+
+        {/* Sign In Section */}
+        <div className="px-6 py-6 md:px-8 md:py-6 bg-background rounded-b-xl">
+          <div className="flex w-full justify-center text-sm font-medium text-muted">
+            <div className="flex items-center justify-center gap-2">
+              <span>Already a member?</span>
+              <p
+                onClick={() => onToggle && onToggle(true)}
+                className="cursor-pointer text-primary hover:text-accent hover:underline transition-all duration-300 font-semibold"
+              >
                 Sign In
               </p>
             </div>

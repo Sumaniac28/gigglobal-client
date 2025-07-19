@@ -98,14 +98,14 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
 
   const slideLeft = (): void => {
     if (navElement.current) {
-      const maxScrollLeft = navElement.current.scrollWidth + navElement.current.clientWidth; // maximum scroll position
+      const maxScrollLeft = navElement.current.scrollWidth + navElement.current.clientWidth;
       navElement.current.scrollLeft = navElement.current.scrollLeft < maxScrollLeft ? navElement.current.scrollLeft - 1000 : maxScrollLeft;
     }
   };
 
   const slideRight = (): void => {
     if (navElement.current) {
-      const maxScrollLeft = navElement.current.scrollWidth - navElement.current.clientWidth; // maximum scroll position
+      const maxScrollLeft = navElement.current.scrollWidth - navElement.current.clientWidth;
       navElement.current.scrollLeft = navElement.current.scrollLeft < maxScrollLeft ? navElement.current.scrollLeft + 1000 : maxScrollLeft;
     }
   };
@@ -124,14 +124,12 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
 
   useEffect(() => {
     socket.on('message received', (data: IMessageDocument) => {
-      // only for receiver
       if (data.receiverUsername === `${authUser.username}` && !data.isRead) {
         dispatch(updateNotification({ hasUnreadMessage: true }));
       }
     });
 
     socket.on('order notification', (_, data: IOrderNotifcation) => {
-      // only for receiver
       if (data.userTo === `${authUser.username}` && !data.isRead) {
         dispatch(updateNotification({ hasUnreadNotification: true }));
       }
@@ -146,8 +144,8 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
   return (
     <>
       {openSidebar && <HomeHeaderSideBar setOpenSidebar={setOpenSidebar} />}
-      <header>
-        <nav className="navbar peer-checked:navbar-active relative z-[120] w-full border-b bg-white shadow-2xl shadow-gray-600/5 backdrop-blur dark:shadow-none">
+      <header className="sticky top-0 z-[120]">
+        <nav className="navbar peer-checked:navbar-active relative w-full border-b border-default bg-surface/95 backdrop-blur-md shadow-sm">
           {!logout && authUser && !authUser.emailVerified && (
             <Banner
               bgColor="bg-warning"
@@ -163,11 +161,9 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
                 <div className="hidden w-full md:flex">
                   <label htmlFor="hbr" className="peer-checked:hamburger relative z-20 -ml-4 block cursor-pointer p-6 lg:hidden">
                     <Button
-                      className="m-auto flex h-0.5 w-5 items-center rounded transition duration-300"
+                      className="m-auto flex items-center rounded transition duration-300 p-2 hover:bg-muted/10"
                       onClick={() => setOpenSidebar(!openSidebar)}
-                      label={
-                        <>{openSidebar ? <FaTimes className="h-6 w-6 text-sky-500" /> : <FaBars className="h-6 w-6 text-sky-500" />}</>
-                      }
+                      label={<>{openSidebar ? <FaTimes className="h-6 w-6 text-accent" /> : <FaBars className="h-6 w-6 text-accent" />}</>}
                     />
                   </label>
                   <div className="w-full gap-x-4 md:flex">
@@ -177,7 +173,7 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
                         dispatch(updateHeader('home'));
                         dispatch(updateCategoryContainer(true));
                       }}
-                      className="relative z-10 flex cursor-pointer justify-center self-center text-2xl font-semibold text-black lg:text-3xl"
+                      className="relative z-10 flex cursor-pointer justify-center self-center text-2xl font-bold text-primary font-themeFont lg:text-3xl hover:text-primary/80 transition-colors duration-200"
                     >
                       GigGlobal
                     </Link>
@@ -186,18 +182,18 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
                 </div>
                 <MobileHeaderSearchInput setOpenSidebar={setOpenSidebar} />
               </div>
-              <div className="navmenu mb-16 hidden w-full cursor-pointer flex-wrap items-center justify-end space-y-8 rounded-3xl border border-gray-100 bg-white p-6 shadow-2xl md:flex-nowrap lg:m-0 lg:flex lg:w-6/12 lg:space-y-0 lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
-                <div className="text-[#74767e] lg:pr-4">
-                  <ul className="flex text-base font-medium">
+              <div className="navmenu mb-16 hidden w-full cursor-pointer flex-wrap items-center justify-end space-y-8 rounded-3xl border border-default bg-surface p-6 shadow-sm md:flex-nowrap lg:m-0 lg:flex lg:w-6/12 lg:space-y-0 lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
+                <div className="text-muted lg:pr-4">
+                  <ul className="flex text-base font-medium space-x-1">
                     <li className="relative z-50 flex cursor-pointer items-center">
                       <Button
-                        className="px-4"
+                        className="p-3 rounded-lg hover:bg-muted/10 transition-colors duration-200 relative"
                         onClick={toggleNotificationDropdown}
                         label={
                           <>
-                            <FaRegBell />
+                            <FaRegBell className="h-5 w-5 text-muted" />
                             {notification && notification.hasUnreadNotification && (
-                              <span className="absolute -top-0 right-0 mr-3 inline-flex h-[6px] w-[6px] items-center justify-center rounded-full bg-[#ff62ab]"></span>
+                              <span className="absolute top-2 right-2 w-2 h-2 bg-accent rounded-full"></span>
                             )}
                           </>
                         }
@@ -205,27 +201,27 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
                       <Transition
                         ref={notificationDropdownRef}
                         show={isNotificationDropdownOpen}
-                        enter="transition ease-out duration-200"
-                        enterFrom="opacity-0 translate-y-1"
-                        enterTo="opacity-100 translate-y-0"
+                        enter="transition ease-out duration-50"
+                        enterFrom="opacity-0 scale-95 translate-y-1"
+                        enterTo="opacity-100 scale-100 translate-y-0"
                         leave="transition ease-in duration-150"
-                        leaveFrom="opacity-100 translate-y-0"
-                        leaveTo="opacity-0 translate-y-1"
+                        leaveFrom="opacity-100 scale-100 translate-y-0"
+                        leaveTo="opacity-0 scale-95 translate-y-1"
                       >
-                        <div className="absolute right-0 mt-5 w-96">
+                        <div className="absolute right-0 mt-5 w-96 z-50">
                           <NotificationDropdown setIsNotificationDropdownOpen={setIsNotificationDropdownOpen} />
                         </div>
                       </Transition>
                     </li>
                     <li className="relative z-50 flex cursor-pointer items-center">
                       <Button
-                        className="relative px-4"
+                        className="p-3 rounded-lg hover:bg-muted/10 transition-colors duration-200 relative"
                         onClick={toggleMessageDropdown}
                         label={
                           <>
-                            <FaRegEnvelope />
+                            <FaRegEnvelope className="h-5 w-5 text-muted" />
                             {notification && notification.hasUnreadMessage && (
-                              <span className="absolute -top-1 right-0 mr-2 inline-flex h-[6px] w-[6px] items-center justify-center rounded-full bg-[#ff62ab]"></span>
+                              <span className="absolute top-2 right-2 w-2 h-2 bg-accent rounded-full"></span>
                             )}
                           </>
                         }
@@ -233,75 +229,81 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
                       <Transition
                         ref={messageDropdownRef}
                         show={isMessageDropdownOpen}
-                        enter="transition ease-out duration-200"
-                        enterFrom="opacity-0 translate-y-1"
-                        enterTo="opacity-100 translate-y-0"
+                        enter="transition ease-out duration-50"
+                        enterFrom="opacity-0 scale-95 translate-y-1"
+                        enterTo="opacity-100 scale-100 translate-y-0"
                         leave="transition ease-in duration-150"
-                        leaveFrom="opacity-100 translate-y-0"
-                        leaveTo="opacity-0 translate-y-1"
+                        leaveFrom="opacity-100 scale-100 translate-y-0"
+                        leaveTo="opacity-0 scale-95 translate-y-1"
                       >
-                        <div className="absolute right-0 mt-5 w-96">
+                        <div className="absolute right-0 mt-5 w-96 z-50">
                           <MessageDropdown setIsMessageDropdownOpen={setIsMessageDropdownOpen} />
                         </div>
                       </Transition>
                     </li>
                     <li className="relative z-50 flex cursor-pointer items-center" onClick={toggleOrdersDropdown}>
                       <Button
-                        className="px-3"
+                        className="px-4 py-2 rounded-lg hover:bg-muted/10 transition-colors duration-200"
                         label={
                           <>
-                            <span>Orders</span>
+                            <span className="text-sm font-medium text-muted">Orders</span>
                           </>
                         }
                       />
                       <Transition
                         ref={orderDropdownRef}
                         show={isOrderDropdownOpen}
-                        enter="transition ease-out duration-200"
-                        enterFrom="opacity-0 translate-y-1"
-                        enterTo="opacity-100 translate-y-0"
+                        enter="transition ease-out duration-50"
+                        enterFrom="opacity-0 scale-95 translate-y-1"
+                        enterTo="opacity-100 scale-100 translate-y-0"
                         leave="transition ease-in duration-150"
-                        leaveFrom="opacity-100 translate-y-0"
-                        leaveTo="opacity-0 translate-y-1"
+                        leaveFrom="opacity-100 scale-100 translate-y-0"
+                        leaveTo="opacity-0 scale-95 translate-y-1"
                       >
-                        <div className="absolute right-0 mt-5 w-96">
+                        <div className="absolute right-0 mt-5 w-96 z-50">
                           <OrderDropdown buyer={buyer} setIsOrderDropdownOpen={setIsOrderDropdownOpen} />
                         </div>
                       </Transition>
                     </li>
                     {buyer && !buyer.isSeller && (
-                      <li className="relative flex items-center">
+                      <li className="relative flex items-center ml-4">
                         <Link
                           to="/seller_onboarding"
-                          className="relative ml-auto flex h-9 items-center justify-center rounded-full bg-sky-500 text-white font-bold sm:px-6 hover:bg-sky-400"
+                          className="bg-primary hover:bg-primary/90 text-on-primary font-semibold px-6 py-2.5 rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
                         >
                           <span>Become a Seller</span>
                         </Link>
                       </li>
                     )}
-                    <li className="relative z-50 flex cursor-pointer items-center">
+                    <li className="relative z-50 flex cursor-pointer items-center ml-4">
                       <Button
-                        className="relative flex gap-2 px-3 text-base font-medium"
+                        className="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-muted/10 transition-colors duration-200"
                         onClick={toggleDropdown}
                         label={
                           <>
-                            <img src={`${authUser.profilePicture}`} alt="profile" className="h-7 w-7 rounded-full object-cover" />
-                            {authUsername === authUser.username && (
-                              <span className="absolute bottom-0 left-8 h-2.5 w-2.5 rounded-full border-2 border-white bg-green-400"></span>
-                            )}
-                            <span className="flex self-center">{authUser.username}</span>
+                            <div className="relative">
+                              <img
+                                src={`${authUser.profilePicture}`}
+                                alt="profile"
+                                className="h-8 w-8 rounded-full object-cover border-2 border-default"
+                              />
+                              {authUsername === authUser.username && (
+                                <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-surface"></span>
+                              )}
+                            </div>
+                            <span className="text-sm font-medium text-muted">{authUser.username}</span>
                           </>
                         }
                       />
                       <Transition
                         ref={settingsDropdownRef}
                         show={isSettingsDropdown}
-                        enter="transition ease-out duration-200"
-                        enterFrom="opacity-0 translate-y-1"
-                        enterTo="opacity-100 translate-y-0"
+                        enter="transition ease-out duration-50"
+                        enterFrom="opacity-0 scale-95 translate-y-1"
+                        enterTo="opacity-100 scale-100 translate-y-0"
                         leave="transition ease-in duration-150"
-                        leaveFrom="opacity-100 translate-y-0"
-                        leaveTo="opacity-0 translate-y-1"
+                        leaveFrom="opacity-100 scale-100 translate-y-0"
+                        leaveTo="opacity-0 scale-95 translate-y-1"
                       >
                         <div className="absolute -right-48 z-50 mt-5 w-96">
                           <SettingsDropdown
@@ -321,24 +323,37 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
           </div>
 
           {showCategoryContainer && (
-            <div className="border-grey z-40 hidden w-full border border-x-0 border-b-0 sm:flex">
-              <div className="justify-left md:justify-left container mx-auto flex px-6 lg:justify-center">
-                <span onClick={slideLeft} className="flex w-auto cursor-pointer self-center pr-1 xl:hidden">
-                  <FaAngleLeft size={20} />
-                </span>
-                <div
-                  ref={navElement}
-                  className="relative inline-block h-full w-full items-center gap-6 overflow-x-auto scroll-smooth whitespace-nowrap py-2 text-sm font-medium lg:flex lg:justify-between"
-                >
-                  {categories().map((category: string) => (
-                    <span key={uuidv4()} className="mx-4 cursor-pointer first:ml-0 hover:text-sky-400 lg:mx-0">
-                      <Link to={`/categories/${replaceSpacesWithDash(category)}`}>{category}</Link>
-                    </span>
-                  ))}
+            <div className="border-t border-default bg-surface/50 backdrop-blur-sm z-40 w-full">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex items-center py-3">
+                  <Button
+                    onClick={slideLeft}
+                    className="flex-shrink-0 p-2 rounded-lg hover:bg-muted/10 transition-colors duration-200 xl:hidden"
+                    label={<FaAngleLeft className="h-4 w-4 text-muted" />}
+                  />
+                  <div
+                    ref={navElement}
+                    className="flex-1 overflow-x-auto scroll-smooth scrollbar-hide"
+                    style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                  >
+                    <div className="flex items-center space-x-8 lg:justify-center min-w-max px-2">
+                      {categories().map((category: string) => (
+                        <Link
+                          key={uuidv4()}
+                          to={`/categories/${replaceSpacesWithDash(category)}`}
+                          className="text-sm font-medium text-muted hover:text-accent transition-colors duration-200 whitespace-nowrap py-2 px-1 border-b-2 border-transparent hover:border-accent/30"
+                        >
+                          {category}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                  <Button
+                    onClick={slideRight}
+                    className="flex-shrink-0 p-2 rounded-lg hover:bg-muted/10 transition-colors duration-200 xl:hidden"
+                    label={<FaAngleRight className="h-4 w-4 text-muted" />}
+                  />
                 </div>
-                <span onClick={slideRight} className="flex w-auto cursor-pointer self-center pl-1 xl:hidden">
-                  <FaAngleRight size={20} />
-                </span>
               </div>
             </div>
           )}

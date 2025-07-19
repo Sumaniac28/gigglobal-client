@@ -2,8 +2,8 @@ import { FC, lazy, LazyExoticComponent, Suspense } from 'react';
 import { useRoutes, RouteObject } from 'react-router-dom';
 import ProtectedRoute from 'src/features/ProtectedRoute';
 import { IGigsProps } from './features/gigs/interfaces/gig.interface';
+import AppPage from 'src/features/AppPage';
 
-const AppPage: LazyExoticComponent<FC> = lazy(() => import('src/features/AppPage'));
 const Home: LazyExoticComponent<FC> = lazy(() => import('src/features/home/components/Home'));
 const ResetPassword: LazyExoticComponent<FC> = lazy(() => import('src/features/auth/components/ResetPassword'));
 const ConfirmEmail: LazyExoticComponent<FC> = lazy(() => import('src/features/auth/components/ConfirmEmail'));
@@ -26,6 +26,8 @@ const Order: LazyExoticComponent<FC> = lazy(() => import('src/features/order/com
 const Checkout: LazyExoticComponent<FC> = lazy(() => import('src/features/order/components/Checkout'));
 const Requirement: LazyExoticComponent<FC> = lazy(() => import('src/features/order/components/Requirement'));
 const Settings: LazyExoticComponent<FC> = lazy(() => import('src/features/settings/components/Settings'));
+const ManageOrders: LazyExoticComponent<FC> = lazy(() => import('src/features/sellers/components/dashboard/ManageOrders'));
+const ManageEarnings: LazyExoticComponent<FC> = lazy(() => import('src/features/sellers/components/dashboard/ManageEarnings'));
 
 // const Layout = ({ backgroundColor = '#F9FAFB', children }: { backgroundColor: string; children: ReactNode }): JSX.Element => (
 //   <div style={{ backgroundColor }} className="flex flex-grow">
@@ -36,11 +38,7 @@ const AppRouter: FC = () => {
   const routes: RouteObject[] = [
     {
       path: '/',
-      element: (
-        <Suspense>
-          <AppPage />
-        </Suspense>
-      )
+      element: <AppPage />
     },
     {
       path: 'reset_password',
@@ -59,11 +57,36 @@ const AppRouter: FC = () => {
       )
     },
     {
+      path: '/search/categories/:category',
+      element: (
+        <Suspense>
+          <GigsIndexDisplay type="categories" />
+        </Suspense>
+      )
+    },
+    {
+      path: '/gigs/search',
+      element: (
+        <Suspense>
+          <GigsIndexDisplay type="search" />
+        </Suspense>
+      )
+    },
+    {
+      path: '/gig/:gigId/:title',
+      element: (
+        <Suspense>
+          <GigInfoDisplay />
+        </Suspense>
+      )
+    },
+    {
       path: '/',
       element: (
         <Suspense>
           <ProtectedRoute>
             <Home />
+            <ContactFooter />
           </ProtectedRoute>
         </Suspense>
       )
@@ -94,7 +117,6 @@ const AppRouter: FC = () => {
         <Suspense>
           <ProtectedRoute>
             <CurrentSellerProfile />
-            <ContactFooter />
           </ProtectedRoute>
         </Suspense>
       )
@@ -105,7 +127,6 @@ const AppRouter: FC = () => {
         <Suspense>
           <ProtectedRoute>
             <SellerProfile />
-            <ContactFooter />
           </ProtectedRoute>
         </Suspense>
       )
@@ -123,6 +144,14 @@ const AppRouter: FC = () => {
         {
           path: 'seller_dashboard',
           element: <SellerDashboard />
+        },
+        {
+          path: 'manage_orders',
+          element: <ManageOrders />
+        },
+        {
+          path: 'manage_earnings',
+          element: <ManageEarnings />
         }
       ]
     },
@@ -163,30 +192,6 @@ const AppRouter: FC = () => {
           <ProtectedRoute>
             <Gigs type="categories" />
           </ProtectedRoute>
-        </Suspense>
-      )
-    },
-    {
-      path: '/search/categories/:category',
-      element: (
-        <Suspense>
-          <GigsIndexDisplay type="categories" />
-        </Suspense>
-      )
-    },
-    {
-      path: '/gigs/search',
-      element: (
-        <Suspense>
-          <GigsIndexDisplay type="search" />
-        </Suspense>
-      )
-    },
-    {
-      path: '/gig/:gigId/:title',
-      element: (
-        <Suspense>
-          <GigInfoDisplay />
         </Suspense>
       )
     },

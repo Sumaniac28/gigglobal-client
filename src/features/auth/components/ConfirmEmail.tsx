@@ -31,15 +31,18 @@ const ConfirmEmail: FC = (): ReactElement => {
   }, [onVerifyEmail]);
 
   return (
-    <div className="container mx-auto flex flex-col items-center justify-center px-6 py-8 mt-20 lg:py-0">
-      <div className="w-[30%]">
+    <div className="container mx-auto flex flex-col items-center justify-center px-6 py-8 mt-20 lg:py-0 min-h-[60vh]">
+      {/* Alert Container */}
+      <div className="w-full max-w-md mb-8 sm:max-w-lg md:max-w-xl">
         <Suspense>
           <Alert type={status} message={alertMessage} />
         </Suspense>
       </div>
+
+      {/* Navigation Link */}
       <Link
         to="/"
-        className="rounded bg-sky-500 px-6 py-3 mt-5 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:px-4 md:py-2 md:text-base"
+        className="rounded-lg bg-primary px-8 py-3 text-center font-themeFont font-semibold text-on-primary hover:bg-primary transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm md:text-base lg:text-lg"
       >
         Continue to Home
       </Link>

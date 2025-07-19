@@ -16,11 +16,14 @@ const OrderDropdown: FC<IHomeHeaderProps> = ({ buyer, setIsDropdownOpen }): Reac
   }
 
   return (
-    <div className="border-grey z-20 flex max-h-[470px] flex-col justify-between rounded border bg-white shadow-md">
+    <div className="z-20 flex max-h-[470px] flex-col justify-between rounded border border-default bg-surface shadow-md">
       <div className="h-96 overflow-y-scroll">
         {orders.length > 0 &&
           orders.map((order: IOrderDocument) => (
-            <div key={uuidv4()} className="border-grey h-[76px] border-b pt-2 text-left hover:bg-gray-50">
+            <div
+              key={uuidv4()}
+              className="h-[76px] border-b border-default pt-2 text-left hover:bg-background transition-colors duration-200"
+            >
               <Link
                 to={`/orders/${order.orderId}/activities`}
                 className="flex px-4"
@@ -33,23 +36,27 @@ const OrderDropdown: FC<IHomeHeaderProps> = ({ buyer, setIsDropdownOpen }): Reac
                 <div className="mt-1 flex-shrink-0">
                   <img className="h-14 w-20 object-cover" src={order.gigCoverImage} alt="" />
                 </div>
+
                 <div className="w-full pl-3">
-                  <div className="text-[13px] font-normal leading-normal">{order.gigBasicTitle}</div>
-                  <div className="flex gap-2 text-[11px]">
-                    <span className="font-normal text-[#b5b6ba]">by {order.sellerUsername}</span>
+                  <div className="text-[13px] font-normal leading-normal text-primary">{order.gigBasicTitle}</div>
+
+                  <div className="mt-1 flex gap-2 text-[11px] text-muted">
+                    <span className="font-normal">by {order.sellerUsername}</span>
                     <span className="font-normal">&#x2022;</span>
-                    <span className={`rounded text-white px-2 ${lowerCase(order.status.replace(/ /g, ''))}`}>{order.status}</span>
+                    <span className={`rounded px-2 text-on-primary ${lowerCase(order.status.replace(/ /g, ''))}`}>{order.status}</span>
                   </div>
                 </div>
               </Link>
             </div>
           ))}
-        {orders.length === 0 && <div className="flex h-full items-center justify-center">No orders to show</div>}
+
+        {orders.length === 0 && <div className="flex h-full items-center justify-center text-muted">No orders to show</div>}
       </div>
+
       {orders.length > 0 && (
         <Link
           to={`/users/${lowerCase(`${buyer?.username}`)}/${buyer?._id}/orders`}
-          className="flex h-10 cursor-pointer justify-center bg-white px-4 text-sm font-medium text-sky-500"
+          className="flex h-10 cursor-pointer justify-center bg-surface px-4 text-sm font-medium text-accent hover:bg-background"
           onClick={() => {
             if (setIsDropdownOpen) {
               setIsDropdownOpen(false);

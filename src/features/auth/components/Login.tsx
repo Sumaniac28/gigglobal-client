@@ -58,107 +58,122 @@ const LoginModal: FC<IModalBgProps> = ({ onClose, onToggle, onTogglePassword }):
 
   return (
     <ModalBg>
-      <div className="relative top-[20%] mx-auto w-11/12 max-w-md rounded-lg bg-[#F9FAFB] md:w-2/3 border border-[#E5E7EB]">
-        <div className="relative px-5 py-5">
-          <div className="mb-5 flex justify-between text-2xl font-bold text-[#111111]">
-            <h1 className="flex w-full justify-center">Sign In to GigGlobal</h1>
+      <div className="relative top-[20%] mx-auto w-11/12 max-w-md rounded-xl bg-surface border border-default shadow-xl backdrop-blur-sm transition-all duration-300 md:w-2/3 md:max-w-lg">
+        <div className="relative px-6 py-6 md:px-8 md:py-8">
+          {/* Header */}
+          <div className="mb-8 flex items-center justify-between">
+            <h1 className="font-themeFont text-xl font-bold text-primary flex-1 text-center md:text-2xl">Sign In to GigGlobal</h1>
             <Button
               testId="closeModal"
-              className="cursor-pointer rounded text-[#4B5563] hover:text-[#111111]"
+              className="cursor-pointer rounded-lg p-2 text-muted hover:text-primary hover:bg-background transition-all duration-300 ring-2 ring-transparent hover:ring-border-default"
               role="button"
-              label={<FaTimes className="icon icon-tabler icon-tabler-x" />}
+              label={<FaTimes className="icon icon-tabler icon-tabler-x w-5 h-5" />}
               onClick={onClose}
             />
           </div>
 
+          {/* Alert Message */}
           {alertMessage && (
-            <Suspense>
-              <Alert type="error" message={alertMessage} />
-            </Suspense>
+            <div className="mb-6">
+              <Suspense>
+                <Alert type="error" message={alertMessage} />
+              </Suspense>
+            </div>
           )}
 
-          <div>
-            <label htmlFor="email or username" className="text-sm font-bold leading-tight tracking-normal text-[#111111]">
-              Email or username
-            </label>
-            <TextInput
-              id="username"
-              name="username"
-              type="text"
-              value={userInfo.username}
-              className="mb-5 mt-2 flex h-10 w-full items-center rounded border border-[#E5E7EB] bg-white pl-3 text-sm font-normal text-[#111111] placeholder-[#4B5563] focus:border-[#14B8A6] focus:outline-none"
-              placeholder="Enter email or username"
-              onChange={(event: ChangeEvent) => {
-                setUserInfo({ ...userInfo, username: (event.target as HTMLInputElement).value });
-              }}
-            />
-          </div>
-
-          <div>
-            <label htmlFor="password" className="text-sm font-bold leading-tight tracking-normal text-[#111111]">
-              Password
-            </label>
-            <div className="relative mb-2 mt-2">
-              <div className="absolute right-0 flex h-full cursor-pointer items-center pr-3 text-[#4B5563]">
-                {passwordType === 'password' ? (
-                  <FaEyeSlash onClick={() => setPasswordType('text')} className="icon icon-tabler icon-tabler-info-circle" />
-                ) : (
-                  <FaEye onClick={() => setPasswordType('password')} className="icon icon-tabler icon-tabler-info-circle" />
-                )}
-              </div>
+          {/* Form Fields */}
+          <div className="space-y-6">
+            {/* Email/Username Field */}
+            <div>
+              <label htmlFor="email or username" className="block text-sm font-semibold leading-6 tracking-normal text-primary mb-2">
+                Email or username
+              </label>
               <TextInput
-                id="password"
-                name="password"
-                type={passwordType}
-                value={userInfo.password}
-                className="flex h-10 w-full items-center rounded border border-[#E5E7EB] bg-white pl-3 text-sm font-normal text-[#111111] placeholder-[#4B5563] focus:border-[#14B8A6] focus:outline-none"
-                placeholder="Enter password"
+                id="username"
+                name="username"
+                type="text"
+                value={userInfo.username}
+                className="flex h-12 w-full items-center rounded-lg border border-default bg-surface px-4 text-sm font-normal text-primary placeholder-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-20 transition-all duration-300"
+                placeholder="Enter email or username"
                 onChange={(event: ChangeEvent) => {
-                  setUserInfo({ ...userInfo, password: (event.target as HTMLInputElement).value });
+                  setUserInfo({ ...userInfo, username: (event.target as HTMLInputElement).value });
                 }}
               />
             </div>
-          </div>
 
-          <div className="flex justify-end">
-            <div
-              onClick={() => {
-                if (onTogglePassword) {
-                  onTogglePassword(true);
-                }
-              }}
-              className="mb-6 ml-2 cursor-pointer text-sm text-[#14B8A6] hover:underline"
-            >
-              Forgot Password?
+            {/* Password Field */}
+            <div>
+              <label htmlFor="password" className="block text-sm font-semibold leading-6 tracking-normal text-primary mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <TextInput
+                  id="password"
+                  name="password"
+                  type={passwordType}
+                  value={userInfo.password}
+                  className="flex h-12 w-full items-center rounded-lg border border-default bg-surface px-4 pr-12 text-sm font-normal text-primary placeholder-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-20 transition-all duration-300"
+                  placeholder="Enter password"
+                  onChange={(event: ChangeEvent) => {
+                    setUserInfo({ ...userInfo, password: (event.target as HTMLInputElement).value });
+                  }}
+                />
+                <div className="absolute right-0 top-0 flex h-full cursor-pointer items-center pr-4 text-muted hover:text-primary transition-colors duration-300">
+                  {passwordType === 'password' ? (
+                    <FaEyeSlash onClick={() => setPasswordType('text')} className="icon icon-tabler icon-tabler-info-circle w-5 h-5" />
+                  ) : (
+                    <FaEye onClick={() => setPasswordType('password')} className="icon icon-tabler icon-tabler-info-circle w-5 h-5" />
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
 
-          <div className="flex w-full items-center justify-center">
-            <Button
-              testId="submit"
-              disabled={!userInfo.username || !userInfo.password}
-              className={`text-md block w-full rounded bg-gradient-to-r from-[#14B8A6] to-[#0F766E] px-8 py-2 text-center font-bold text-white hover:from-[#0F766E] hover:to-[#14B8A6] focus:outline-none ${
-                !userInfo.username || !userInfo.password ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
-              }`}
-              label={`${isLoading ? 'LOGIN IN PROGRESS...' : 'LOGIN'}`}
-              onClick={onLoginUser}
-            />
+            {/* Forgot Password Link */}
+            <div className="flex justify-end">
+              <div
+                onClick={() => {
+                  if (onTogglePassword) {
+                    onTogglePassword(true);
+                  }
+                }}
+                className="cursor-pointer text-sm text-primary hover:text-accent hover:underline transition-all duration-300 font-medium"
+              >
+                Forgot Password?
+              </div>
+            </div>
+
+            {/* Login Button */}
+            <div className="pt-2">
+              <Button
+                testId="submit"
+                disabled={!userInfo.username || !userInfo.password}
+                className={`w-full rounded-lg bg-primary px-8 py-3 text-center font-themeFont font-semibold text-on-primary hover:bg-primary transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 text-base md:text-lg ${
+                  !userInfo.username || !userInfo.password
+                    ? 'cursor-not-allowed opacity-50 hover:bg-primary'
+                    : 'cursor-pointer shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
+                }`}
+                label={`${isLoading ? 'LOGIN IN PROGRESS...' : 'LOGIN'}`}
+                onClick={onLoginUser}
+              />
+            </div>
           </div>
         </div>
 
-        <hr className="border-[#E5E7EB]" />
+        {/* Divider */}
+        <hr className="border-default mx-6 md:mx-8" />
 
-        <div className="px-5 py-4">
-          <div className="ml-2 flex w-full justify-center text-sm font-medium text-[#4B5563]">
-            <div className="flex justify-center">
-              Not yet a member?{' '}
+        {/* Sign Up Section */}
+        <div className="px-6 py-6 md:px-8 md:py-6 bg-background rounded-b-xl">
+          <div className="flex w-full justify-center text-sm font-medium text-muted">
+            <div className="flex items-center justify-center gap-2">
+              <span>Not yet a member?</span>
               <p
                 onClick={() => {
                   if (onToggle) {
                     onToggle(true);
                   }
                 }}
-                className="ml-2 flex cursor-pointer text-[#14B8A6] hover:underline"
+                className="cursor-pointer text-primary hover:text-accent hover:underline transition-all duration-300 font-semibold"
               >
                 Join Now
               </p>

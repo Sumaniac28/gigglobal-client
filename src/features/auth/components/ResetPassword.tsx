@@ -44,61 +44,78 @@ const ResetPassword: FC = (): ReactElement => {
 
   return (
     <>
-      <IndexHeader navClass="navbar peer-checked:navbar-active sticky bg-black top-0 z-50 w-full border-b border-gray-100 shadow-2xl shadow-gray-600/5 backdrop-blur" />
-      <div className="relative mt-24 mx-auto w-11/12 max-w-md rounded-lg bg-[#F9FAFB] md:w-2/3 border border-[#E5E7EB]">
-        <div className="relative px-5 py-5">
-          <h2 className="text-center text-xl font-bold leading-tight tracking-tight text-[#111111] md:text-2xl mb-2">Reset Password</h2>
+      <IndexHeader navClass="navbar peer-checked:navbar-active sticky bg-primary top-0 z-50 w-full border-b border-default shadow-2xl backdrop-blur" />
 
-          {alertMessage && (
-            <Suspense>
-              <Alert type={status} message={alertMessage} />
-            </Suspense>
-          )}
+      <div className="min-h-screen bg-background flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="relative w-full max-w-md rounded-xl bg-surface border border-default shadow-xl backdrop-blur-sm transition-all duration-300 md:max-w-lg">
+          <div className="relative px-6 py-8 md:px-8 md:py-10">
+            {/* Header */}
+            <h2 className="text-center font-themeFont text-xl font-bold leading-tight tracking-tight text-primary md:text-2xl mb-8">
+              Reset Password
+            </h2>
 
-          <form className="mt-4 space-y-4 md:space-y-5 lg:mt-5">
-            <div>
-              <label htmlFor="password" className="text-sm font-bold leading-tight tracking-normal text-[#111111]">
-                Password
-              </label>
-              <TextInput
-                id="password"
-                name="password"
-                type="password"
-                value={userInfo.password}
-                className="flex h-10 w-full items-center rounded border border-[#E5E7EB] bg-white pl-3 text-sm font-normal text-[#111111] placeholder-[#4B5563] focus:border-[#14B8A6] focus:outline-none"
-                placeholder="Enter password"
-                onChange={(event: ChangeEvent) => {
-                  setUserInfo({ ...userInfo, password: (event.target as HTMLInputElement).value });
-                }}
-              />
-            </div>
+            {/* Alert Message */}
+            {alertMessage && (
+              <div className="mb-6">
+                <Suspense>
+                  <Alert type={status} message={alertMessage} />
+                </Suspense>
+              </div>
+            )}
 
-            <div>
-              <label htmlFor="confirmPassword" className="text-sm font-bold leading-tight tracking-normal text-[#111111]">
-                Confirm Password
-              </label>
-              <TextInput
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                value={userInfo.confirmPassword}
-                className="flex h-10 w-full items-center rounded border border-[#E5E7EB] bg-white pl-3 text-sm font-normal text-[#111111] placeholder-[#4B5563] focus:border-[#14B8A6] focus:outline-none"
-                placeholder="Enter confirm password"
-                onChange={(event: ChangeEvent) => {
-                  setUserInfo({ ...userInfo, confirmPassword: (event.target as HTMLInputElement).value });
-                }}
-              />
-            </div>
+            {/* Form */}
+            <form className="space-y-6">
+              {/* Password Field */}
+              <div>
+                <label htmlFor="password" className="block text-sm font-semibold leading-6 tracking-normal text-primary mb-2">
+                  New Password
+                </label>
+                <TextInput
+                  id="password"
+                  name="password"
+                  type="password"
+                  value={userInfo.password}
+                  className="flex h-12 w-full items-center rounded-lg border border-default bg-surface px-4 text-sm font-normal text-primary placeholder-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-20 transition-all duration-300"
+                  placeholder="Enter your new password"
+                  onChange={(event: ChangeEvent) => {
+                    setUserInfo({ ...userInfo, password: (event.target as HTMLInputElement).value });
+                  }}
+                />
+              </div>
 
-            <Button
-              disabled={!userInfo.password || !userInfo.confirmPassword}
-              className={`text-md block w-full rounded bg-gradient-to-r from-[#14B8A6] to-[#0F766E] px-8 py-2 text-center font-bold text-white hover:from-[#0F766E] hover:to-[#14B8A6] focus:outline-none ${
-                !userInfo.password || !userInfo.confirmPassword ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
-              }`}
-              label={`${isLoading ? 'RESET PASSWORD IN PROGRESS...' : 'RESET PASSWORD'}`}
-              onClick={onResetPassword}
-            />
-          </form>
+              {/* Confirm Password Field */}
+              <div>
+                <label htmlFor="confirmPassword" className="block text-sm font-semibold leading-6 tracking-normal text-primary mb-2">
+                  Confirm New Password
+                </label>
+                <TextInput
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  value={userInfo.confirmPassword}
+                  className="flex h-12 w-full items-center rounded-lg border border-default bg-surface px-4 text-sm font-normal text-primary placeholder-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-20 transition-all duration-300"
+                  placeholder="Confirm your new password"
+                  onChange={(event: ChangeEvent) => {
+                    setUserInfo({ ...userInfo, confirmPassword: (event.target as HTMLInputElement).value });
+                  }}
+                />
+              </div>
+
+              {/* Submit Button */}
+              <div className="pt-4">
+                <Button
+                  disabled={!userInfo.password || !userInfo.confirmPassword}
+                  className={`w-full rounded-lg bg-primary px-8 py-3 text-center font-themeFont font-semibold text-on-primary hover:bg-primary transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 text-base md:text-lg ${
+                    !userInfo.password || !userInfo.confirmPassword
+                      ? 'cursor-not-allowed opacity-50 hover:bg-primary'
+                      : 'cursor-pointer shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
+                  }`}
+                  label={`${isLoading ? 'RESETTING PASSWORD...' : 'RESET PASSWORD'}`}
+                  onClick={onResetPassword}
+                />
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </>

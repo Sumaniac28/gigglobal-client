@@ -20,22 +20,23 @@ const HeaderSearchInput: FC = (): ReactElement => {
           event.preventDefault();
           navigateToSearchPage();
         }}
-        className="flex w-full self-center border opacity-100"
+        className="flex w-full self-center border border-default bg-surface"
       >
         <TextInput
           type="text"
           name="search"
           value={searchTerm}
           placeholder="What service are you looking for today?"
-          className="w-full truncate px-4 py-[7.5px]"
+          className="w-full truncate px-4 py-2 text-sm font-themeFont"
           onChange={(event: ChangeEvent) => {
             setSearchTerm((event.target as HTMLInputElement).value);
           }}
         />
       </form>
+
       <Button
-        className="flex w-16 items-center justify-center bg-gray-900 text-white"
-        label={<FaSearch className="h-6 w-6 fill-white text-white" />}
+        className="flex w-16 items-center justify-center rounded-r bg-primary text-on-primary"
+        label={<FaSearch className="h-5 w-5 fill-current text-on-primary" />}
         onClick={navigateToSearchPage}
       />
     </div>

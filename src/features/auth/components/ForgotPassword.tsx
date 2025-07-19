@@ -28,68 +28,79 @@ const ForgotPasswordModal: FC<IModalBgProps> = ({ onClose, onToggle }): ReactEle
 
   return (
     <ModalBg>
-      <div className="relative top-[20%] mx-auto w-11/12 max-w-md rounded-lg bg-[#F9FAFB] md:w-2/3 border border-[#E5E7EB]">
-        <div className="relative px-5 py-5">
-          <div className="mb-5 flex justify-between text-2xl font-bold text-[#111111]">
-            <h1 className="flex w-full justify-center">Forgot Password</h1>
+      <div className="relative top-[20%] mx-auto w-11/12 max-w-md rounded-xl bg-surface border border-default shadow-xl backdrop-blur-sm transition-all duration-300 md:w-2/3 md:max-w-lg">
+        <div className="relative px-6 py-6 md:px-8 md:py-8">
+          {/* Header */}
+          <div className="mb-8 flex items-center justify-between">
+            <h1 className="font-themeFont text-xl font-bold text-primary flex-1 text-center md:text-2xl">Forgot Password</h1>
             <Button
               testId="closeModal"
-              className="cursor-pointer rounded text-[#4B5563] hover:text-[#111111]"
+              className="cursor-pointer rounded-lg p-2 text-muted hover:text-primary hover:bg-background transition-all duration-300 ring-2 ring-transparent hover:ring-border-default"
               role="button"
-              label={<FaTimes className="icon icon-tabler icon-tabler-x" />}
+              label={<FaTimes className="icon icon-tabler icon-tabler-x w-5 h-5" />}
               onClick={onClose}
             />
           </div>
 
+          {/* Alert Message */}
           {alertMessage && (
-            <Suspense>
-              <Alert type={status} message={alertMessage} />
-            </Suspense>
+            <div className="mb-6">
+              <Suspense>
+                <Alert type={status} message={alertMessage} />
+              </Suspense>
+            </div>
           )}
 
-          <div className="mb-5 w-full text-center text-base font-normal text-[#4B5563]">
+          {/* Description */}
+          <div className="mb-8 w-full text-center text-base font-normal text-muted leading-6 px-2">
             Please enter your email address and we'll send you a link to reset your password.
           </div>
 
-          <div>
+          {/* Email Input */}
+          <div className="mb-8">
             <TextInput
               name="email"
               type="email"
               value={email}
-              className="mb-5 mt-2 flex h-10 w-full items-center rounded border border-[#E5E7EB] bg-white pl-3 text-sm font-normal text-[#111111] placeholder-[#4B5563] focus:border-[#14B8A6] focus:outline-none"
-              placeholder="Enter email"
+              className="flex h-12 w-full items-center rounded-lg border border-default bg-surface px-4 text-sm font-normal text-primary placeholder-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-20 transition-all duration-300"
+              placeholder="Enter your email address"
               onChange={(event: ChangeEvent) => {
                 setEmail((event.target as HTMLInputElement).value);
               }}
             />
           </div>
 
-          <div className="flex w-full items-center justify-center">
+          {/* Submit Button */}
+          <div className="mb-4">
             <Button
               disabled={!email}
-              className={`text-md block w-full rounded bg-gradient-to-r from-[#14B8A6] to-[#0F766E] px-8 py-2 text-center font-bold text-white hover:from-[#0F766E] hover:to-[#14B8A6] focus:outline-none ${
-                !email ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+              className={`w-full rounded-lg bg-primary px-8 py-3 text-center font-themeFont font-semibold text-on-primary hover:bg-primary transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 text-base md:text-lg ${
+                !email
+                  ? 'cursor-not-allowed opacity-50 hover:bg-primary'
+                  : 'cursor-pointer shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
               }`}
-              label={`${isLoading ? 'FORGOT PASSWORD IN PROGRESS...' : 'FORGOT PASSWORD'}`}
+              label={`${isLoading ? 'SENDING RESET LINK...' : 'SEND RESET LINK'}`}
               onClick={onHandleSubmit}
             />
           </div>
         </div>
 
-        <hr className="border-[#E5E7EB]" />
+        {/* Divider */}
+        <hr className="border-default mx-6 md:mx-8" />
 
-        <div className="px-5 py-4">
-          <div className="ml-2 flex w-full justify-center text-sm font-medium text-[#4B5563]">
-            <div className="flex justify-center">
+        {/* Back to Sign In Section */}
+        <div className="px-6 py-6 md:px-8 md:py-6 bg-background rounded-b-xl">
+          <div className="flex w-full justify-center text-sm font-medium text-muted">
+            <div className="flex items-center justify-center">
               <p
                 onClick={() => {
                   if (onToggle) {
                     onToggle(true);
                   }
                 }}
-                className="ml-2 flex cursor-pointer text-[#14B8A6] hover:underline"
+                className="cursor-pointer text-primary hover:text-accent hover:underline transition-all duration-300 font-semibold flex items-center gap-2"
               >
-                Back to Sign In
+                <span>← Back to Sign In</span>
               </p>
             </div>
           </div>

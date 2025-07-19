@@ -42,8 +42,9 @@ const MessageDropdown: FC<IHomeHeaderProps> = ({ setIsMessageDropdownOpen }): Re
   };
 
   return (
-    <div className="border-grey border-grey z-20 flex max-h-[470px] flex-col justify-between rounded border bg-white shadow-md">
-      <div className="border-grey block border-b px-4 py-2 text-center font-medium text-gray-700">Inbox</div>
+    <div className="z-20 flex max-h-[470px] flex-col justify-between rounded border border-default bg-surface shadow-md">
+      <div className="block border-b border-default px-4 py-2 text-center font-medium text-primary font-themeFont">Inbox</div>
+
       <div className="h-96 overflow-y-scroll">
         {conversations.length > 0 ? (
           <>
@@ -56,7 +57,7 @@ const MessageDropdown: FC<IHomeHeaderProps> = ({ setIsMessageDropdownOpen }): Re
                     setIsMessageDropdownOpen(false);
                   }
                 }}
-                className="border-grey max-h-[90px] border-b pt-2 text-left hover:bg-gray-50 "
+                className="max-h-[90px] border-b border-default pt-2 text-left hover:bg-background transition-colors duration-200"
               >
                 <div className="flex px-4">
                   <div className="mt-1 flex-shrink-0">
@@ -66,19 +67,21 @@ const MessageDropdown: FC<IHomeHeaderProps> = ({ setIsMessageDropdownOpen }): Re
                       alt=""
                     />
                   </div>
+
                   <div className="w-full pl-3 pt-1">
-                    <div className="flex flex-col text-sm font-normal ">
-                      <div className="font-bold leading-none flex justify-between">
+                    <div className="flex flex-col text-sm font-normal">
+                      <div className="flex justify-between font-bold leading-none text-primary font-themeFont">
                         {data.receiverUsername !== authUser.username ? data.receiverUsername : data.senderUsername}
-                        {!data.isRead ? <FaRegEnvelope className="text-sky-400" /> : <FaRegEnvelopeOpen className="text-gray-200" />}
+                        {!data.isRead ? <FaRegEnvelope className="text-accent" /> : <FaRegEnvelopeOpen className="text-muted" />}
                       </div>
-                      <span className="line-clamp-1 pt-1 font-normal leading-4">
+                      <span className="line-clamp-1 pt-1 font-normal leading-4 text-primary">
                         {data.receiverUsername === authUser?.username ? '' : 'Me: '}
                         {data.body}
                       </span>
                     </div>
-                    <div className="mt-1 flex text-[11px]">
-                      {data.createdAt && <span className="font-normal text-[#b5b6ba]">{TimeAgo.transform(data.createdAt)}</span>}
+
+                    <div className="mt-1 flex text-[11px] text-muted">
+                      {data.createdAt && <span className="font-normal">{TimeAgo.transform(data.createdAt)}</span>}
                     </div>
                   </div>
                 </div>
@@ -86,9 +89,10 @@ const MessageDropdown: FC<IHomeHeaderProps> = ({ setIsMessageDropdownOpen }): Re
             ))}
           </>
         ) : (
-          <div className="flex h-full items-center justify-center">No messages to show</div>
+          <div className="flex h-full items-center justify-center text-muted">No messages to show</div>
         )}
       </div>
+
       <div
         onClick={() => {
           navigate('/inbox');
@@ -96,7 +100,7 @@ const MessageDropdown: FC<IHomeHeaderProps> = ({ setIsMessageDropdownOpen }): Re
             setIsMessageDropdownOpen(false);
           }
         }}
-        className="flex h-10 cursor-pointer justify-center bg-white px-4 text-sm font-medium text-sky-500"
+        className="flex h-10 cursor-pointer justify-center bg-surface px-4 text-sm font-medium text-accent hover:bg-background"
       >
         <FaEye className="mr-2 h-4 w-4 self-center" />
         <span className="self-center">View all</span>

@@ -21,7 +21,7 @@ const Index: FC = (): ReactElement => {
   return (
     <div className="flex flex-col relative">
       <Suspense fallback={<CircularPageLoader />}>
-        <IndexHeader navClass="navbar peer-checked:navbar-active sticky top-0 z-50 w-full border-b border-gray-100 shadow-2xl shadow-gray-600/5 backdrop-blur" />
+        <IndexHeader navClass="navbar peer-checked:navbar-active sticky top-0 z-30 w-full border-b border-default shadow-2xl shadow-primary/5 backdrop-blur" />
         <Hero />
         <GigTabs />
         <HowItWorks />
