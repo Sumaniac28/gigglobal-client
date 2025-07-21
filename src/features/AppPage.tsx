@@ -1,4 +1,4 @@
-import { FC, ReactElement, useCallback, useEffect, useState } from 'react';
+import { FC, lazy, ReactElement, Suspense, useCallback, useEffect, useState } from 'react';
 import Index from 'src/features/index/Index';
 import { useAppDispatch, useAppSelector } from 'src/store/store';
 import { useCheckCurrentUserQuery } from 'src/features/auth/services/auth.service';
@@ -12,8 +12,8 @@ import { addSeller } from 'src/features/sellers/reducers/seller.reducer';
 import CircularPageLoader from 'src/shared/page-loader/CircularPageLoader';
 import { socket } from 'src/sockets/socket.service';
 
-import Home from 'src/features/home/components/Home';
-import HomeHeader from 'src/shared/header/components/HomeHeader';
+const Home = lazy(() => import('src/features/home/components/Home'));
+const HomeHeader = lazy(() => import('src/shared/header/components/HomeHeader'));
 
 const AppPage: FC = (): ReactElement => {
   const authUser = useAppSelector((state) => state.authUser);
@@ -74,8 +74,12 @@ const AppPage: FC = (): ReactElement => {
           <CircularPageLoader />
         ) : (
           <>
-            <HomeHeader showCategoryContainer={showCategoryContainer} />
-            <Home />
+            <Suspense fallback={<div className="h-20 bg-muted/10 w-full animate-pulse rounded-b-2xl" />}>
+              <HomeHeader showCategoryContainer={showCategoryContainer} />
+            </Suspense>
+            <Suspense fallback={<div className="p-6 text-muted text-sm sm:text-base">Loading dashboard...</div>}>
+              <Home />
+            </Suspense>
           </>
         )}
       </>

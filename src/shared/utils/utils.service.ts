@@ -40,6 +40,16 @@ export const replaceAmpersandAndDashWithSpace = (title: string): string => {
   return titleWithoutDash.replace(/&| /g, ' ');
 };
 
+export const normalizeAndEncodeQuery = (input: string): string => {
+  return encodeURIComponent(
+    input
+      .toLowerCase()
+      .replace(/&|\/|-/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+  );
+};
+
 export const categories = (): string[] => {
   return [
     'Graphics & Design',

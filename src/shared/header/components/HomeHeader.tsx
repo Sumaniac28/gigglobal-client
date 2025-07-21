@@ -1,6 +1,6 @@
 import { Transition } from '@headlessui/react';
 import { filter, find } from 'lodash';
-import { FC, ReactElement, useEffect, useRef, useState } from 'react';
+import { FC, lazy, ReactElement, Suspense, useEffect, useRef, useState } from 'react';
 import { FaAngleLeft, FaAngleRight, FaBars, FaRegBell, FaRegEnvelope, FaTimes } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { addAuthUser } from 'src/features/auth/reducers/auth.reducer';
@@ -22,13 +22,24 @@ import { IHomeHeaderProps } from '../interfaces/header.interface';
 import { updateCategoryContainer } from '../reducers/category.reducer';
 import { updateHeader } from '../reducers/header.reducer';
 import { updateNotification } from '../reducers/notification.reducer';
-import HeaderSearchInput from './HeaderSearchInput';
-import MessageDropdown from './MessageDropdown';
-import HomeHeaderSideBar from './mobile/HomeHeaderSideBar';
-import MobileHeaderSearchInput from './mobile/MobileHeaderSearchInput';
-import NotificationDropdown from './NotificationDropdown';
-import OrderDropdown from './OrderDropdown';
-import SettingsDropdown from './SettingsDropdown';
+
+const HeaderSearchInput = lazy(() => import('./HeaderSearchInput'));
+const MessageDropdown = lazy(() => import('./MessageDropdown'));
+const HomeHeaderSideBar = lazy(() => import('./mobile/HomeHeaderSideBar'));
+const MobileHeaderSearchInput = lazy(() => import('./mobile/MobileHeaderSearchInput'));
+const NotificationDropdown = lazy(() => import('./NotificationDropdown'));
+const OrderDropdown = lazy(() => import('./OrderDropdown'));
+const SettingsDropdown = lazy(() => import('./SettingsDropdown'));
+
+const DropdownFallback = () => (
+  <div className="w-96 h-48 bg-surface rounded-lg shadow-lg border border-default animate-pulse">
+    <div className="p-4">
+      <div className="h-4 bg-muted/20 rounded w-3/4 mb-3"></div>
+      <div className="h-3 bg-muted/20 rounded w-1/2 mb-2"></div>
+      <div className="h-3 bg-muted/20 rounded w-2/3"></div>
+    </div>
+  </div>
+);
 
 const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactElement => {
   const authUser = useAppSelector((state: IReduxState) => state.authUser);
@@ -143,7 +154,11 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
 
   return (
     <>
-      {openSidebar && <HomeHeaderSideBar setOpenSidebar={setOpenSidebar} />}
+      {openSidebar && (
+        <Suspense fallback={<div className="fixed inset-0 bg-black/20 z-50" />}>
+          <HomeHeaderSideBar setOpenSidebar={setOpenSidebar} />
+        </Suspense>
+      )}
       <header className="sticky top-0 z-[120]">
         <nav className="navbar peer-checked:navbar-active relative w-full border-b border-default bg-surface/95 backdrop-blur-md shadow-sm">
           {!logout && authUser && !authUser.emailVerified && (
@@ -177,10 +192,14 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
                     >
                       GigGlobal
                     </Link>
-                    <HeaderSearchInput />
+                    <Suspense fallback={<div className="h-10 bg-muted/10 rounded-lg animate-pulse flex-1" />}>
+                      <HeaderSearchInput />
+                    </Suspense>
                   </div>
                 </div>
-                <MobileHeaderSearchInput setOpenSidebar={setOpenSidebar} />
+                <Suspense fallback={<div className="h-10 bg-muted/10 rounded-lg animate-pulse flex-1 md:hidden" />}>
+                  <MobileHeaderSearchInput setOpenSidebar={setOpenSidebar} />
+                </Suspense>
               </div>
               <div className="navmenu mb-16 hidden w-full cursor-pointer flex-wrap items-center justify-end space-y-8 rounded-3xl border border-default bg-surface p-6 shadow-sm md:flex-nowrap lg:m-0 lg:flex lg:w-6/12 lg:space-y-0 lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
                 <div className="text-muted lg:pr-4">
@@ -209,7 +228,9 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
                         leaveTo="opacity-0 scale-95 translate-y-1"
                       >
                         <div className="absolute right-0 mt-5 w-96 z-50">
-                          <NotificationDropdown setIsNotificationDropdownOpen={setIsNotificationDropdownOpen} />
+                          <Suspense fallback={<DropdownFallback />}>
+                            <NotificationDropdown setIsNotificationDropdownOpen={setIsNotificationDropdownOpen} />
+                          </Suspense>
                         </div>
                       </Transition>
                     </li>
@@ -237,7 +258,9 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
                         leaveTo="opacity-0 scale-95 translate-y-1"
                       >
                         <div className="absolute right-0 mt-5 w-96 z-50">
-                          <MessageDropdown setIsMessageDropdownOpen={setIsMessageDropdownOpen} />
+                          <Suspense fallback={<DropdownFallback />}>
+                            <MessageDropdown setIsMessageDropdownOpen={setIsMessageDropdownOpen} />
+                          </Suspense>{' '}
                         </div>
                       </Transition>
                     </li>
@@ -261,7 +284,9 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
                         leaveTo="opacity-0 scale-95 translate-y-1"
                       >
                         <div className="absolute right-0 mt-5 w-96 z-50">
-                          <OrderDropdown buyer={buyer} setIsOrderDropdownOpen={setIsOrderDropdownOpen} />
+                          <Suspense fallback={<DropdownFallback />}>
+                            <OrderDropdown buyer={buyer} setIsOrderDropdownOpen={setIsOrderDropdownOpen} />
+                          </Suspense>
                         </div>
                       </Transition>
                     </li>
@@ -306,13 +331,15 @@ const HomeHeader: FC<IHomeHeaderProps> = ({ showCategoryContainer }): ReactEleme
                         leaveTo="opacity-0 scale-95 translate-y-1"
                       >
                         <div className="absolute -right-48 z-50 mt-5 w-96">
-                          <SettingsDropdown
-                            seller={seller}
-                            buyer={buyer}
-                            authUser={authUser}
-                            type="buyer"
-                            setIsDropdownOpen={setIsSettingsDropdown}
-                          />
+                          <Suspense fallback={<DropdownFallback />}>
+                            <SettingsDropdown
+                              seller={seller}
+                              buyer={buyer}
+                              authUser={authUser}
+                              type="buyer"
+                              setIsDropdownOpen={setIsSettingsDropdown}
+                            />
+                          </Suspense>
                         </div>
                       </Transition>
                     </li>

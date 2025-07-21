@@ -1,17 +1,24 @@
 import { FC, lazy, ReactElement, Suspense, useState } from 'react';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import { IButtonProps } from 'src/shared/shared.interface';
 import { saveToLocalStorage } from 'src/shared/utils/utils.service';
+import Button from 'src/shared/button/Button';
 
 import { IHeader, IHeaderModalProps, IHeaderSideBarProps } from '../interfaces/header.interface';
 import { IModalBgProps } from 'src/shared/modals/interfaces/modal.interface';
 
-const Button = lazy<FC<IButtonProps>>(() => import('src/shared/button/Button'));
 const LoginModal = lazy<FC<IModalBgProps>>(() => import('src/features/auth/components/Login'));
 const RegisterModal = lazy<FC<IModalBgProps>>(() => import('src/features/auth/components/Register'));
 const ForgotPasswordModal = lazy<FC<IModalBgProps>>(() => import('src/features/auth/components/ForgotPassword'));
 const HeaderSidebar = lazy<FC<IHeaderSideBarProps>>(() => import('src/shared/header/components/mobile/HeaderSideBar'));
+
+const ModalFallback = () => (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+    <div className="bg-surface rounded-lg p-8 shadow-lg">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+    </div>
+  </div>
+);
 
 const Header: FC<IHeader> = (): ReactElement => {
   const [showModal, setShowModal] = useState<IHeaderModalProps>({
@@ -25,7 +32,7 @@ const Header: FC<IHeader> = (): ReactElement => {
     <>
       {/* Modals with proper z-index */}
       {showModal.login && (
-        <Suspense>
+        <Suspense fallback={<ModalFallback />}>
           <LoginModal
             onClose={() => setShowModal((item: IHeaderModalProps) => ({ ...item, login: false }))}
             onToggle={() => setShowModal((item: IHeaderModalProps) => ({ ...item, login: false, register: true }))}
@@ -36,7 +43,7 @@ const Header: FC<IHeader> = (): ReactElement => {
         </Suspense>
       )}
       {showModal.register && (
-        <Suspense>
+        <Suspense fallback={<ModalFallback />}>
           <RegisterModal
             onClose={() => setShowModal((item: IHeaderModalProps) => ({ ...item, register: false }))}
             onToggle={() => setShowModal((item: IHeaderModalProps) => ({ ...item, register: false, login: true }))}
@@ -44,7 +51,7 @@ const Header: FC<IHeader> = (): ReactElement => {
         </Suspense>
       )}
       {showModal.forgotPassword && (
-        <Suspense>
+        <Suspense fallback={<ModalFallback />}>
           <ForgotPasswordModal
             onClose={() => setShowModal((item: IHeaderModalProps) => ({ ...item, forgotPassword: false }))}
             onToggle={() => setShowModal((item: IHeaderModalProps) => ({ ...item, login: true, forgotPassword: false }))}
@@ -54,7 +61,7 @@ const Header: FC<IHeader> = (): ReactElement => {
 
       {/* Sidebar with proper z-index */}
       {openSidebar && (
-        <Suspense>
+        <Suspense fallback={<div className="fixed inset-0 bg-black/20 z-50" />}>
           <HeaderSidebar setShowLoginModal={setShowModal} setShowRegisterModal={setShowModal} setOpenSidebar={setOpenSidebar} />
         </Suspense>
       )}

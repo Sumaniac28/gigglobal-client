@@ -1,6 +1,6 @@
 import { Transition } from '@headlessui/react';
 import { find } from 'lodash';
-import { FC, ReactElement, useEffect, useState } from 'react';
+import { FC, lazy, ReactElement, Suspense, useEffect, useState } from 'react';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { Link } from 'react-router-dom';
@@ -10,8 +10,8 @@ import { socket, socketService } from 'src/sockets/socket.service';
 import { useAppSelector } from 'src/store/store';
 import { IReduxState } from 'src/store/store.interface';
 
-import DashboardHeaderSideBar from './mobile/DashboardHeaderSideBar';
-import SettingsDropdown from './SettingsDropdown';
+const DashboardHeaderSideBar = lazy(() => import('./mobile/DashboardHeaderSideBar'));
+const SettingsDropdown = lazy(() => import('./SettingsDropdown'));
 
 const DashboardHeader: FC = (): ReactElement => {
   const seller = useAppSelector((state: IReduxState) => state.seller);
@@ -32,7 +32,11 @@ const DashboardHeader: FC = (): ReactElement => {
 
   return (
     <>
-      {openSidebar && <DashboardHeaderSideBar setOpenSidebar={setOpenSidebar} />}
+      {openSidebar && (
+        <Suspense fallback={<div className="fixed inset-0 bg-black/20 z-50" />}>
+          <DashboardHeaderSideBar setOpenSidebar={setOpenSidebar} />
+        </Suspense>
+      )}
       <header>
         <nav className="navbar peer-checked:navbar-active relative z-20 w-full border-b bg-surface shadow-2xl shadow-gray-600/5 backdrop-blur dark:shadow-none">
           <div className="m-auto px-6 xl:container md:px-12 lg:px-6">
@@ -111,13 +115,15 @@ const DashboardHeader: FC = (): ReactElement => {
                       leaveTo="opacity-0 translate-y-1"
                     >
                       <div className="absolute -right-48 z-50 mt-5 w-96">
-                        <SettingsDropdown
-                          seller={seller}
-                          buyer={buyer}
-                          authUser={authUser}
-                          type="seller"
-                          setIsDropdownOpen={setIsDropdownOpen}
-                        />
+                        <Suspense fallback={<div className="w-96 h-48 bg-surface rounded-lg shadow-lg animate-pulse" />}>
+                          <SettingsDropdown
+                            seller={seller}
+                            buyer={buyer}
+                            authUser={authUser}
+                            type="seller"
+                            setIsDropdownOpen={setIsDropdownOpen}
+                          />
+                        </Suspense>
                       </div>
                     </Transition>
                   </li>
