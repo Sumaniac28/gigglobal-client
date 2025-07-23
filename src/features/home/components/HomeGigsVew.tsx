@@ -1,68 +1,48 @@
-import { FC, lazy, ReactElement, Suspense, useRef } from 'react';
-import { IHomeProps } from 'src/features/home/interfaces/home.interface';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import { ISellerGig } from 'src/features/gigs/interfaces/gig.interface';
-import { v4 as uuidv4 } from 'uuid';
+import { FC, ReactElement } from 'react';
 import { Link } from 'react-router-dom';
-import { socket } from 'src/sockets/socket.service';
+import { ISellerGig } from 'src/features/gigs/interfaces/gig.interface';
+import GigCardDisplayItem from 'src/shared/gigs/GigCardDisplayItem';
 import { replaceSpacesWithDash } from 'src/shared/utils/utils.service';
+import { socket } from 'src/sockets/socket.service';
+import { v4 as uuidv4 } from 'uuid';
 
-const GigCardDisplayItem = lazy(() => import('src/shared/gigs/GigCardDisplayItem'));
+import { IHomeProps } from '../interfaces/home.interface';
 
 const HomeGigsView: FC<IHomeProps> = ({ gigs, title, subTitle, category }): ReactElement => {
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-
-  const scroll = (direction: 'left' | 'right') => {
-    if (scrollContainerRef.current) {
-      const scrollAmount = 300;
-      scrollContainerRef.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth'
-      });
-    }
-  };
-
   return (
-    <div className="mx-auto w-[90%] max-w-7xl mt-10 lg:mt-14">
-      {/* Header */}
-      <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="text-center sm:text-left">
-          <h1 className="text-xl font-bold text-[#111111] sm:text-2xl md:text-3xl font-themeFont">{title}</h1>
-          <p className="mt-1 text-sm text-[#4B5563] sm:text-base">{subTitle}</p>
-        </div>
-        {category && (
-          <div className="flex justify-center sm:justify-end">
-            <Link onClick={() => socket.emit('getLoggedInUsers', '')} to={`/categories/${replaceSpacesWithDash(category)}`}>
-              {category}
+    <div className="w-full rounded-2xl border border-default bg-surface p-6 shadow-sm transition-all duration-300 hover:shadow-md lg:p-8">
+      <div className="mb-6 lg:mb-8">
+        <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-4">
+          <h2 className="font-themeFont text-xl font-bold text-primary md:text-2xl lg:text-3xl">{title}</h2>
+          {category && (
+            <Link
+              onClick={() => socket.emit('getLoggedInUsers', '')}
+              to={`/categories/${replaceSpacesWithDash(category)}`}
+              className="group font-themeFont text-xl font-bold text-secondary transition-all duration-300 hover:text-secondary/80 md:text-2xl lg:text-3xl"
+            >
+              <span className="border-b-2 border-transparent group-hover:border-secondary/50 transition-all duration-300">{category}</span>
             </Link>
-          </div>
-        )}
-      </header>
+          )}
+        </div>
+        {subTitle && <p className="mt-3 text-base text-muted md:text-lg">{subTitle}</p>}
+      </div>
 
-      {/* Scroll Buttons */}
       <div className="relative">
-        <button
-          onClick={() => scroll('left')}
-          aria-label="Scroll Left"
-          className="absolute left-2 top-1/2 z-10 hidden -translate-y-1/2 rounded-full bg-white p-2 text-[#111111] shadow-md transition hover:bg-[#F3F4F6] sm:flex"
-        >
-          <FaChevronLeft />
-        </button>
-        <button
-          onClick={() => scroll('right')}
-          aria-label="Scroll Right"
-          className="absolute right-2 top-1/2 z-10 hidden -translate-y-1/2 rounded-full bg-white p-2 text-[#111111] shadow-md transition hover:bg-[#F3F4F6] sm:flex"
-        >
-          <FaChevronRight />
-        </button>
+        {/* Gradient overlays for horizontal scroll indication */}
+        <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-6 bg-gradient-to-r from-surface to-transparent lg:w-8"></div>
+        <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-6 bg-gradient-to-l from-surface to-transparent lg:w-8"></div>
 
-        {/* Scrollable Cards */}
-        <div ref={scrollContainerRef} className="flex gap-5 overflow-x-auto scroll-smooth px-1 py-4 sm:px-4 scrollbar-hide">
-          {gigs.map((gig: ISellerGig) => (
-            <Suspense fallback={<div className="w-60 h-40 bg-gray-100 animate-pulse" />}>
-              <GigCardDisplayItem key={uuidv4()} gig={gig} linkTarget={false} showEditIcon={false} />
-            </Suspense>
-          ))}
+        <div className="overflow-x-auto scrollbar-hide">
+          <div
+            className="grid grid-flow-col gap-4 pb-4 lg:gap-6"
+            style={{ gridTemplateColumns: `repeat(${gigs.length}, minmax(280px, 320px))` }}
+          >
+            {gigs.map((gig: ISellerGig) => (
+              <div key={uuidv4()} className="transform transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                <GigCardDisplayItem gig={gig} linkTarget={false} showEditIcon={false} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

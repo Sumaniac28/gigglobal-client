@@ -26,14 +26,14 @@ html {
 }
 
 body {
-font-family: 'Cabin','serif';
-  background: #F5FAFA;
+  font-family: 'Cabin', 'serif';
+  background: #f5fafa;
   position: relative;
   height: auto;
-  min-height: 100vh; 
+  min-height: 100vh;
   width: 100%;
   cursor: default;
-  overflow-x: hidden; 
+  overflow-x: hidden;
   overflow-y: auto;
 }
 
@@ -161,4 +161,22 @@ input[type='number'] {
 
 .zIndexDropdown {
   z-index: 100 !important;
+}
+
+/* Add these custom animations to your global CSS */
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.8s ease-out forwards;
+  opacity: 0;
 }

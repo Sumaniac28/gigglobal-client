@@ -4,7 +4,7 @@ export let socket: Socket;
 
 class SocketService {
   setupSocketConnection() {
-    socket = io('http://localhost:3000', {
+    socket = io('http://localhost:4000', {
       transports: ['websocket'],
       secure: false // Set to true if using HTTPS
     });
