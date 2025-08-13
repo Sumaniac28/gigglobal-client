@@ -27,6 +27,7 @@ import { addBuyer } from 'src/features/buyer/reducers/buyer.reducer';
 import { deleteFromLocalStorage, showErrorToast } from 'src/shared/utils/utils.service';
 import CircularPageLoader from 'src/shared/page-loader/CircularPageLoader';
 import Button from 'src/shared/button/Button';
+import SellerLoading from '../shared/SellerLoading';
 
 const SellerExperienceFields: LazyExoticComponent<FC<IExperienceProps>> = lazy(
   () => import('src/features/sellers/components/add/components/SellerExperienceFields')
@@ -156,39 +157,68 @@ const AddSeller: FC = (): ReactElement => {
   }, []);
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full bg-background min-h-screen">
       <Breadcrumb breadCrumbItems={['Seller', 'Create Profile']} />
       <div className="container mx-auto my-5 overflow-hidden px-2 pb-12 md:px-0">
         {isLoading && <CircularPageLoader />}
         {authUser && !authUser.emailVerified && (
-          <div className="absolute left-0 top-0 z-50 flex h-full w-full justify-center bg-white/[0.8] text-sm font-bold md:text-base lg:text-xl">
-            <span className="mt-20">Please verify your email.</span>
+          <div className="absolute left-0 top-0 z-50 flex h-full w-full justify-center bg-surface/95 backdrop-blur-sm text-sm font-bold md:text-base lg:text-xl shadow-lg">
+            <div className="mt-20 bg-surface px-6 py-4 rounded-lg border border-default shadow-sm">
+              <span className="text-primary font-themeFont">Please verify your email.</span>
+            </div>
           </div>
         )}
 
-        <div className="left-0 top-0 z-10 mt-4 block h-full bg-white"></div>
-        {errors.length > 0 ? <div className="text-red-400">{`You have ${errors.length} error${errors.length > 1 ? 's' : ''}`}</div> : <></>}
-        <Suspense>
+        <div className="left-0 top-0 z-10 mt-4 block h-full bg-surface rounded-lg shadow-sm"></div>
+
+        {errors.length > 0 ? (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <div className="text-red-600 font-medium font-themeFont">
+              You have {errors.length} error{errors.length > 1 ? 's' : ''}
+            </div>
+          </div>
+        ) : null}
+
+        <div className="space-y-8">
           <PersonalInfo personalInfo={personalInfo} setPersonalInfo={setPersonalInfo} personalInfoErrors={personalInfoErrors} />
-          <SellerExperienceFields
-            experienceFields={experienceFields}
-            setExperienceFields={setExperienceFields}
-            experienceErrors={experienceErrors}
-          />
-          <SellerEducationFields
-            educationFields={educationFields}
-            setEducationFields={setEducationFields}
-            educationErrors={educationErrors}
-          />
-          <SellerSkillField skillsFields={skillsFields} setSkillsFields={setSkillsFields} skillsErrors={skillsErrors} />
-          <SellerLanguageFields languageFields={languageFields} setLanguageFields={setLanguageFields} languagesErrors={languagesErrors} />
-          <SellerCertificateFields certificatesFields={certificateFields} setCertificatesFields={setCertificateFields} />
-          <SellerSocialLinksFields socialFields={socialFields} setSocialFields={setSocialFields} />
-        </Suspense>
-        <div className="flex justify-end p-6">
+
+          <Suspense fallback={<SellerLoading type="skeleton" />}>
+            <SellerExperienceFields
+              experienceFields={experienceFields}
+              setExperienceFields={setExperienceFields}
+              experienceErrors={experienceErrors}
+            />
+          </Suspense>
+
+          <Suspense fallback={<SellerLoading type="skeleton" />}>
+            <SellerEducationFields
+              educationFields={educationFields}
+              setEducationFields={setEducationFields}
+              educationErrors={educationErrors}
+            />
+          </Suspense>
+
+          <Suspense fallback={<SellerLoading type="skeleton" />}>
+            <SellerSkillField skillsFields={skillsFields} setSkillsFields={setSkillsFields} skillsErrors={skillsErrors} />
+          </Suspense>
+
+          <Suspense fallback={<SellerLoading type="skeleton" />}>
+            <SellerLanguageFields languageFields={languageFields} setLanguageFields={setLanguageFields} languagesErrors={languagesErrors} />
+          </Suspense>
+
+          <Suspense fallback={<SellerLoading type="skeleton" />}>
+            <SellerCertificateFields certificatesFields={certificateFields} setCertificatesFields={setCertificateFields} />
+          </Suspense>
+
+          <Suspense fallback={<SellerLoading type="skeleton" />}>
+            <SellerSocialLinksFields socialFields={socialFields} setSocialFields={setSocialFields} />
+          </Suspense>
+        </div>
+
+        <div className="flex justify-end p-6 mt-8 bg-surface rounded-lg border-t border-default shadow-sm">
           <Button
             onClick={onCreateSeller}
-            className="rounded bg-sky-500 px-8 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:py-3 md:text-base"
+            className="rounded-lg bg-primary px-8 py-3 text-center text-sm font-bold text-on-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-300 shadow-sm md:text-base font-themeFont"
             label="Create Profile"
           />
         </div>

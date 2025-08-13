@@ -1,8 +1,10 @@
-import { FC, ReactElement } from 'react';
+import { FC, ReactElement, useEffect } from 'react';
 import { Outlet, useParams } from 'react-router-dom';
 import { ISellerGig } from 'src/features/gigs/interfaces/gig.interface';
 import { IOrderDocument } from 'src/features/order/interfaces/order.interface';
 import DashboardHeader from 'src/shared/header/components/DashboardHeader';
+import { updateHeader } from 'src/shared/header/reducers/header.reducer';
+import { useAppDispatch } from 'src/store/store';
 
 import { ISellerDocument } from '../../interfaces/seller.interface';
 import { useGetSellerByIdQuery } from '../../services/seller.service';
@@ -10,6 +12,7 @@ import { useGetGigsBySellerIdQuery, useGetSellerPausedGigsQuery } from 'src/feat
 import { useGetOrdersBySellerIdQuery } from 'src/features/order/services/order.service';
 
 const Seller: FC = (): ReactElement => {
+  const dispatch = useAppDispatch();
   const { sellerId } = useParams<string>();
   const { data, isSuccess } = useGetSellerByIdQuery(`${sellerId}`);
   const { data: sellerGigs, isSuccess: isSellerGigsSuccess } = useGetGigsBySellerIdQuery(`${sellerId}`);
@@ -19,6 +22,10 @@ const Seller: FC = (): ReactElement => {
   let pausedGigs: ISellerGig[] = [];
   let orders: IOrderDocument[] = [];
   let seller: ISellerDocument | undefined = undefined;
+
+  useEffect(() => {
+    dispatch(updateHeader('sellerDashboard'));
+  }, [dispatch]);
 
   if (isSuccess) {
     seller = data?.seller as ISellerDocument;
@@ -37,9 +44,9 @@ const Seller: FC = (): ReactElement => {
   }
 
   return (
-    <div className="relative w-screen">
+    <div className="relative w-screen bg-background">
       <DashboardHeader />
-      <div className="m-auto px-6 w-screen xl:container md:px-12 lg:px-6 relative min-h-screen">
+      <div className="m-auto px-6 w-screen xl:container md:px-12 lg:px-6 relative min-h-screen bg-background">
         <Outlet context={{ seller, gigs, pausedGigs, orders }} />
       </div>
     </div>

@@ -43,33 +43,42 @@ const SocialLinksEditField: FC<ISocialEditLinksProps> = ({
   };
 
   return (
-    <div className="flex w-full flex-col">
-      <div className="mb-6 px-3">
-        <TextInput
-          className="w-full rounded border border-[#E5E7EB] p-2.5 text-sm font-normal text-[#4B5563] focus:outline-none"
-          placeholder="Social media link"
-          type="text"
-          name="socialLink"
-          value={socialLink}
-          onChange={(event: ChangeEvent) => {
-            setSocialLink((event.target as HTMLInputElement).value);
-          }}
-        />
+    <div className="flex w-full flex-col bg-surface rounded-lg shadow-sm border border-default p-6 md:p-8">
+      <div className="mb-8 space-y-6">
+        <div className="space-y-2">
+          <label className="block text-sm font-semibold text-primary font-themeFont leading-6">Social Media Link</label>
+          <TextInput
+            className="w-full rounded-lg border border-default bg-surface px-4 py-3 text-sm font-normal text-primary placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300"
+            placeholder="Enter your social media profile URL (e.g., https://twitter.com/username)"
+            type="url"
+            name="socialLink"
+            value={socialLink}
+            onChange={(event: ChangeEvent) => {
+              setSocialLink((event.target as HTMLInputElement).value);
+            }}
+          />
+          <div className="text-xs text-muted leading-4 font-themeFont">Include the full URL starting with https://</div>
+        </div>
       </div>
-      <div className="z-20 my-4 mt-10 flex cursor-pointer justify-center md:z-0 md:mt-0">
+
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center justify-center pt-6 border-t border-default">
         <Button
           disabled={!socialLink && type === 'add'}
-          className={`md:text-md rounded px-6 py-1 text-center text-sm font-bold text-white focus:outline-none md:py-2 ${
-            !socialLink && type === 'add' ? 'bg-[#14B8A6] cursor-not-allowed opacity-40' : 'bg-[#14B8A6] hover:bg-[#0F766E] cursor-pointer'
-          }`}
-          label={`${type === 'add' ? 'Add' : 'Update'}`}
+          className={`w-full sm:w-auto rounded-lg px-8 py-3 text-sm font-bold font-themeFont text-on-primary focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all duration-300
+        ${
+          !socialLink && type === 'add'
+            ? 'bg-primary cursor-not-allowed opacity-40'
+            : 'bg-primary hover:bg-primary cursor-pointer focus:ring-primary shadow-md hover:shadow-lg'
+        }
+      `}
           onClick={onHandleUpdate}
+          label={`${type === 'edit' ? 'Update Link' : 'Add Link'}`}
         />
-        &nbsp;&nbsp;
+
         <Button
-          className="md:text-md rounded bg-[#E5E7EB] px-6 py-1 text-center text-sm font-bold text-[#111111] hover:bg-[#D1D5DB] focus:outline-none md:py-2"
-          label="Cancel"
           onClick={onCancelUpdate}
+          className="w-full sm:w-auto rounded-lg bg-surface border border-default px-8 py-3 text-sm font-bold font-themeFont text-primary hover:bg-background hover:border-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300 shadow-sm hover:shadow-md"
+          label="Cancel"
         />
       </div>
     </div>

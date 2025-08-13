@@ -1,9 +1,10 @@
 import { FC, lazy, LazyExoticComponent, ReactElement, Suspense, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from 'src/store/store';
-import { IProfileHeaderProps, IProfileTabsProps, ISellerDocument } from 'src/features/sellers/interfaces/seller.interface';
+import { ISellerDocument } from 'src/features/sellers/interfaces/seller.interface';
 import { useParams } from 'react-router-dom';
 import { useUpdateSellerMutation } from 'src/features/sellers/services/seller.service';
 import { addSeller } from 'src/features/sellers/reducers/seller.reducer';
+import { updateHeader } from 'src/shared/header/reducers/header.reducer';
 import { IBreadCrumbProps, IButtonProps, IResponse } from 'src/shared/shared.interface';
 import equal from 'react-fast-compare';
 import { showErrorToast, showSuccessToast } from 'src/shared/utils/utils.service';
@@ -14,18 +15,9 @@ import { IReviewDocument } from 'src/features/order/interfaces/review.interface'
 import { ISellerGig } from 'src/features/gigs/interfaces/gig.interface';
 import { useGetGigsBySellerIdQuery } from 'src/features/gigs/services/gigs.service';
 import { useGetReviewsBySellerIdQuery } from 'src/features/order/services/review.service';
-
-const ProfileHeader: LazyExoticComponent<FC<IProfileHeaderProps>> = lazy(
-  () => import('src/features/sellers/components/profile/components/ProfileHeader')
-);
-
-const ProfileTabs: LazyExoticComponent<FC<IProfileTabsProps>> = lazy(
-  () => import('src/features/sellers/components/profile/components/ProfileTabs')
-);
-
-const SellerOverview: LazyExoticComponent<FC<IProfileHeaderProps>> = lazy(
-  () => import('src/features/sellers/components/profile/components/SellerOverview')
-);
+import ProfileHeader from './components/ProfileHeader';
+import ProfileTabs from './components/ProfileTabs';
+import SellerOverview from './components/SellerOverview';
 
 const Button: LazyExoticComponent<FC<IButtonProps>> = lazy(() => import('src/shared/button/Button'));
 
@@ -50,6 +42,10 @@ const CurrentSellerProfile: FC = (): ReactElement => {
 
   const isDataLoading: boolean = isSellerGigLoading && isGigReviewLoading && !isSellerGigSuccess && !isGigReviewSuccess;
 
+  useEffect(() => {
+    dispatch(updateHeader('home'));
+  }, [dispatch]);
+
   const onUpdateSeller = async (): Promise<void> => {
     try {
       const response: IResponse = await updateSeller({ sellerId: `${sellerId}`, seller: sellerProfile }).unwrap();
@@ -72,63 +68,94 @@ const CurrentSellerProfile: FC = (): ReactElement => {
   }, [seller, sellerProfile]);
 
   return (
-    <div className="relative w-full pb-6">
-      <Suspense>
-        <Breadcrumb breadCrumbItems={['Seller', `${seller.username}`]} />
-      </Suspense>
-      {isLoading || isDataLoading ? (
-        <Suspense>
-          <CircularPageLoader />
-        </Suspense>
-      ) : (
-        <div className="container px-2 mx-auto md:px-4 lg:px-8">
-          {!showEdit && (
-            <div className="my-2 flex h-8 justify-end md:h-10">
-              <div>
-                <Suspense>
-                  <Button
-                    className="md:text-md rounded bg-sky-500 px-6 py-1 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:py-2"
-                    label="Update"
-                    onClick={onUpdateSeller}
-                  />
-                  &nbsp;&nbsp;
-                  <Button
-                    className="md:text-md rounded bg-red-500 px-6 py-1 text-center text-sm font-bold text-white hover:bg-red-500 focus:outline-none md:py-2"
-                    label="Cancel"
-                    onClick={() => {
-                      setShowEdit(false);
-                      setSellerProfile(seller);
-                      dispatch(addSeller(seller));
-                    }}
-                  />
-                </Suspense>
-              </div>
-            </div>
-          )}
-          <Suspense>
-            <ProfileHeader sellerProfile={sellerProfile} setSellerProfile={setSellerProfile} showHeaderInfo={true} showEditIcons={true} />
-          </Suspense>
-          <div className="my-4 cursor-pointer">
-            <Suspense>
-              <ProfileTabs type={type} setType={setType} />
+    <div className="relative w-full pb-8 bg-background min-h-screen">
+      <div className="bg-surface border-b border-default">
+        <div className="container px-4 mx-auto lg:px-8">
+          <div className="py-4">
+            <Suspense fallback={<div className="animate-pulse h-6 bg-muted/20 rounded-md w-48"></div>}>
+              <Breadcrumb breadCrumbItems={['Seller', `${seller.username}`]} />
             </Suspense>
           </div>
+        </div>
+      </div>
 
-          <div className="flex flex-wrap">
-            {type === 'Overview' && (
-              <Suspense>
-                <SellerOverview sellerProfile={sellerProfile} setSellerProfile={setSellerProfile} showEditIcons={true} />
+      {isLoading || isDataLoading ? (
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <Suspense fallback={<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>}>
+            <CircularPageLoader />
+          </Suspense>
+        </div>
+      ) : (
+        <div className="container px-4 mx-auto lg:px-8">
+          {!showEdit && (
+            <div className="flex justify-end py-6 gap-3">
+              <Suspense
+                fallback={
+                  <div className="flex gap-3">
+                    <div className="animate-pulse bg-muted/20 rounded-lg h-10 w-28"></div>
+                    <div className="animate-pulse bg-muted/20 rounded-lg h-10 w-20"></div>
+                  </div>
+                }
+              >
+                <Button
+                  className="rounded-lg bg-primary px-6 py-3 text-sm font-semibold font-themeFont text-on-primary transition-all duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/30 shadow-sm"
+                  label="Update Profile"
+                  onClick={onUpdateSeller}
+                />
+                <Button
+                  className="rounded-lg bg-muted px-6 py-3 text-sm font-semibold font-themeFont text-on-primary transition-all duration-200 hover:bg-muted/90 focus:outline-none focus:ring-2 focus:ring-muted/30 shadow-sm"
+                  label="Cancel"
+                  onClick={() => {
+                    setShowEdit(false);
+                    setSellerProfile(seller);
+                    dispatch(addSeller(seller));
+                  }}
+                />
               </Suspense>
-            )}
-            {type === 'Active Gigs' && (
-              <div className="grid gap-x-6 pt-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                {data?.gigs &&
-                  data?.gigs.map((gig: ISellerGig) => (
-                    <GigCardDisplayItem key={uuidv4()} gig={gig} linkTarget={false} showEditIcon={true} />
-                  ))}
-              </div>
-            )}
-            {type === 'Ratings & Reviews' && <GigViewReviews showRatings={false} reviews={reviews} hasFetchedReviews={true} />}
+            </div>
+          )}
+
+          <div className="space-y-6">
+            <ProfileHeader sellerProfile={sellerProfile} setSellerProfile={setSellerProfile} showHeaderInfo={true} showEditIcons={true} />
+
+            <div className="bg-surface rounded-lg shadow-sm overflow-hidden">
+              <ProfileTabs type={type} setType={setType} />
+            </div>
+
+            <div className="bg-surface rounded-lg shadow-sm">
+              {type === 'Overview' && (
+                <div className="p-6">
+                  <SellerOverview sellerProfile={sellerProfile} setSellerProfile={setSellerProfile} showEditIcons={true} />
+                </div>
+              )}
+
+              {type === 'Active Gigs' && (
+                <div className="p-6">
+                  <h2 className="text-xl font-bold font-themeFont text-primary mb-6">Active Gigs</h2>
+                  <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+                    {data?.gigs &&
+                      data?.gigs.map((gig: ISellerGig) => (
+                        <div key={uuidv4()} className="transition-transform duration-200 hover:scale-105">
+                          <GigCardDisplayItem gig={gig} linkTarget={false} showEditIcon={true} />
+                        </div>
+                      ))}
+                  </div>
+                  {(!data?.gigs || data?.gigs.length === 0) && (
+                    <div className="text-center py-12">
+                      <p className="text-muted text-lg">No active gigs found</p>
+                      <p className="text-muted/80 text-sm mt-2">Create your first gig to get started</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {type === 'Ratings & Reviews' && (
+                <div className="p-6">
+                  <h2 className="text-xl font-bold font-themeFont text-primary mb-6">Ratings & Reviews</h2>
+                  <GigViewReviews showRatings={false} reviews={reviews} hasFetchedReviews={true} />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}

@@ -7,22 +7,31 @@ const Dropdown: LazyExoticComponent<FC<IDropdownProps>> = lazy(() => import('src
 const ProfileTabs: FC<IProfileTabsProps> = ({ type, setType }): ReactElement => {
   return (
     <>
-      {/* Mobile Dropdown */}
-      <div className="sm:hidden bg-white border border-[#E5E7EB]">
-        <Suspense>
+      <div className="sm:hidden bg-surface border border-default rounded-lg shadow-sm">
+        <Suspense
+          fallback={
+            <div className="p-4">
+              <div className="animate-pulse h-10 bg-muted/20 rounded w-full"></div>
+            </div>
+          }
+        >
           <Dropdown text={type} maxHeight="300" values={['Overview', 'Active Gigs', 'Ratings & Reviews']} setValue={setType} />
         </Suspense>
       </div>
 
-      {/* Tabbed Navigation */}
-      <ul className="hidden sm:flex divide-x divide-[#E5E7EB] text-center text-sm font-medium text-[#4B5563] shadow">
+      <ul className="hidden sm:flex divide-x divide-border-default bg-surface border border-default rounded-lg overflow-hidden shadow-sm">
         {['Overview', 'Active Gigs', 'Ratings & Reviews'].map((tab) => (
-          <li key={tab} className="w-full">
+          <li key={tab} className="flex-1">
             <div
               onClick={() => setType && setType(tab)}
-              className={`inline-block w-full p-4 cursor-pointer transition-colors duration-200
-            ${type === tab ? 'bg-[#14B8A6] text-white' : 'bg-white text-[#4B5563] hover:text-[#0F766E]'}
-            focus:outline-none
+              className={`
+            block w-full px-6 py-4 text-center font-themeFont font-medium text-sm cursor-pointer 
+            transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary/20
+            ${
+              type === tab
+                ? 'bg-primary text-on-primary shadow-sm transform'
+                : 'bg-surface text-muted hover:bg-primary/5 hover:text-primary'
+            }
           `}
             >
               {tab}

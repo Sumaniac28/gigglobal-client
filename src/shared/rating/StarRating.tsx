@@ -1,6 +1,5 @@
-import { FC, Fragment, ReactElement, useEffect, useState } from 'react';
+import { FC, ReactElement, useEffect, useState } from 'react';
 import { FaRegStar, FaStar } from 'react-icons/fa';
-import { v4 as uuidv4 } from 'uuid';
 
 import { IStarRatingProps } from 'src/shared/shared.interface';
 
@@ -22,15 +21,30 @@ const StarRating: FC<IStarRatingProps> = ({ value, size, setReviewRating }): Rea
   };
 
   return (
-    <div className="flex cursor-pointer">
-      <div className="flex relative text-orange-400">
-        {numberOfStars.map((index: number) => (
-          <Fragment key={index}>{index <= rating && <FaStar size={size} className="mr-1" />}</Fragment>
-        ))}
-
-        <div className="absolute flex text-orange-400">
+    <div className="flex items-center">
+      <div className="relative inline-flex items-center">
+        {/* Background stars (outlined) */}
+        <div className="flex items-center text-orange-200">
           {numberOfStars.map((index: number) => (
-            <FaRegStar className="mr-1" key={uuidv4()} size={size} onClick={() => handleClick(index)} />
+            <FaRegStar 
+              key={`outline-${index}`}
+              size={size} 
+              className="cursor-pointer" 
+              style={{ marginRight: index < 5 ? '2px' : '0' }}
+              onClick={() => handleClick(index)} 
+            />
+          ))}
+        </div>
+        
+        {/* Filled stars overlay */}
+        <div className="absolute top-0 left-0 flex items-center text-orange-400 overflow-hidden">
+          {numberOfStars.map((index: number) => (
+            <FaStar 
+              key={`filled-${index}`}
+              size={size} 
+              className={`${index <= rating ? 'opacity-100' : 'opacity-0'}`}
+              style={{ marginRight: index < 5 ? '2px' : '0' }}
+            />
           ))}
         </div>
       </div>

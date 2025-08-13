@@ -39,99 +39,115 @@ const SellerEducationFields: FC<IEducationProps> = ({ educationFields, setEducat
   };
 
   return (
-    <div className="bg-[#F9FAFB] px-4 py-6 sm:px-6 md:px-10 lg:px-16 rounded-lg">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="pb-4 text-xl font-bold text-[#111111]">Education</h2>
+    <div className="bg-surface border border-default rounded-xl shadow-sm px-4 py-6 sm:px-6 md:px-8 lg:px-10">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+        <h2 className="font-themeFont text-xl sm:text-2xl font-bold text-primary leading-tight">Education</h2>
         <Button
-          className="h-8 rounded-md bg-[#14B8A6] px-5 text-sm font-semibold text-white transition hover:bg-[#0F766E] focus:outline-none"
+          className="w-full sm:w-auto h-10 rounded-lg bg-primary px-6 py-2 text-sm font-semibold text-on-primary transition-all duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 shadow-sm hover:shadow-md"
           label="Add More"
           onClick={() => addEducationFields()}
         />
       </div>
 
-      {educationFields?.map((input: IEducation, index: number) => (
-        <div key={index}>
-          <div className="relative">
-            <TextInput
-              className="mb-4 w-full rounded-md border border-[#E5E7EB] p-3 text-sm text-[#111111] placeholder-[#9CA3AF] focus:border-[#14B8A6] focus:ring-2 focus:ring-[#14B8A6] transition"
-              placeholder="University/College Name"
-              type="text"
-              name="university"
-              value={input.university}
-              onChange={(event: ChangeEvent) => handleEducationFieldsChange(event, index)}
-            />
-          </div>
-          <div className="relative h-[55px]">
-            <Suspense>
-              <Dropdown
-                text={input.country}
-                maxHeight="300"
-                showSearchInput={true}
-                mainClassNames="absolute bg-white z-40"
-                values={countriesList()}
-                onClick={(item: string) => {
-                  const data: IEducation[] = [...educationFields];
-                  data[index]['country'] = `${item}`;
-                  if (setEducationFields) {
-                    setEducationFields(data);
-                  }
-                }}
-              />
-            </Suspense>
-          </div>
-          <div className="mt-4 grid h-1/5 grid-cols-4 gap-x-2 gap-y-3">
-            <div className="relative">
-              <Dropdown
-                text={input.title}
-                maxHeight="300"
-                mainClassNames="absolute bg-white z-30"
-                values={degreeList()}
-                onClick={(item: string) => {
-                  const data: IEducation[] = [...educationFields];
-                  data[index]['title'] = `${item}`;
-                  if (setEducationFields) {
-                    setEducationFields(data);
-                  }
-                }}
-              />
-            </div>
-            <div className="col-span-2">
-              <TextInput
-                className="w-full rounded-md border border-[#E5E7EB] p-3 text-sm text-[#111111] placeholder-[#9CA3AF] focus:border-[#14B8A6] focus:ring-2 focus:ring-[#14B8A6] transition"
-                placeholder="Major e.g: Computer Engineering"
-                type="text"
-                name="major"
-                value={input.major}
-                onChange={(event: ChangeEvent) => handleEducationFieldsChange(event, index)}
-              />
-            </div>
-            <div className="relative">
-              <Dropdown
-                text={input.year}
-                maxHeight="300"
-                mainClassNames="absolute bg-white z-30"
-                values={yearsList(100)}
-                onClick={(item: string) => {
-                  const data: IEducation[] = [...educationFields];
-                  data[index]['year'] = `${item}`;
-                  if (setEducationFields) {
-                    setEducationFields(data);
-                  }
-                }}
-              />
-            </div>
-            <div className="mb-2">
-              {educationFields.length > 1 && index > 0 && (
-                <Button
-                  className="h-8 rounded-md bg-red-500 px-5 text-sm font-semibold text-white transition hover:bg-red-400 focus:outline-none"
-                  onClick={() => removeEducationFields(index)}
-                  label="Delete"
+      <div className="space-y-8">
+        {educationFields?.map((input: IEducation, index: number) => (
+          <div key={index} className="bg-background rounded-lg p-4 sm:p-6 border border-default">
+            <div className="space-y-6">
+              {}
+              <div className="relative">
+                <TextInput
+                  className="w-full rounded-lg border border-default bg-surface p-3 sm:p-4 text-sm text-primary placeholder-text-muted focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 hover:border-primary/50"
+                  placeholder="University/College Name"
+                  type="text"
+                  name="university"
+                  value={input.university}
+                  onChange={(event: ChangeEvent) => handleEducationFieldsChange(event, index)}
                 />
+              </div>
+
+              {}
+              <div className="relative h-[55px]">
+                <Suspense>
+                  <Dropdown
+                    text={input.country}
+                    maxHeight="300"
+                    showSearchInput={true}
+                    mainClassNames="absolute bg-surface border border-default rounded-lg shadow-lg z-40"
+                    values={countriesList()}
+                    onClick={(item: string) => {
+                      const data: IEducation[] = [...educationFields];
+                      data[index]['country'] = `${item}`;
+                      if (setEducationFields) {
+                        setEducationFields(data);
+                      }
+                    }}
+                  />
+                </Suspense>
+              </div>
+
+              {}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-start">
+                {}
+                <div className="relative h-[55px]">
+                  <Dropdown
+                    text={input.title}
+                    maxHeight="300"
+                    mainClassNames="absolute bg-surface border border-default rounded-lg shadow-lg z-30"
+                    values={degreeList()}
+                    onClick={(item: string) => {
+                      const data: IEducation[] = [...educationFields];
+                      data[index]['title'] = `${item}`;
+                      if (setEducationFields) {
+                        setEducationFields(data);
+                      }
+                    }}
+                  />
+                </div>
+
+                {}
+                <div className="sm:col-span-1 lg:col-span-2">
+                  <TextInput
+                    className="w-full rounded-lg border border-default bg-surface p-3 sm:p-4 text-sm text-primary placeholder-text-muted focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 hover:border-primary/50"
+                    placeholder="Major e.g: Computer Engineering"
+                    type="text"
+                    name="major"
+                    value={input.major}
+                    onChange={(event: ChangeEvent) => handleEducationFieldsChange(event, index)}
+                  />
+                </div>
+
+                {}
+                <div className="relative h-[55px]">
+                  <Dropdown
+                    text={input.year}
+                    maxHeight="300"
+                    mainClassNames="absolute bg-surface border border-default rounded-lg shadow-lg z-30"
+                    values={yearsList(100)}
+                    onClick={(item: string) => {
+                      const data: IEducation[] = [...educationFields];
+                      data[index]['year'] = `${item}`;
+                      if (setEducationFields) {
+                        setEducationFields(data);
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+
+              {}
+              {educationFields.length > 1 && index > 0 && (
+                <div className="flex justify-end pt-4">
+                  <Button
+                    className="h-9 rounded-lg bg-red-500 hover:bg-red-600 px-5 py-2 text-sm font-semibold text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:ring-offset-2 shadow-sm hover:shadow-md"
+                    onClick={() => removeEducationFields(index)}
+                    label="Delete"
+                  />
+                </div>
               )}
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };

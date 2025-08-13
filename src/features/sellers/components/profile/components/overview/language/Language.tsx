@@ -15,61 +15,82 @@ const Language: FC = (): ReactElement => {
   const { sellerProfile, showEditIcons } = useContext(SellerContext);
 
   return (
-    <div className="border border-[#D1D5DB] bg-white rounded-md">
-      <div className="flex items-center justify-between border-b border-[#D1D5DB] px-4 py-3">
-        <h4 className="text-sm font font-bold text-[#111111] md:text-base">LANGUAGE SKILLS</h4>
-        {showEditIcons && (
-          <span
+    <div className="mt-8 rounded-lg border border-default bg-surface shadow-sm">
+      <div className="flex items-center justify-between border-b border-default px-6 py-4 bg-background rounded-t-lg">
+        <h4 className="text-lg font-bold font-themeFont text-primary leading-6 md:text-xl">LANGUAGE SKILLS</h4>
+        {showEditIcons && !showLanguageAddForm && (
+          <button
             onClick={() => {
               setShowLanguageAddForm(!showLanguageAddForm);
               setShowLanguageEditForm(false);
             }}
-            className="cursor-pointer text-sm text-[#14B8A6] hover:text-[#0F766E] md:text-base"
+            className="inline-flex items-center px-4 py-2 text-sm font-semibold font-themeFont text-primary bg-accent hover:bg-accent rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 shadow-sm hover:shadow-md md:text-base"
           >
-            Add New
-          </span>
+            <span className="text-on-primary">+ Add New</span>
+          </button>
         )}
       </div>
 
-      <ul className="list-none divide-y divide-[#D1D5DB]">
+      <ul className="list-none divide-y divide-default">
         {showLanguageAddForm && (
-          <li className="px-4 py-3">
+          <li className="px-6 py-6 bg-background">
             <LanguageFields type="add" setShowLanguageAddForm={setShowLanguageAddForm} />
           </li>
         )}
 
         {!showLanguageAddForm &&
           sellerProfile?.languages.map((lang: ILanguage) => (
-            <li key={uuidv4()} className="flex items-center justify-between px-4 py-3">
+            <li
+              key={uuidv4()}
+              className="group flex items-center justify-between px-6 py-5 hover:bg-background transition-all duration-300"
+            >
               {!showLanguageEditForm && (
-                <div className="flex text-sm text-[#4B5563] md:text-base">
-                  <div className="mr-2 font-bold text-[#111111]">{lang.language}</div>
-                  <div className="mr-2">-</div>
-                  <div>{lang.level}</div>
+                <div className="flex items-center gap-3 text-base font-medium text-primary leading-6 md:text-lg flex-1 min-w-0">
+                  <div className="font-bold font-themeFont text-primary">{lang.language}</div>
+                  <span className="text-border-default font-medium">—</span>
+                  <div className="bg-secondary text-on-primary px-3 py-1 rounded-full text-xs font-medium">{lang.level}</div>
                 </div>
               )}
 
               {showLanguageEditForm && selectedLanguage?._id === lang._id && (
-                <Suspense>
-                  <LanguageFields type="edit" selectedLanguage={lang} setShowLanguageEditForm={setShowLanguageEditForm} />
-                </Suspense>
+                <div className="w-full">
+                  <Suspense>
+                    <LanguageFields type="edit" selectedLanguage={lang} setShowLanguageEditForm={setShowLanguageEditForm} />
+                  </Suspense>
+                </div>
               )}
 
               {!showLanguageEditForm && showEditIcons && (
-                <div className="text-[#14B8A6] hover:text-[#0F766E]">
-                  <FaPencilAlt
+                <div className="flex items-center ml-4 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                  <button
                     onClick={() => {
                       setSelectedLanguage(lang);
                       setShowLanguageEditForm(!showLanguageEditForm);
                       setShowLanguageAddForm(false);
                     }}
-                    size="14"
-                    className="cursor-pointer"
-                  />
+                    className="p-2 text-primary hover:text-on-primary bg-transparent hover:bg-primary rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                    aria-label="Edit language skill"
+                  >
+                    <FaPencilAlt size="14" />
+                  </button>
                 </div>
               )}
             </li>
           ))}
+
+        {sellerProfile?.languages.length === 0 && !showLanguageAddForm && !showLanguageEditForm && (
+          <li className="px-6 py-12 text-center">
+            <div className="flex flex-col items-center space-y-3">
+              <div className="w-12 h-12 bg-background rounded-full flex items-center justify-center">
+                <span className="text-2xl text-muted">🌐</span>
+              </div>
+              <div className="text-base text-muted font-medium leading-6">No language skills added yet</div>
+              <div className="text-sm text-muted leading-5 text-center max-w-sm">
+                Add your language proficiency to showcase your communication abilities
+              </div>
+            </div>
+          </li>
+        )}
       </ul>
     </div>
   );

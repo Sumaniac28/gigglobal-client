@@ -67,113 +67,126 @@ const SellerExperienceFields: FC<IExperienceProps> = ({ experienceFields, setExp
   };
 
   return (
-    <div className="bg-[#F9FAFB] px-4 py-6 sm:px-6 md:px-10 lg:px-16 rounded-lg">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-bold text-[#111111]">Experience</h2>
+    <div className="bg-surface border border-default rounded-xl shadow-sm px-4 py-6 sm:px-6 md:px-8 lg:px-10">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+        <h2 className="font-themeFont text-xl sm:text-2xl font-bold text-primary leading-tight">Experience</h2>
         <Button
-          className="h-8 rounded-md bg-[#14B8A6] px-5 text-sm font-semibold text-white transition hover:bg-[#0F766E] focus:outline-none"
+          className="w-full sm:w-auto h-10 rounded-lg bg-primary px-6 py-2 text-sm font-semibold text-on-primary transition-all duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 shadow-sm hover:shadow-md"
           label="Add More"
           onClick={() => addExperienceFields()}
         />
       </div>
 
-      {experienceFields?.map((input: IExperience, index: number) => (
-        <div key={index} className="mb-8 space-y-5">
-          <TextInput
-            className="w-full rounded-md border border-[#E5E7EB] p-3 text-sm text-[#111111] placeholder-[#9CA3AF] focus:border-[#14B8A6] focus:ring-2 focus:ring-[#14B8A6] transition"
-            name="title"
-            placeholder="Title (E.g: CEO)"
-            value={input.title}
-            onChange={(event: ChangeEvent) => handleExperienceFieldsChange(event, index)}
-          />
-          <TextInput
-            className="w-full rounded-md border border-[#E5E7EB] p-3 text-sm text-[#111111] placeholder-[#9CA3AF] focus:border-[#14B8A6] focus:ring-2 focus:ring-[#14B8A6] transition"
-            placeholder="Company name"
-            name="company"
-            value={input.company}
-            onChange={(event: ChangeEvent) => handleExperienceFieldsChange(event, index)}
-          />
-          <div className="grid grid-cols-2 gap-4">
-            <div className="relative">
-              <Suspense>
-                <Dropdown
-                  text={input.startDate}
-                  maxHeight="300"
-                  mainClassNames="absolute bg-white z-10"
-                  values={yearsList(100)}
-                  onClick={(item: string) => {
-                    const data: IExperience[] = [...experienceFields];
-                    data[index]['startDate'] = `${item}`;
-                    setExperienceFields?.(data);
-                  }}
+      <div className="space-y-8">
+        {experienceFields?.map((input: IExperience, index: number) => (
+          <div key={index} className="bg-background rounded-lg p-4 sm:p-6 border border-default">
+            <div className="space-y-6">
+              <div>
+                <TextInput
+                  className="w-full rounded-lg border border-default bg-surface p-3 sm:p-4 text-sm text-primary placeholder-text-muted focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 hover:border-primary/50"
+                  name="title"
+                  placeholder="Title (E.g: CEO)"
+                  value={input.title}
+                  onChange={(event: ChangeEvent) => handleExperienceFieldsChange(event, index)}
                 />
-              </Suspense>
+              </div>
+
+              <div>
+                <TextInput
+                  className="w-full rounded-lg border border-default bg-surface p-3 sm:p-4 text-sm text-primary placeholder-text-muted focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 hover:border-primary/50"
+                  placeholder="Company name"
+                  name="company"
+                  value={input.company}
+                  onChange={(event: ChangeEvent) => handleExperienceFieldsChange(event, index)}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-primary">Start Date</label>
+                  <div className="relative h-[55px]">
+                    <Suspense>
+                      <Dropdown
+                        text={input.startDate}
+                        maxHeight="300"
+                        mainClassNames="absolute bg-surface border border-default rounded-lg shadow-lg z-10"
+                        values={yearsList(100)}
+                        onClick={(item: string) => {
+                          const data: IExperience[] = [...experienceFields];
+                          data[index]['startDate'] = `${item}`;
+                          setExperienceFields?.(data);
+                        }}
+                      />
+                    </Suspense>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-primary">End Date</label>
+                  <div
+                    className="relative h-[55px]"
+                    style={{
+                      cursor: input.currentlyWorkingHere ? 'not-allowed' : 'pointer',
+                      pointerEvents: input.currentlyWorkingHere ? 'none' : 'auto'
+                    }}
+                  >
+                    <Dropdown
+                      text={input.endDate}
+                      maxHeight="300"
+                      mainClassNames={`absolute rounded-lg shadow-lg z-10 ${
+                        input.currentlyWorkingHere ? 'bg-surface/50 border-default opacity-50' : 'bg-surface border border-default'
+                      }`}
+                      values={yearsList(100)}
+                      onClick={(item: string) => {
+                        const data: IExperience[] = [...experienceFields];
+                        data[index]['endDate'] = `${item}`;
+                        setExperienceFields?.(data);
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 py-2">
+                <TextInput
+                  id={`checkbox-${index}`}
+                  type="checkbox"
+                  name="currentlyWorkingHere"
+                  value={`${input.currentlyWorkingHere}`}
+                  checked={input.currentlyWorkingHere}
+                  onChange={(event: ChangeEvent) => handleExperienceFieldsChange(event, index)}
+                  className="h-4 w-4 rounded border-default bg-surface text-primary focus:ring-primary/20 focus:ring-2 transition-all duration-200"
+                />
+                <label htmlFor={`checkbox-${index}`} className="text-sm text-muted cursor-pointer select-none leading-5">
+                  I am currently working here
+                </label>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-primary">Description</label>
+                <TextAreaInput
+                  className="w-full rounded-lg border border-default bg-surface p-3 sm:p-4 text-sm text-primary placeholder-text-muted focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 hover:border-primary/50 resize-none"
+                  name="description"
+                  placeholder="Describe your role, achievements, and key responsibilities..."
+                  value={input.description}
+                  rows={4}
+                  onChange={(event: ChangeEvent) => handleExperienceFieldsChange(event, index)}
+                />
+              </div>
+
+              {experienceFields.length > 1 && index > 0 && (
+                <div className="flex justify-end pt-4 border-t border-default">
+                  <Button
+                    className="h-9 rounded-lg bg-red-500 hover:bg-red-600 px-5 py-2 text-sm font-semibold text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:ring-offset-2 shadow-sm hover:shadow-md"
+                    label="Delete"
+                    onClick={() => removeExperienceFields(index)}
+                  />
+                </div>
+              )}
             </div>
-            <div
-              className="relative"
-              style={{
-                cursor: input.currentlyWorkingHere ? 'not-allowed' : 'pointer',
-                pointerEvents: input.currentlyWorkingHere ? 'none' : 'auto'
-              }}
-            >
-              <Dropdown
-                text={input.endDate}
-                maxHeight="300"
-                mainClassNames="absolute bg-white z-10"
-                values={yearsList(100)}
-                onClick={(item: string) => {
-                  const data: IExperience[] = [...experienceFields];
-                  data[index]['endDate'] = `${item}`;
-                  setExperienceFields?.(data);
-                }}
-              />
-            </div>
           </div>
-          <div className="flex items-center h-5">
-            {/* <TextInput
-          id="default-checkbox"
-          type="checkbox"
-          name="currentlyWorkingHere"
-          value={`${input.currentlyWorkingHere}`}
-          checked={input.currentlyWorkingHere}
-          onChange={(event: ChangeEvent) => handleExperienceFieldsChange(event, index)}
-          className="h-4 w-4 rounded border-gray-300 bg-gray-100 text-[#14B8A6] focus:ring-[#14B8A6]"
-        />
-        <label htmlFor="default-checkbox" className="ml-2 text-sm text-[#4B5563]">
-          I am currently working here
-        </label> */}
-          </div>
-          <div className="flex items-center">
-            <TextInput
-              id="default-checkbox"
-              type="checkbox"
-              name="currentlyWorkingHere"
-              value={`${input.currentlyWorkingHere}`}
-              checked={input.currentlyWorkingHere}
-              onChange={(event: ChangeEvent) => handleExperienceFieldsChange(event, index)}
-              className="h-4 w-4 rounded border-gray-300 bg-gray-100 text-[#14B8A6] focus:ring-[#14B8A6]"
-            />
-            <label htmlFor="default-checkbox" className="ml-2 text-sm text-[#4B5563]">
-              I am currently working here
-            </label>
-          </div>
-          <TextAreaInput
-            className="w-full rounded-md border border-[#E5E7EB] p-3 text-sm text-[#111111] placeholder-[#9CA3AF] focus:border-[#14B8A6] focus:ring-2 focus:ring-[#14B8A6] transition"
-            name="description"
-            placeholder="Write description..."
-            value={input.description}
-            rows={5}
-            onChange={(event: ChangeEvent) => handleExperienceFieldsChange(event, index)}
-          />
-          {experienceFields.length > 1 && index > 0 && (
-            <Button
-              className="h-8 rounded-md bg-red-500 px-5 text-sm font-semibold text-white transition hover:bg-red-400 focus:outline-none"
-              label="Delete"
-              onClick={() => removeExperienceFields(index)}
-            />
-          )}
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };

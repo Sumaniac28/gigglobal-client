@@ -15,25 +15,25 @@ const Education: FC = (): ReactElement => {
   const { showEditIcons, sellerProfile } = useContext(SellerContext);
 
   return (
-    <div className="mt-6 rounded-md border border-[#D1D5DB] bg-white">
-      <div className="flex items-center justify-between border-b border-[#D1D5DB] px-4 py-3">
-        <h4 className="text-sm font-bold text-[#111111] md:text-base">EDUCATION</h4>
+    <div className="mt-8 rounded-lg border border-default bg-surface shadow-sm">
+      <div className="flex items-center justify-between border-b border-default px-6 py-4 bg-background rounded-t-lg">
+        <h4 className="text-lg font-bold font-themeFont text-primary leading-6 md:text-xl">EDUCATION</h4>
         {showEditIcons && !showEducationAddForm && (
-          <span
-            className="cursor-pointer text-sm text-[#14B8A6] hover:text-[#0F766E] md:text-base"
+          <button
             onClick={() => {
               setShowEducationAddForm(!showEducationAddForm);
               setShowEducationEditForm(false);
             }}
+            className="inline-flex items-center px-4 py-2 text-sm font-semibold font-themeFont text-primary bg-accent hover:bg-accent rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 shadow-sm hover:shadow-md md:text-base"
           >
-            Add New
-          </span>
+            <span className="text-on-primary">+ Add New</span>
+          </button>
         )}
       </div>
 
-      <ul className="list-none divide-y divide-[#D1D5DB]">
+      <ul className="list-none divide-y divide-default">
         {showEducationAddForm && (
-          <li className="px-4 py-3">
+          <li className="px-6 py-6 bg-background">
             <Suspense>
               <EducationFields type="add" setShowEducationAddForm={setShowEducationAddForm} />
             </Suspense>
@@ -42,37 +42,61 @@ const Education: FC = (): ReactElement => {
 
         {!showEducationAddForm &&
           sellerProfile?.education.map((education: IEducation) => (
-            <li key={uuidv4()} className="flex justify-between px-4 py-3 text-sm text-[#4B5563] md:text-base">
+            <li key={uuidv4()} className="group flex justify-between items-start px-6 py-5 hover:bg-background transition-all duration-300">
               {!showEducationEditForm && (
-                <div className="flex flex-col">
-                  <div className="font-bold text-[#111111] pb-1">
+                <div className="flex flex-col space-y-3 flex-1 min-w-0">
+                  <div className="text-base font-bold font-themeFont text-primary leading-6 md:text-lg">
                     {education.major} {education.title}
                   </div>
-                  <div>
-                    {education.university}, {education.country}, Graduated {education.year}
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                    <div className="text-sm text-muted font-medium leading-5 md:text-base">{education.university}</div>
+                    <div className="flex items-center gap-2 text-sm text-muted leading-5">
+                      <span className="hidden sm:inline-block w-1 h-1 bg-muted rounded-full"></span>
+                      <span className="bg-secondary text-on-primary px-2 py-1 rounded-full text-xs font-medium">{education.country}</span>
+                      <span className="mx-1 text-border-default">•</span>
+                      <span className="font-medium">Graduated {education.year}</span>
+                    </div>
                   </div>
                 </div>
               )}
 
               {showEducationEditForm && selectedEducation?._id === education._id && (
-                <EducationFields type="edit" selectedEducation={selectedEducation} setShowEducationEditForm={setShowEducationEditForm} />
+                <div className="w-full">
+                  <EducationFields type="edit" selectedEducation={selectedEducation} setShowEducationEditForm={setShowEducationEditForm} />
+                </div>
               )}
 
               {!showEducationEditForm && showEditIcons && (
-                <div className="text-[#14B8A6] hover:text-[#0F766E]">
-                  <FaPencilAlt
-                    size="14"
-                    className="cursor-pointer"
+                <div className="flex items-center ml-4 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                  <button
                     onClick={() => {
                       setSelectedEducation(education);
                       setShowEducationEditForm(!showEducationEditForm);
                       setShowEducationAddForm(false);
                     }}
-                  />
+                    className="p-2 text-primary hover:text-on-primary bg-transparent hover:bg-primary rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                    aria-label="Edit education"
+                  >
+                    <FaPencilAlt size="14" />
+                  </button>
                 </div>
               )}
             </li>
           ))}
+
+        {sellerProfile?.education.length === 0 && !showEducationAddForm && !showEducationEditForm && (
+          <li className="px-6 py-12 text-center">
+            <div className="flex flex-col items-center space-y-3">
+              <div className="w-12 h-12 bg-background rounded-full flex items-center justify-center">
+                <span className="text-2xl text-muted">🎓</span>
+              </div>
+              <div className="text-base text-muted font-medium leading-6">No education history added yet</div>
+              <div className="text-sm text-muted leading-5 text-center max-w-sm">
+                Add your educational background to strengthen your professional profile
+              </div>
+            </div>
+          </li>
+        )}
       </ul>
     </div>
   );

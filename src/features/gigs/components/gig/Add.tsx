@@ -1,5 +1,5 @@
 import Quill from 'quill';
-import { ChangeEvent, FC, lazy, ReactElement, Suspense, useRef, useState } from 'react';
+import { ChangeEvent, FC, lazy, ReactElement, Suspense, useEffect, useRef, useState } from 'react';
 import equal from 'react-fast-compare';
 import { FaCamera } from 'react-icons/fa';
 import ReactQuill, { UnprivilegedEditor } from 'react-quill';
@@ -9,6 +9,7 @@ import { addSeller } from 'src/features/sellers/reducers/seller.reducer';
 import Breadcrumb from 'src/shared/breadcrumb/Breadcrumb';
 import Button from 'src/shared/button/Button';
 import Dropdown from 'src/shared/dropdown/Dropdown';
+import { updateHeader } from 'src/shared/header/reducers/header.reducer';
 import TextAreaInput from 'src/shared/inputs/TextAreaInput';
 import TextInput from 'src/shared/inputs/TextInput';
 import { IApprovalModalContent } from 'src/shared/modals/interfaces/modal.interface';
@@ -73,6 +74,10 @@ const AddGig: FC = (): ReactElement => {
   const { sellerId } = useParams();
   const [schemaValidation] = useGigSchema({ schema: gigInfoSchema, gigInfo });
   const [createGig, { isLoading }] = useCreateGigMutation();
+
+  useEffect(() => {
+    dispatch(updateHeader('home'));
+  }, [dispatch]);
 
   const handleFileChange = async (event: ChangeEvent): Promise<void> => {
     const target: HTMLInputElement = event.target as HTMLInputElement;

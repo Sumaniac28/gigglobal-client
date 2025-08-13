@@ -37,22 +37,22 @@ const SellerCertificateFields: FC<ICertificateProps> = ({ certificatesFields, se
   };
 
   return (
-    <>
-      <div className="bg-[#F9FAFB] px-4 py-6 sm:px-6 md:px-10 lg:px-16 rounded-lg">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="pb-4 text-xl font-bold text-[#111111]">Awards/Certificates</h2>
-          <Button
-            className="h-8 rounded-md bg-[#14B8A6] px-5 text-sm font-semibold text-white transition hover:bg-[#0F766E] focus:outline-none"
-            onClick={adCertificateFields}
-            label="Add More"
-          />
-        </div>
+    <div className="bg-surface px-4 py-6 sm:px-6 md:px-10 lg:px-16 rounded-lg shadow-sm border border-default">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="pb-4 text-xl font-bold text-primary font-themeFont">Awards/Certificates</h2>
+        <Button
+          className="h-8 rounded-lg bg-primary px-5 text-sm font-semibold text-on-primary transition-all duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 shadow-sm"
+          onClick={adCertificateFields}
+          label="Add More"
+        />
+      </div>
 
+      <div className="space-y-6">
         {certificatesFields?.map((input: ICertificate, index: number) => (
-          <div key={index}>
-            <div className="flex flex-col">
+          <div key={index} className="bg-background p-4 rounded-lg border border-default">
+            <div className="flex flex-col space-y-4">
               <TextInput
-                className="w-full rounded-md border border-[#E5E7EB] p-3 mb-4 text-sm text-[#111111] placeholder-[#9CA3AF] focus:border-[#14B8A6] focus:ring-2 focus:ring-[#14B8A6] transition"
+                className="w-full rounded-lg border border-default p-3 text-sm text-primary placeholder-text-muted focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all duration-300 bg-surface hover:border-primary/60"
                 placeholder="Certificate or Award"
                 type="text"
                 name="name"
@@ -60,7 +60,7 @@ const SellerCertificateFields: FC<ICertificateProps> = ({ certificatesFields, se
                 onChange={(event: ChangeEvent) => handleCertificateFieldsChange(event, index)}
               />
               <TextInput
-                className="w-full rounded-md border border-[#E5E7EB] p-3 mb-4 text-sm text-[#111111] placeholder-[#9CA3AF] focus:border-[#14B8A6] focus:ring-2 focus:ring-[#14B8A6] transition"
+                className="w-full rounded-lg border border-default p-3 text-sm text-primary placeholder-text-muted focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all duration-300 bg-surface hover:border-primary/60"
                 placeholder="Certificate From (e.g: Google)"
                 type="text"
                 name="from"
@@ -68,12 +68,13 @@ const SellerCertificateFields: FC<ICertificateProps> = ({ certificatesFields, se
                 onChange={(event: ChangeEvent) => handleCertificateFieldsChange(event, index)}
               />
             </div>
-            <div className="relative flex flex-col">
+
+            <div className="relative flex flex-col mt-4 overflow-visible">
               <Suspense>
                 <Dropdown
                   text={`${input.year}`}
                   maxHeight="300"
-                  mainClassNames="absolute bg-white z-10"
+                  mainClassNames="absolute bg-surface z-10 shadow-lg rounded-lg border border-default"
                   values={yearsList(100)}
                   onClick={(item: string) => {
                     const data: ICertificate[] = [...certificatesFields];
@@ -84,10 +85,11 @@ const SellerCertificateFields: FC<ICertificateProps> = ({ certificatesFields, se
                   }}
                 />
               </Suspense>
+
               {certificatesFields.length > 1 && index > 0 && (
-                <div className="mb-4 mt-16">
+                <div className="mb-4 mt-16 flex justify-end">
                   <Button
-                    className="h-8 rounded-md bg-red-500 px-5 text-sm font-semibold text-white transition hover:bg-red-400 focus:outline-none"
+                    className="h-8 rounded-lg bg-red-500 px-5 text-sm font-semibold text-white transition-all duration-300 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 shadow-sm"
                     onClick={() => removeCertificateFields(index)}
                     label="Delete"
                   />
@@ -97,7 +99,7 @@ const SellerCertificateFields: FC<ICertificateProps> = ({ certificatesFields, se
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 };
 

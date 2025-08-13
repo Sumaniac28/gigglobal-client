@@ -57,59 +57,89 @@ const EducationFields: FC<IEducationEditProps> = ({
   };
 
   return (
-    <div className="flex w-full flex-col">
-      <div className="mb-4 px-3">
-        <div className="relative">
+    <div className="flex w-full flex-col bg-surface rounded-lg shadow-sm border border-default p-6 md:p-8">
+      <div className="mb-8 space-y-6">
+        <div className="space-y-2">
+          <label className="block text-sm font-semibold text-primary font-themeFont leading-6">University / College Name</label>
           <TextInput
-            className="mb-4 w-full rounded border border-[#E5E7EB] p-2.5 text-sm font-normal text-[#4B5563] focus:outline-none"
-            placeholder="University/College Name"
+            className="w-full rounded-lg border border-default bg-surface px-4 py-3 text-sm font-normal text-primary placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300"
+            placeholder="Enter your university or college name"
             type="text"
             name="university"
             value={university}
             onChange={(event: ChangeEvent) => setUniversity((event.target as HTMLInputElement).value)}
           />
         </div>
-        <div className="relative h-[55px]">
-          <Dropdown
-            text={country}
-            maxHeight="300"
-            showSearchInput={true}
-            mainClassNames="absolute bg-white z-50"
-            values={countriesList()}
-            setValue={setCountry}
-          />
-        </div>
-        <div className="mt-4 grid h-1/5 grid-cols-4 gap-x-2 gap-y-3">
-          <div className="relative">
-            <Dropdown text={title} maxHeight="300" mainClassNames="absolute bg-white z-30" values={degreeList()} setValue={setTitle} />
+
+        <div className="space-y-2">
+          <label className="block text-sm font-semibold text-primary font-themeFont leading-6">Country</label>
+          <div className="relative h-[55px]">
+            <Dropdown
+              text={country}
+              maxHeight="300"
+              showSearchInput={true}
+              mainClassNames="absolute bg-surface z-50 shadow-lg rounded-lg border border-default"
+              values={countriesList()}
+              setValue={setCountry}
+            />
           </div>
-          <div className="col-span-2">
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-4">
+          <div className="md:col-span-3 space-y-2">
+            <label className="block text-sm font-semibold text-primary font-themeFont leading-6">Degree</label>
+            <div className="relative h-[55px]">
+              <Dropdown
+                text={title}
+                maxHeight="300"
+                mainClassNames="absolute bg-surface z-30 shadow-lg rounded-lg border border-default"
+                values={degreeList()}
+                setValue={setTitle}
+              />
+            </div>
+          </div>
+
+          <div className="md:col-span-6 space-y-2">
+            <label className="block text-sm font-semibold text-primary font-themeFont leading-6">Major / Field of Study</label>
             <TextInput
-              className="mb-4 w-full rounded border border-[#E5E7EB] p-2.5 text-sm font-normal text-[#4B5563] focus:outline-none"
-              placeholder="Major e.g: Computer Engineering"
+              className="w-full rounded-lg border border-default bg-surface px-4 py-3 text-sm font-normal text-primary placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300"
+              placeholder="e.g: Computer Engineering, Business Administration"
               type="text"
               name="major"
               value={major}
               onChange={(event: ChangeEvent) => setMajor((event.target as HTMLInputElement).value)}
             />
           </div>
-          <div className="relative">
-            <Dropdown text={year} maxHeight="300" mainClassNames="absolute bg-white z-30" values={yearsList(100)} setValue={setYear} />
+
+          <div className="md:col-span-3 space-y-2">
+            <label className="block text-sm font-semibold text-primary font-themeFont leading-6">Year</label>
+            <div className="relative h-[55px]">
+              <Dropdown
+                text={year}
+                maxHeight="300"
+                mainClassNames="absolute bg-surface z-30 shadow-lg rounded-lg border border-default"
+                values={yearsList(100)}
+                setValue={setYear}
+              />
+            </div>
           </div>
         </div>
       </div>
-      <div className="mx-3 my-4 flex cursor-pointer justify-start md:z-0 md:mt-0">
+
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center justify-center pt-6 border-t border-default">
         <Button
           disabled={(country === 'Country' || title === 'Title' || year === 'Year' || !university || !major) && type === 'add'}
-          className={`md:text-md rounded px-6 py-1 text-center text-sm font-bold text-white focus:outline-none md:py-2 ${
-            (country === 'Country' || title === 'Title' || year === 'Year' || !university || !major) && type === 'add'
-              ? 'bg-[#14B8A6] cursor-not-allowed opacity-40'
-              : 'bg-[#14B8A6] hover:bg-[#0F766E] cursor-pointer'
-          }`}
+          className={`w-full sm:w-auto rounded-lg px-8 py-3 text-sm font-bold font-themeFont text-on-primary focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all duration-300
+        ${
+          (country === 'Country' || title === 'Title' || year === 'Year' || !university || !major) && type === 'add'
+            ? 'bg-primary cursor-not-allowed opacity-40'
+            : 'bg-primary hover:bg-primary cursor-pointer focus:ring-primary shadow-md hover:shadow-lg'
+        }
+      `}
           onClick={onHandleUpdate}
-          label={`${type === 'edit' ? 'Update' : 'Add'}`}
+          label={`${type === 'edit' ? 'Update Education' : 'Add Education'}`}
         />
-        &nbsp;&nbsp;
+
         <Button
           onClick={() => {
             if (type === 'add' && setShowEducationAddForm) {
@@ -118,7 +148,7 @@ const EducationFields: FC<IEducationEditProps> = ({
               setShowEducationEditForm(false);
             }
           }}
-          className="md:text-md rounded bg-[#E5E7EB] px-6 py-1 text-center text-sm font-bold text-[#111111] hover:bg-[#D1D5DB] focus:outline-none md:py-2"
+          className="w-full sm:w-auto rounded-lg bg-surface border border-default px-8 py-3 text-sm font-bold font-themeFont text-primary hover:bg-background hover:border-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300 shadow-sm hover:shadow-md"
           label="Cancel"
         />
       </div>

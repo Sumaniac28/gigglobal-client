@@ -36,59 +36,70 @@ const SellerLanguageFields: FC<ILanguageProps> = ({ languageFields, setLanguageF
   };
 
   return (
-    <>
-      <div className="bg-[#F9FAFB] px-4 py-6 sm:px-6 md:px-10 lg:px-16 rounded-lg">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="pb-4 text-xl font-bold text-[#111111]">Languages</h2>
-          <Button
-            className="h-8 rounded-md bg-[#14B8A6] px-5 text-sm font-semibold text-white transition hover:bg-[#0F766E] focus:outline-none"
-            onClick={addLanguageFields}
-            label="Add More"
-          />
-        </div>
+    <div className="bg-surface border border-default rounded-xl shadow-sm px-4 py-6 sm:px-6 md:px-8 lg:px-10">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+        <h2 className="font-themeFont text-xl sm:text-2xl font-bold text-primary leading-tight">Languages</h2>
+        <Button
+          className="w-full sm:w-auto h-10 rounded-lg bg-primary px-6 py-2 text-sm font-semibold text-on-primary transition-all duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 shadow-sm hover:shadow-md"
+          onClick={addLanguageFields}
+          label="Add More"
+        />
+      </div>
 
+      <div className="space-y-6">
         {languageFields?.map((input: ILanguage, index: number) => (
-          <div key={index} className="grid grid-cols-1 gap-y-3 md:grid-cols-2 md:gap-x-2">
-            <div>
-              <TextInput
-                className="w-full rounded-md border border-[#E5E7EB] p-3 text-sm text-[#111111] placeholder-[#9CA3AF] focus:border-[#14B8A6] focus:ring-2 focus:ring-[#14B8A6] transition"
-                type="text"
-                name="language"
-                value={input.language}
-                placeholder="Language"
-                onChange={(event: ChangeEvent) => handleLanguageFieldsChange(event, index)}
-              />
-            </div>
-            <div className="relative">
-              <Suspense>
-                <Dropdown
-                  text={input.level}
-                  maxHeight="300"
-                  mainClassNames={`absolute bg-white ${index < languageFields.length - 1 ? 'zIndexDropdown' : ''}`}
-                  values={languageLevel()}
-                  onClick={(item: string) => {
-                    const data: ILanguage[] = [...languageFields];
-                    data[index]['level'] = `${item}`;
-                    if (setLanguageFields) {
-                      setLanguageFields([...data]);
-                    }
-                  }}
+          <div key={index} className="bg-background rounded-lg p-4 sm:p-6 border border-default">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-primary">Language</label>
+                <TextInput
+                  className="w-full rounded-lg border border-default bg-surface p-3 sm:p-4 text-sm text-primary placeholder-text-muted focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 hover:border-primary/50"
+                  type="text"
+                  name="language"
+                  value={input.language}
+                  placeholder="e.g. English, Spanish, Mandarin"
+                  onChange={(event: ChangeEvent) => handleLanguageFieldsChange(event, index)}
                 />
-              </Suspense>
+              </div>
+
+              {}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-primary">Proficiency Level</label>
+                <div className="relative h-[55px]">
+                  <Suspense>
+                    <Dropdown
+                      text={input.level}
+                      maxHeight="300"
+                      mainClassNames={`absolute bg-surface border border-default rounded-lg shadow-lg transition-all duration-200 ${
+                        index < languageFields.length - 1 ? 'zIndexDropdown' : ''
+                      }`}
+                      values={languageLevel()}
+                      onClick={(item: string) => {
+                        const data: ILanguage[] = [...languageFields];
+                        data[index]['level'] = `${item}`;
+                        if (setLanguageFields) {
+                          setLanguageFields([...data]);
+                        }
+                      }}
+                    />
+                  </Suspense>
+                </div>
+              </div>
             </div>
-            <div className="mb-2">
-              {languageFields.length > 1 && index > 0 && (
+            {languageFields.length > 1 && index > 0 && (
+              <div className="flex justify-end pt-6 mt-6 border-t border-default">
                 <Button
-                  className="h-8 rounded-md bg-red-500 px-5 text-sm font-semibold text-white transition hover:bg-red-400 focus:outline-none"
+                  className="h-9 rounded-lg bg-red-500 hover:bg-red-600 px-5 py-2 text-sm font-semibold text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:ring-offset-2 shadow-sm hover:shadow-md"
                   onClick={() => removeLanguageFields(index)}
                   label="Delete"
                 />
-              )}
-            </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 };
 

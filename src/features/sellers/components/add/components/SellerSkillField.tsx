@@ -28,40 +28,70 @@ const SellerSkillField: FC<ISkillProps> = ({ skillsFields, setSkillsFields }): R
   };
 
   return (
-    <>
-      <div className="bg-[#F9FAFB] px-4 py-6 sm:px-6 md:px-10 lg:px-16 rounded-lg">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="pb-4 text-xl font-bold text-[#111111]">Skills</h2>
-          <Button
-            onClick={addSkillFields}
-            className="h-8 rounded-md bg-[#14B8A6] px-5 text-sm font-semibold text-white transition hover:bg-[#0F766E] focus:outline-none"
-            label="Add More"
-          />
-        </div>
+    <div className="bg-surface border border-default rounded-xl shadow-sm px-4 py-6 sm:px-6 md:px-8 lg:px-10">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+        <h2 className="font-themeFont text-xl sm:text-2xl font-bold text-primary leading-tight">Skills</h2>
+        <Button
+          onClick={addSkillFields}
+          className="w-full sm:w-auto h-10 rounded-lg bg-primary px-6 py-2 text-sm font-semibold text-on-primary transition-all duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 shadow-sm hover:shadow-md"
+          label="Add More"
+        />
+      </div>
 
+      <div className="space-y-6">
         {skillsFields?.map((input: string, index: number) => (
-          <div key={index}>
-            <TextInput
-              className="w-full rounded-md border border-[#E5E7EB] p-3 text-sm text-[#111111] placeholder-[#9CA3AF] focus:border-[#14B8A6] focus:ring-2 focus:ring-[#14B8A6] transition"
-              placeholder="Skill E.g: Front End Developer"
-              type="text"
-              name="skill"
-              value={input}
-              onChange={(event: ChangeEvent) => handleSkillsFieldsChange(event, index)}
-            />
-            <div className="my-3">
-              {skillsFields.length > 1 && index > 0 && (
-                <Button
-                  className="h-8 rounded-md bg-red-500 px-5 text-sm font-semibold text-white transition hover:bg-red-400 focus:outline-none"
-                  onClick={() => removeSkillFields(index)}
-                  label="Delete"
+          <div key={index} className="bg-background rounded-lg p-4 sm:p-6 border border-default">
+            <div className="space-y-4">
+              {}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-primary">Skill {index + 1}</label>
+                <TextInput
+                  className="w-full rounded-lg border border-default bg-surface p-3 sm:p-4 text-sm text-primary placeholder-text-muted focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 hover:border-primary/50"
+                  placeholder="e.g. JavaScript, Project Management, Digital Marketing"
+                  type="text"
+                  name="skill"
+                  value={input}
+                  onChange={(event: ChangeEvent) => handleSkillsFieldsChange(event, index)}
                 />
+              </div>
+
+              {}
+              {skillsFields.length > 1 && index > 0 && (
+                <div className="flex justify-end pt-2 border-t border-default">
+                  <Button
+                    className="h-9 rounded-lg bg-red-500 hover:bg-red-600 px-5 py-2 text-sm font-semibold text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:ring-offset-2 shadow-sm hover:shadow-md"
+                    onClick={() => removeSkillFields(index)}
+                    label="Delete"
+                  />
+                </div>
               )}
             </div>
           </div>
         ))}
       </div>
-    </>
+
+      {}
+      {skillsFields && skillsFields.length > 0 && (
+        <div className="mt-8 p-4 bg-accent/10 border border-accent/20 rounded-lg">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-2 h-2 bg-accent rounded-full"></div>
+            <span className="text-sm font-medium text-primary">Skills Overview</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {skillsFields
+              .filter((skill) => skill.trim())
+              .map((skill, index) => (
+                <span
+                  key={index}
+                  className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-accent/20 text-accent border border-accent/30"
+                >
+                  {skill}
+                </span>
+              ))}
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
