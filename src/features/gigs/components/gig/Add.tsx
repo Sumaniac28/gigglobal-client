@@ -139,7 +139,7 @@ const AddGig: FC = (): ReactElement => {
   return (
     <>
       {showGigModal.cancel && (
-        <Suspense fallback={<div>Loading..</div>}>
+        <Suspense fallback={<div className="text-sm text-muted animate-pulse">Loading...</div>}>
           <ApprovalModal
             approvalModalContent={approvalModalContent}
             onClose={() => setShowGigModal({ ...showGigModal, cancel: false })}
@@ -147,259 +147,294 @@ const AddGig: FC = (): ReactElement => {
           />
         </Suspense>
       )}
-      <div className="relative w-screen">
+      <div className="min-h-screen bg-background">
         <Breadcrumb breadCrumbItems={['Seller', 'Create new gig']} />
-        <div className="container relative mx-auto my-5 px-2 pb-12 md:px-0">
+        <div className="container relative mx-auto px-4 py-8 sm:px-6 lg:px-8">
           {isLoading && <CircularPageLoader />}
           {authUser && !authUser.emailVerified && (
-            <div className="absolute left-0 top-0 z-[80] flex h-full w-full justify-center bg-white/[0.8] text-sm font-bold md:text-base lg:text-xl">
-              <span className="mt-40">Please verify your email.</span>
+            <div className="absolute inset-0 z-50 flex items-center justify-center bg-surface/90 backdrop-blur-sm">
+              <div className="bg-surface rounded-xl border border-default p-8 shadow-lg text-center">
+                <span className="text-lg font-themeFont font-semibold text-primary">Please verify your email.</span>
+              </div>
             </div>
           )}
-          <div className="block  p-6 md:p-8">
-            <div className="mb-6 grid gap-2 md:grid-cols-5">
-              <div className="text-[#111111] text-base font-semibold">
-                Gig title<sup className="text-red-500">*</sup>
-              </div>
-              <div className="col-span-4 w-full md:w-11/12 lg:w-8/12">
-                <TextInput
-                  className="w-full rounded border border-[#E5E7EB] p-3 text-sm text-[#4B5563] focus:outline-none focus:ring-2 focus:ring-[#14B8A6]"
-                  type="text"
-                  name="gigTitle"
-                  value={gigInfo.title}
-                  placeholder="I will build something I'm good at."
-                  maxLength={80}
-                  onChange={(event: ChangeEvent) => {
-                    const gigTitleValue: string = (event.target as HTMLInputElement).value;
-                    setGigInfo({ ...gigInfo, title: gigTitleValue });
-                    const counter: number = GIG_MAX_LENGTH.gigTitle - gigTitleValue.length;
-                    setAllowedGigItemLength({ ...allowedGigItemLength, gigTitle: `${counter}/80` });
-                  }}
-                />
-                <span className="mt-1 block text-right text-xs text-[#4B5563]">{allowedGigItemLength.gigTitle} Characters</span>
-              </div>
+          <div className="bg-surface rounded-xl border border-default p-6 md:p-8 shadow-lg">
+            <div className="mb-8">
+              <h1 className="text-2xl font-themeFont font-bold text-primary mb-2">Create New Gig</h1>
+              <p className="text-muted">Fill out the form below to create your new service offering</p>
             </div>
 
-            <div className="mb-6 grid gap-2 md:grid-cols-5">
-              <div className="text-[#111111] text-base font-semibold">
-                Basic title<sup className="text-red-500">*</sup>
+            <div className="space-y-8">
+              <div className="grid gap-4 md:grid-cols-5">
+                <div className="md:col-span-1">
+                  <label className="block text-base font-themeFont font-semibold text-primary leading-6">
+                    Gig title<sup className="text-red-500 ml-1">*</sup>
+                  </label>
+                </div>
+                <div className="md:col-span-4">
+                  <TextInput
+                    className="w-full rounded-lg border border-default bg-surface p-4 text-sm text-primary placeholder-text-muted focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all duration-300"
+                    type="text"
+                    name="gigTitle"
+                    value={gigInfo.title}
+                    placeholder="I will build something I'm good at."
+                    maxLength={80}
+                    onChange={(event: ChangeEvent) => {
+                      const gigTitleValue: string = (event.target as HTMLInputElement).value;
+                      setGigInfo({ ...gigInfo, title: gigTitleValue });
+                      const counter: number = GIG_MAX_LENGTH.gigTitle - gigTitleValue.length;
+                      setAllowedGigItemLength({ ...allowedGigItemLength, gigTitle: `${counter}/80` });
+                    }}
+                  />
+                  <span className="mt-2 block text-right text-xs text-muted">{allowedGigItemLength.gigTitle} Characters</span>
+                </div>
               </div>
-              <div className="col-span-4 w-full md:w-11/12 lg:w-8/12">
-                <TextInput
-                  className="w-full rounded border border-[#E5E7EB] p-3 text-sm text-[#4B5563] focus:outline-none focus:ring-2 focus:ring-[#14B8A6]"
-                  placeholder="Write what exactly you'll do in short."
-                  type="text"
-                  name="basicTitle"
-                  value={gigInfo.basicTitle}
-                  maxLength={40}
-                  onChange={(event: ChangeEvent) => {
-                    const basicTitleValue: string = (event.target as HTMLInputElement).value;
-                    setGigInfo({ ...gigInfo, basicTitle: basicTitleValue });
-                    const counter: number = GIG_MAX_LENGTH.basicTitle - basicTitleValue.length;
-                    setAllowedGigItemLength({ ...allowedGigItemLength, basicTitle: `${counter}/40` });
-                  }}
-                />
-                <span className="mt-1 block text-right text-xs text-[#4B5563]">{allowedGigItemLength.basicTitle} Characters</span>
-              </div>
-            </div>
 
-            <div className="mb-6 grid gap-2 md:grid-cols-5">
-              <div className="text-[#111111] text-base font-semibold">
-                Brief description<sup className="text-red-500">*</sup>
+              <div className="grid gap-4 md:grid-cols-5">
+                <div className="md:col-span-1">
+                  <label className="block text-base font-themeFont font-semibold text-primary leading-6">
+                    Basic title<sup className="text-red-500 ml-1">*</sup>
+                  </label>
+                </div>
+                <div className="md:col-span-4">
+                  <TextInput
+                    className="w-full rounded-lg border border-default bg-surface p-4 text-sm text-primary placeholder-text-muted focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all duration-300"
+                    placeholder="Write what exactly you'll do in short."
+                    type="text"
+                    name="basicTitle"
+                    value={gigInfo.basicTitle}
+                    maxLength={40}
+                    onChange={(event: ChangeEvent) => {
+                      const basicTitleValue: string = (event.target as HTMLInputElement).value;
+                      setGigInfo({ ...gigInfo, basicTitle: basicTitleValue });
+                      const counter: number = GIG_MAX_LENGTH.basicTitle - basicTitleValue.length;
+                      setAllowedGigItemLength({ ...allowedGigItemLength, basicTitle: `${counter}/40` });
+                    }}
+                  />
+                  <span className="mt-2 block text-right text-xs text-muted">{allowedGigItemLength.basicTitle} Characters</span>
+                </div>
               </div>
-              <div className="col-span-4 w-full md:w-11/12 lg:w-8/12">
-                <TextAreaInput
-                  className="w-full rounded border border-[#E5E7EB] p-3 text-sm text-[#4B5563] focus:outline-none focus:ring-2 focus:ring-[#14B8A6]"
-                  placeholder="Write a brief description..."
-                  name="basicDescription"
-                  value={gigInfo.basicDescription}
-                  rows={5}
-                  maxLength={100}
-                  onChange={(event: ChangeEvent) => {
-                    const basicDescriptionValue: string = (event.target as HTMLInputElement).value;
-                    setGigInfo({ ...gigInfo, basicDescription: basicDescriptionValue });
-                    const counter: number = GIG_MAX_LENGTH.basicDescription - basicDescriptionValue.length;
-                    setAllowedGigItemLength({ ...allowedGigItemLength, basicDescription: `${counter}/100` });
-                  }}
-                />
-                <span className="mt-1 block text-right text-xs text-[#4B5563]">{allowedGigItemLength.basicDescription} Characters</span>
-              </div>
-            </div>
 
-            <div className="mb-6 grid gap-2 md:grid-cols-5">
-              <div className="text-[#111111] text-base font-semibold">
-                Full description<sup className="text-red-500">*</sup>
+              <div className="grid gap-4 md:grid-cols-5">
+                <div className="md:col-span-1">
+                  <label className="block text-base font-themeFont font-semibold text-primary leading-6">
+                    Brief description<sup className="text-red-500 ml-1">*</sup>
+                  </label>
+                </div>
+                <div className="md:col-span-4">
+                  <TextAreaInput
+                    className="w-full rounded-lg border border-default bg-surface p-4 text-sm text-primary placeholder-text-muted focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all duration-300"
+                    placeholder="Write a brief description..."
+                    name="basicDescription"
+                    value={gigInfo.basicDescription}
+                    rows={5}
+                    maxLength={100}
+                    onChange={(event: ChangeEvent) => {
+                      const basicDescriptionValue: string = (event.target as HTMLInputElement).value;
+                      setGigInfo({ ...gigInfo, basicDescription: basicDescriptionValue });
+                      const counter: number = GIG_MAX_LENGTH.basicDescription - basicDescriptionValue.length;
+                      setAllowedGigItemLength({ ...allowedGigItemLength, basicDescription: `${counter}/100` });
+                    }}
+                  />
+                  <span className="mt-2 block text-right text-xs text-muted">{allowedGigItemLength.basicDescription} Characters</span>
+                </div>
               </div>
-              <div className="col-span-4 w-full md:w-11/12 lg:w-8/12">
-                <ReactQuill
-                  theme="snow"
-                  value={gigInfo.description}
-                  className="rounded border border-[#E5E7EB]"
-                  modules={reactQuillUtils().modules}
-                  formats={reactQuillUtils().formats}
-                  ref={(element: ReactQuill | null) => {
-                    reactQuillRef.current = element;
-                    const editor = reactQuillRef.current?.getEditor();
-                    editor?.on('text-change', () => {
-                      if (editor.getLength() > GIG_MAX_LENGTH.fullDescription) {
-                        editor.deleteText(GIG_MAX_LENGTH.fullDescription, editor.getLength());
-                      }
-                    });
-                  }}
-                  onChange={(event: string, _, __, editor: UnprivilegedEditor) => {
-                    setGigInfo({ ...gigInfo, description: event });
-                    const counter: number = GIG_MAX_LENGTH.fullDescription - editor.getText().length;
-                    setAllowedGigItemLength({ ...allowedGigItemLength, descriptionCharacters: `${counter}/1200` });
-                  }}
-                />
-                <span className="mt-1 block text-right text-xs text-[#4B5563]">
-                  {allowedGigItemLength.descriptionCharacters} Characters
-                </span>
-              </div>
-            </div>
 
-            <div className="mb-8 grid gap-2 md:grid-cols-5">
-              <div className="text-[#111111] text-base font-semibold">
-                Category<sup className="text-red-500">*</sup>
-              </div>
-              <div className="col-span-4 w-full md:w-11/12 lg:w-8/12 relative">
-                <Dropdown
-                  text={gigInfo.categories}
-                  maxHeight="300"
-                  mainClassNames="absolute bg-white border border-[#E5E7EB] z-10"
-                  values={categories()}
-                  onClick={(item: string) => {
-                    setGigInfo({ ...gigInfo, categories: item });
-                  }}
-                />
-              </div>
-            </div>
-
-            <TagsInput
-              title="SubCategory"
-              placeholder="E.g. Website development, Mobile apps"
-              gigInfo={gigInfo}
-              setGigInfo={setGigInfo}
-              tags={subCategory}
-              itemInput={subCategoryInput}
-              itemName="subCategories"
-              counterText="Subcategories"
-              inputErrorMessage={false}
-              setItem={setSubCategory}
-              setItemInput={setSubCategoryInput}
-            />
-
-            <TagsInput
-              title="Tags"
-              placeholder="Enter search terms for your gig"
-              gigInfo={gigInfo}
-              setGigInfo={setGigInfo}
-              tags={tags}
-              itemInput={tagsInput}
-              itemName="tags"
-              counterText="Tags"
-              inputErrorMessage={false}
-              setItem={setTags}
-              setItemInput={setTagsInput}
-            />
-
-            <div className="mb-6 grid gap-2 md:grid-cols-5">
-              <div className="text-[#111111] text-base font-semibold">
-                Price<sup className="text-red-500">*</sup>
-              </div>
-              <div className="col-span-4 w-full md:w-11/12 lg:w-8/12">
-                <TextInput
-                  type="number"
-                  className="w-full rounded border border-[#E5E7EB] p-3 text-sm text-[#4B5563] focus:outline-none focus:ring-2 focus:ring-[#14B8A6]"
-                  placeholder="Enter minimum price"
-                  name="price"
-                  value={gigInfo.price}
-                  onChange={(event: ChangeEvent) => {
-                    const value: string = (event.target as HTMLInputElement).value;
-                    setGigInfo({ ...gigInfo, price: parseInt(value) > 0 ? parseInt(value) : 0 });
-                  }}
-                />
-              </div>
-            </div>
-
-            <div className="mb-12 grid gap-2 md:grid-cols-5">
-              <div className="text-[#111111] text-base font-semibold">
-                Expected delivery<sup className="text-red-500">*</sup>
-              </div>
-              <div className="col-span-4 w-full md:w-11/12 lg:w-8/12 relative">
-                <Dropdown
-                  text={gigInfo.expectedDelivery}
-                  maxHeight="300"
-                  mainClassNames="absolute bg-white z-40 border border-[#E5E7EB]"
-                  values={expectedGigDelivery()}
-                  onClick={(item: string) => {
-                    setGigInfo({ ...gigInfo, expectedDelivery: item });
-                  }}
-                />
-              </div>
-            </div>
-
-            <div className="mb-10 grid gap-2 md:grid-cols-5">
-              <div className="text-[#111111] text-base font-semibold">
-                Cover image<sup className="text-red-500">*</sup>
-              </div>
-              <div
-                className="relative col-span-4 w-fit cursor-pointer"
-                onMouseEnter={() => setShowGigModal((item) => ({ ...item, image: true }))}
-                onMouseLeave={() => setShowGigModal((item) => ({ ...item, image: false }))}
-              >
-                {gigInfo.coverImage ? (
-                  <img src={gigInfo.coverImage} alt="Cover" className="h-[220px] w-[320px] rounded border border-[#E5E7EB] object-cover" />
-                ) : (
-                  <div className="h-[220px] w-[320px] rounded bg-[#dee1e7]"></div>
-                )}
-                {showGigModal.image && (
-                  <div
-                    onClick={() => fileRef.current?.click()}
-                    className="absolute inset-0 flex items-center justify-center rounded bg-[#dee1e7]/70"
-                  >
-                    <FaCamera className="text-xl text-[#111111]" />
+              <div className="grid gap-4 md:grid-cols-5">
+                <div className="md:col-span-1">
+                  <label className="block text-base font-themeFont font-semibold text-primary leading-6">
+                    Full description<sup className="text-red-500 ml-1">*</sup>
+                  </label>
+                </div>
+                <div className="md:col-span-4">
+                  <div className="rounded-lg border border-default overflow-hidden">
+                    <ReactQuill
+                      theme="snow"
+                      value={gigInfo.description}
+                      className="bg-surface"
+                      modules={reactQuillUtils().modules}
+                      formats={reactQuillUtils().formats}
+                      ref={(element: ReactQuill | null) => {
+                        reactQuillRef.current = element;
+                        const editor = reactQuillRef.current?.getEditor();
+                        editor?.on('text-change', () => {
+                          if (editor.getLength() > GIG_MAX_LENGTH.fullDescription) {
+                            editor.deleteText(GIG_MAX_LENGTH.fullDescription, editor.getLength());
+                          }
+                        });
+                      }}
+                      onChange={(event: string, _, __, editor: UnprivilegedEditor) => {
+                        setGigInfo({ ...gigInfo, description: event });
+                        const counter: number = GIG_MAX_LENGTH.fullDescription - editor.getText().length;
+                        setAllowedGigItemLength({ ...allowedGigItemLength, descriptionCharacters: `${counter}/1200` });
+                      }}
+                    />
                   </div>
-                )}
-                <TextInput
-                  name="image"
-                  ref={fileRef}
-                  type="file"
-                  style={{ display: 'none' }}
-                  onClick={() => fileRef.current && (fileRef.current.value = '')}
-                  onChange={handleFileChange}
+                  <span className="mt-2 block text-right text-xs text-muted">
+                    {allowedGigItemLength.descriptionCharacters} Characters
+                  </span>
+                </div>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-5">
+                <div className="md:col-span-1">
+                  <label className="block text-base font-themeFont font-semibold text-primary leading-6">
+                    Category<sup className="text-red-500 ml-1">*</sup>
+                  </label>
+                </div>
+                <div className="md:col-span-4 relative">
+                  <Dropdown
+                    text={gigInfo.categories}
+                    maxHeight="300"
+                    mainClassNames="absolute bg-surface border border-default rounded-lg z-10 shadow-lg"
+                    values={categories()}
+                    onClick={(item: string) => {
+                      setGigInfo({ ...gigInfo, categories: item });
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="bg-surface/50 rounded-lg border border-default/50 p-6">
+                <TagsInput
+                  title="SubCategory"
+                  placeholder="E.g. Website development, Mobile apps"
+                  gigInfo={gigInfo}
+                  setGigInfo={setGigInfo}
+                  tags={subCategory}
+                  itemInput={subCategoryInput}
+                  itemName="subCategories"
+                  counterText="Subcategories"
+                  inputErrorMessage={false}
+                  setItem={setSubCategory}
+                  setItemInput={setSubCategoryInput}
                 />
               </div>
-            </div>
 
-            <div className="grid gap-y-4 md:grid-cols-5">
-              <div></div>
-              <div className="col-span-4 flex flex-wrap gap-4">
-                <Button
-                  disabled={isLoading}
-                  className="rounded bg-[#14B8A6] px-6 py-3 text-sm font-semibold text-white hover:bg-[#0F766E] focus:outline-none"
-                  label="Create Gig"
-                  onClick={onCreateGig}
+              <div className="bg-surface/50 rounded-lg border border-default/50 p-6">
+                <TagsInput
+                  title="Tags"
+                  placeholder="Enter search terms for your gig"
+                  gigInfo={gigInfo}
+                  setGigInfo={setGigInfo}
+                  tags={tags}
+                  itemInput={tagsInput}
+                  itemName="tags"
+                  counterText="Tags"
+                  inputErrorMessage={false}
+                  setItem={setTags}
+                  setItemInput={setTagsInput}
                 />
-                <Button
-                  disabled={isLoading}
-                  className="rounded bg-red-500 px-6 py-3 text-sm font-semibold text-white hover:bg-red-400 focus:outline-none"
-                  label="Cancel"
-                  onClick={() => {
-                    const isEqual = equal(gigInfo, gigInfoRef.current);
-                    if (!isEqual) {
-                      setApprovalModalContent({
-                        header: 'Cancel Gig Creation',
-                        body: 'Are you sure you want to cancel?',
-                        btnText: 'Yes, Cancel',
-                        btnColor: 'bg-red-500 hover:bg-red-400'
-                      });
-                      setShowGigModal({ ...showGigModal, cancel: true });
-                    } else {
-                      onCancelCreate();
-                    }
-                  }}
-                />
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-5">
+                <div className="md:col-span-1">
+                  <label className="block text-base font-themeFont font-semibold text-primary leading-6">
+                    Price<sup className="text-red-500 ml-1">*</sup>
+                  </label>
+                </div>
+                <div className="md:col-span-4">
+                  <TextInput
+                    type="number"
+                    className="w-full rounded-lg border border-default bg-surface p-4 text-sm text-primary placeholder-text-muted focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all duration-300"
+                    placeholder="Enter minimum price"
+                    name="price"
+                    value={gigInfo.price}
+                    onChange={(event: ChangeEvent) => {
+                      const value: string = (event.target as HTMLInputElement).value;
+                      setGigInfo({ ...gigInfo, price: parseInt(value) > 0 ? parseInt(value) : 0 });
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-5">
+                <div className="md:col-span-1">
+                  <label className="block text-base font-themeFont font-semibold text-primary leading-6">
+                    Expected delivery<sup className="text-red-500 ml-1">*</sup>
+                  </label>
+                </div>
+                <div className="md:col-span-4 relative">
+                  <Dropdown
+                    text={gigInfo.expectedDelivery}
+                    maxHeight="300"
+                    mainClassNames="absolute bg-surface border border-default rounded-lg z-40 shadow-lg"
+                    values={expectedGigDelivery()}
+                    onClick={(item: string) => {
+                      setGigInfo({ ...gigInfo, expectedDelivery: item });
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-5">
+                <div className="md:col-span-1">
+                  <label className="block text-base font-themeFont font-semibold text-primary leading-6">
+                    Cover image<sup className="text-red-500 ml-1">*</sup>
+                  </label>
+                </div>
+                <div
+                  className="md:col-span-4 relative w-fit cursor-pointer group"
+                  onMouseEnter={() => setShowGigModal((item) => ({ ...item, image: true }))}
+                  onMouseLeave={() => setShowGigModal((item) => ({ ...item, image: false }))}
+                >
+                  {gigInfo.coverImage ? (
+                    <img
+                      src={gigInfo.coverImage}
+                      alt="Cover"
+                      className="h-[220px] w-[320px] rounded-lg border border-default object-cover shadow-sm transition-all duration-300 group-hover:shadow-lg"
+                    />
+                  ) : (
+                    <div className="h-[220px] w-[320px] rounded-lg bg-surface border border-default shadow-sm"></div>
+                  )}
+                  {showGigModal.image && (
+                    <div
+                      onClick={() => fileRef.current?.click()}
+                      className="absolute inset-0 flex items-center justify-center rounded-lg bg-primary/70 backdrop-blur-sm transition-all duration-300"
+                    >
+                      <FaCamera className="text-2xl text-on-primary" />
+                    </div>
+                  )}
+                  <TextInput
+                    name="image"
+                    ref={fileRef}
+                    type="file"
+                    style={{ display: 'none' }}
+                    onClick={() => fileRef.current && (fileRef.current.value = '')}
+                    onChange={handleFileChange}
+                  />
+                </div>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-5 pt-8 border-t border-default">
+                <div className="md:col-span-1"></div>
+                <div className="md:col-span-4 flex flex-wrap gap-4">
+                  <Button
+                    disabled={isLoading}
+                    className="rounded-lg bg-primary px-8 py-3 text-sm font-themeFont font-semibold text-on-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300 shadow-sm"
+                    label="Create Gig"
+                    onClick={onCreateGig}
+                  />
+                  <Button
+                    disabled={isLoading}
+                    className="rounded-lg bg-secondary px-8 py-3 text-sm font-themeFont font-semibold text-on-primary hover:bg-secondary/90 focus:outline-none focus:ring-2 focus:ring-secondary/20 transition-all duration-300 shadow-sm"
+                    label="Cancel"
+                    onClick={() => {
+                      const isEqual = equal(gigInfo, gigInfoRef.current);
+                      if (!isEqual) {
+                        setApprovalModalContent({
+                          header: 'Cancel Gig Creation',
+                          body: 'Are you sure you want to cancel?',
+                          btnText: 'Yes, Cancel',
+                          btnColor: 'bg-secondary hover:bg-secondary/90'
+                        });
+                        setShowGigModal({ ...showGigModal, cancel: true });
+                      } else {
+                        onCancelCreate();
+                      }
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>

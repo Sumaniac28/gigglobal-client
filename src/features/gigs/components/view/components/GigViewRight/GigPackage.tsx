@@ -35,57 +35,59 @@ const GigPackage: FC = (): ReactElement => {
   return (
     <>
       {showModal && <ApprovalModal approvalModalContent={approvalModalContent} hideCancel={true} onClick={() => setShowModal(false)} />}
-      <div className="border-[#E5E7EB] mb-8 border">
-        <div className="flex border-b border-[#E5E7EB] px-4 py-2">
-          <h4 className="font-bold text-[#111111]">${gig.price}</h4>
+      <div className="bg-surface rounded-xl border border-default shadow-sm overflow-hidden">
+        {/* Price Header */}
+        <div className="bg-primary px-6 py-4">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-on-primary/80">Starting at</span>
+            <h4 className="text-xl font-themeFont font-bold text-on-primary">${gig.price}</h4>
+          </div>
         </div>
-        <ul className="mb-0 list-none px-4 py-2">
-          <li className="flex justify-between">
-            <div className="ml-15 flex w-full pb-3">
-              <div className="text-base font-bold text-[#111111]">{gig.basicTitle}</div>
-            </div>
-          </li>
-          <li className="flex justify-between">
-            <div className="ml-15 flex w-full pb-4">
-              <div className="text-sm font-normal text-[#4B5563]">{gig.basicDescription}</div>
-            </div>
-          </li>
-          <li className="flex justify-between">
-            <div className="ml-15 flex w-full pb-3 text-[#4B5563]">
-              <FaRegClock className="flex self-center" />
-              <span className="ml-3 text-sm font-semibold">{gig.expectedDelivery}</span>
-            </div>
-          </li>
-          <li className="flex justify-between">
-            <div className="ml-15 flex w-full py-1">
-              <Button
-                disabled={authUser.username === gig.username}
-                className={`text-md flex w-full justify-between rounded bg-[#14B8A6] px-8 py-2 font-bold text-white focus:outline-none
-          ${authUser.username === gig.username ? 'opacity-20 cursor-not-allowed' : 'hover:bg-[#0F766E] cursor-pointer'}
-          `}
-                label={
-                  <>
-                    <span className="w-full">Continue</span>
-                    <FaArrowRight className="flex self-center" />
-                  </>
-                }
-                onClick={() => {
-                  if (authUser && !authUser.emailVerified) {
-                    setApprovalModalContent({
-                      header: 'Email Verification Notice',
-                      body: 'Please verify your email before you continue.',
-                      btnText: 'OK',
-                      btnColor: 'bg-[#14B8A6] hover:bg-[#0F766E]'
-                    });
-                    setShowModal(true);
-                  } else {
-                    continueToCheck();
-                  }
-                }}
-              />
-            </div>
-          </li>
-        </ul>
+
+        {/* Package Content */}
+        <div className="p-6 space-y-4">
+          <div>
+            <h5 className="text-lg font-themeFont font-bold text-primary mb-2">{gig.basicTitle}</h5>
+            <p className="text-sm text-muted leading-relaxed">{gig.basicDescription}</p>
+          </div>
+
+          <div className="flex items-center gap-3 p-3 bg-accent/5 rounded-lg border border-accent/20">
+            <FaRegClock className="text-accent text-lg" />
+            <span className="text-sm font-themeFont font-semibold text-primary">{gig.expectedDelivery}</span>
+          </div>
+
+          <Button
+            disabled={authUser.username === gig.username}
+            className={`w-full flex items-center justify-center gap-3 rounded-lg px-6 py-4 font-themeFont font-semibold text-base transition-all duration-300 ${
+              authUser.username === gig.username
+                ? 'bg-muted/20 text-muted cursor-not-allowed'
+                : 'bg-primary hover:bg-primary/90 text-on-primary shadow-sm hover:shadow-md transform hover:scale-[1.02]'
+            }`}
+            label={
+              <>
+                <span>Continue to Order</span>
+                <FaArrowRight className="text-sm" />
+              </>
+            }
+            onClick={() => {
+              if (authUser && !authUser.emailVerified) {
+                setApprovalModalContent({
+                  header: 'Email Verification Notice',
+                  body: 'Please verify your email before you continue.',
+                  btnText: 'OK',
+                  btnColor: 'bg-primary hover:bg-primary/90'
+                });
+                setShowModal(true);
+              } else {
+                continueToCheck();
+              }
+            }}
+          />
+
+          {authUser.username === gig.username && (
+            <p className="text-xs text-muted text-center">You cannot order your own gig</p>
+          )}
+        </div>
       </div>
     </>
   );

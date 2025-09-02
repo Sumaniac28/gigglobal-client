@@ -58,64 +58,80 @@ const Gigs: FC<IGigsProps> = ({ type }) => {
       {isLoading && !isSuccess ? (
         <CircularPageLoader />
       ) : (
-        <div className="container mx-auto p-5">
-          {!isLoading && data && data.gigs && data?.gigs.length > 0 ? (
-            <>
-              <h3 className="mb-6 flex flex-wrap gap-2 text-3xl font-extrabold text-[#111111]">
-                {type === 'search' && <span className="text-[#111111] font-medium">Results for</span>}
-                <strong>{gigCategories}</strong>
-              </h3>
+        <div className="min-h-screen bg-background">
+          <div className="container mx-auto px-4 py-6 sm:px-6 lg:px-8">
+            {!isLoading && data && data.gigs && data?.gigs.length > 0 ? (
+              <>
+                <div className="mb-8">
+                  <h3 className="mb-6 flex flex-wrap items-center gap-2 text-2xl sm:text-3xl font-themeFont font-bold text-primary leading-tight">
+                    {type === 'search' && <span className="text-muted font-medium">Results for</span>}
+                    <span className="bg-accent text-on-primary px-3 py-1 rounded-lg text-lg sm:text-xl">{gigCategories}</span>
+                  </h3>
+                </div>
 
-              <div className="mb-6 flex flex-wrap gap-4">
-                <Suspense fallback={<div className="text-sm text-gray-500">Loading filters...</div>}>
-                  <BudgetDropdown />
-                </Suspense>
-                <Suspense fallback={<div className="text-sm text-gray-500">Loading filters...</div>}>
-                  <DeliveryTimeDropdown />
+                <div className="mb-8 flex flex-col sm:flex-row gap-4 p-4 bg-surface rounded-xl border border-default shadow-sm">
+                  <Suspense fallback={<div className="text-sm text-muted animate-pulse">Loading filters...</div>}>
+                    <BudgetDropdown />
+                  </Suspense>
+                  <Suspense fallback={<div className="text-sm text-muted animate-pulse">Loading filters...</div>}>
+                    <DeliveryTimeDropdown />
+                  </Suspense>
+                </div>
+
+                <div className="mb-8">
+                  <div className="flex items-center justify-between mb-6 p-4 bg-surface rounded-lg border border-default">
+                    <span className="text-sm font-semibold text-muted">
+                      {data.total} services available
+                    </span>
+                  </div>
+
+                  {filterApplied ? (
+                    <div className="flex justify-center py-12">
+                      <CircularPageLoader />
+                    </div>
+                  ) : (
+                    <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+                      {data.gigs.map((gig: ISellerGig) => (
+                        <div key={uuidv4()} className="transform transition-all duration-300 hover:scale-105">
+                          <GigCardDisplayItem gig={gig} linkTarget={true} showEditIcon={false} />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <div className="flex justify-center items-center min-h-[400px]">
+                <Suspense fallback={<div className="text-sm text-muted animate-pulse">Loading content...</div>}>
+                  <PageMessage
+                    header="No services found for your search"
+                    body="Try a new search or get a free quote for your project from our community of freelancers."
+                  />
                 </Suspense>
               </div>
+            )}
 
-              <div className="my-5">
-                <span className="text-sm font-medium text-[#6B7280]">{data.total} services available</span>
-
-                {filterApplied ? (
-                  <div className="mt-6">
-                    <CircularPageLoader />
-                  </div>
-                ) : (
-                  <div className="grid gap-6 pt-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    {data.gigs.map((gig: ISellerGig) => (
-                      <GigCardDisplayItem key={uuidv4()} gig={gig} linkTarget={true} showEditIcon={false} />
-                    ))}
-                  </div>
-                )}
+            {isError && (
+              <div className="flex justify-center items-center min-h-[400px]">
+                <Suspense fallback={<div className="text-sm text-muted animate-pulse">Loading fallback...</div>}>
+                  <PageMessage header="Services issue" body="A network issue occurred. Try again later." />
+                </Suspense>
               </div>
-            </>
-          ) : (
-            <Suspense fallback={<div className="text-sm text-gray-500">Loading content...</div>}>
-              <PageMessage
-                header="No services found for your search"
-                body="Try a new search or get a free quote for your project from our community of freelancers."
-              />
-            </Suspense>
-          )}
+            )}
 
-          {isError && (
-            <Suspense fallback={<div className="text-sm text-gray-500">Loading fallback...</div>}>
-              <PageMessage header="Services issue" body="A network issue occurred. Try again later." />
-            </Suspense>
-          )}
-
-          {isSuccess && !filterApplied && data && data.gigs && data.gigs.length > 0 && (
-            <GigPaginate
-              gigs={gigs.current}
-              totalGigs={totalGigs}
-              showNumbers={true}
-              itemsPerPage={ITEMS_PER_PAGE}
-              setItemFrom={setItemFrom}
-              setPaginationType={setPaginationType}
-            />
-          )}
+            {isSuccess && !filterApplied && data && data.gigs && data.gigs.length > 0 && (
+              <div className="mt-12 bg-surface rounded-xl border border-default p-6 shadow-sm">
+                <GigPaginate
+                  gigs={gigs.current}
+                  totalGigs={totalGigs}
+                  showNumbers={true}
+                  itemsPerPage={ITEMS_PER_PAGE}
+                  setItemFrom={setItemFrom}
+                  setPaginationType={setPaginationType}
+                />
+              </div>
+            )}
+          </div>
         </div>
       )}
     </>

@@ -53,37 +53,50 @@ const TagsInput: FC<ITagsInputProps> = (props): ReactElement => {
   };
 
   return (
-    <div className="mb-6 grid md:grid-cols-5">
-      <div className="mt-6 pb-2 text-[#111111] text-base font-medium lg:mt-0">
-        {title}
-        <sup className="top-[-0.3em] text-base text-red-500">*</sup>
+    <div className="space-y-4">
+      <div className="flex items-center gap-2">
+        <label className="text-base font-themeFont font-semibold text-primary">
+          {title}
+          <sup className="text-red-500 ml-1">*</sup>
+        </label>
       </div>
-      <div className="col-span-4 md:w-11/12 lg:w-8/12">
-        <div className="flex w-full flex-wrap py-[4px]">
-          {tags.map((tags: string, index: number) => (
+
+      <div className="space-y-3">
+        {/* Tags display */}
+        <div className="flex flex-wrap gap-2 min-h-[2rem]">
+          {tags.map((tag: string, index: number) => (
             <div
               key={uuidv4()}
               onClick={() => deleteTag(index)}
-              className="my-[2px] mr-1 flex items-center whitespace-nowrap rounded-[50px] bg-[#14B8A6] px-4 text-sm font-bold text-white"
+              className="group flex items-center gap-2 bg-accent/10 border border-accent/30 text-primary px-3 py-1 rounded-full text-sm font-themeFont font-medium cursor-pointer hover:bg-accent hover:text-on-primary transition-all duration-300"
             >
-              {tags}
-              <span className="flex cursor-pointer p-[6px] text-white">x</span>
+              <span>{tag}</span>
+              <span className="text-muted group-hover:text-on-primary transition-colors duration-300 font-bold">×</span>
             </div>
           ))}
         </div>
-        <TextInput
-          type="text"
-          name={title}
-          value={itemInput}
-          className="border-[#E5E7EB] mb-1 w-full rounded border p-2.5 text-sm font-normal text-[#4B5563] focus:outline-none"
-          placeholder={placeholder}
-          onChange={(event: ChangeEvent) => onChange(event)}
-          onKeyDown={(event: KeyboardEvent) => onKeyDown(event, itemInput, tags)}
-          onKeyUp={onKeyUp}
-        />
-        <span className="flex justify-end text-xs text-[#4B5563]">
-          {maxTagCount - tags.length} {counterText}
-        </span>
+
+        {/* Input field */}
+        <div className="space-y-2">
+          <TextInput
+            type="text"
+            name={title}
+            value={itemInput}
+            className="w-full rounded-lg border border-default bg-surface p-3 text-sm text-primary placeholder-text-muted focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all duration-300"
+            placeholder={placeholder}
+            onChange={(event: ChangeEvent) => onChange(event)}
+            onKeyDown={(event: KeyboardEvent) => onKeyDown(event, itemInput, tags)}
+            onKeyUp={onKeyUp}
+          />
+
+          {/* Counter and help text */}
+          <div className="flex justify-between items-center text-xs">
+            <span className="text-muted">Press comma (,) to add tags</span>
+            <span className="text-muted font-medium">
+              {maxTagCount - tags.length} {counterText} remaining
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );

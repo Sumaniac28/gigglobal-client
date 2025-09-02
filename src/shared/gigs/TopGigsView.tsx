@@ -66,19 +66,19 @@ const TopGigsView: FC<IGigTopProps> = ({ gigs, title, subTitle, category, width,
   return (
     <div className="w-full flex flex-col overflow-hidden">
       {title && (
-        <div className="flex items-start py-4 sm:py-6 mb-4">
+        <div className="flex items-start py-6 mb-6">
           <div className="flex w-full flex-col justify-between">
-            <div className="flex gap-2 flex-wrap">
-              <h2 className="text-lg font-bold text-primary font-themeFont md:text-xl lg:text-2xl">{title}</h2>
+            <div className="flex gap-2 flex-wrap items-center">
+              <h2 className="text-xl font-themeFont font-bold text-primary md:text-2xl lg:text-3xl">{title}</h2>
               {category && (
-                <span className="flex self-center text-lg font-bold cursor-pointer text-accent hover:text-primary hover:underline md:text-xl lg:text-2xl transition-colors duration-300">
+                <span className="flex self-center text-xl font-themeFont font-bold cursor-pointer text-accent hover:text-primary hover:underline md:text-2xl lg:text-3xl transition-colors duration-300">
                   <Link onClick={() => socket.emit('getLoggedInUsers', '')} to={`/categories/${replaceSpacesWithDash(category)}`}>
                     {category}
                   </Link>
                 </span>
               )}
             </div>
-            <h4 className="pt-2 text-left text-sm text-muted leading-6">{subTitle}</h4>
+            {subTitle && <h4 className="pt-3 text-left text-sm text-muted leading-6 font-medium">{subTitle}</h4>}
           </div>
         </div>
       )}
@@ -88,17 +88,17 @@ const TopGigsView: FC<IGigTopProps> = ({ gigs, title, subTitle, category, width,
         {shouldShowNavigation && scroll.start && (
           <button
             onClick={slideLeft}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 ring-0 hover:ring-4 hover:ring-primary/20"
+            className="absolute left-2 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-surface border border-default shadow-lg hover:bg-accent hover:text-on-primary hover:border-accent transition-all duration-300 transform hover:scale-105"
             aria-label="Scroll left"
           >
-            <FaAngleLeft className="text-lg sm:text-xl text-on-primary" />
+            <FaAngleLeft className="text-lg sm:text-xl text-primary hover:text-on-primary transition-colors duration-300" />
           </button>
         )}
 
         {/* Scrollable Container */}
         <div
           ref={navElement}
-          className="flex gap-4 sm:gap-6 overflow-x-auto scrollbar-hide scroll-smooth py-2"
+          className="flex gap-4 sm:gap-6 overflow-x-auto scrollbar-hide scroll-smooth py-2 px-2"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {gigs.map((gig: ISellerGig) => (
@@ -108,12 +108,12 @@ const TopGigsView: FC<IGigTopProps> = ({ gigs, title, subTitle, category, width,
               ) : (
                 <Suspense
                   fallback={
-                    <div className="flex items-center justify-center w-full h-40 text-muted text-sm sm:text-base">
-                      <div className="animate-pulse w-full h-40 rounded-xl bg-muted/10" />
+                    <div className="flex items-center justify-center w-full h-64 bg-surface rounded-xl border border-default">
+                      <div className="animate-pulse w-full h-64 rounded-xl bg-muted/10" />
                     </div>
                   }
                 >
-                  <GigIndexItem gig={gig} />{' '}
+                  <GigIndexItem gig={gig} />
                 </Suspense>
               )}
             </div>
@@ -124,10 +124,10 @@ const TopGigsView: FC<IGigTopProps> = ({ gigs, title, subTitle, category, width,
         {shouldShowNavigation && scroll.end && (
           <button
             onClick={slideRight}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 ring-0 hover:ring-4 hover:ring-primary/20"
+            className="absolute right-2 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-surface border border-default shadow-lg hover:bg-accent hover:text-on-primary hover:border-accent transition-all duration-300 transform hover:scale-105"
             aria-label="Scroll right"
           >
-            <FaAngleRight className="text-lg sm:text-xl text-on-primary" />
+            <FaAngleRight className="text-lg sm:text-xl text-primary hover:text-on-primary transition-colors duration-300" />
           </button>
         )}
       </div>

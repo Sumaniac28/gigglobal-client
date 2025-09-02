@@ -7,21 +7,27 @@ const GigLeftOverview: FC = (): ReactElement => {
   const { gig, isSuccess, isLoading } = useContext(GigContext);
 
   return (
-    <div className="relative flex max-h-[600px] h-[600px] cursor-pointer justify-center bg-[#F9FAFB]">
+    <div className="relative flex h-[400px] sm:h-[500px] lg:h-[600px] cursor-pointer justify-center bg-surface rounded-xl overflow-hidden border border-default shadow-sm group">
       {!isLoading && isSuccess && (
         <LazyLoadImage
           src={gig.coverImage}
-          alt="Gig Image"
-          className="w-full h-full object-cover transition-all duration-500 hover:scale-105"
-          placeholderSrc="https://placehold.co/330x220?text=Profile+Image"
+          alt="Gig Cover Image"
+          className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
+          placeholderSrc="https://placehold.co/600x400?text=Gig+Image"
           effect="blur"
         />
       )}
       {isLoading && !isSuccess && (
-        <div className="flex h-[600px] w-full transition-all duration-500 hover:scale-105">
-          <FaCircleNotch className="mr-3 flex h-10 w-full animate-spin self-center" size={40} color="#14B8A6" />
+        <div className="flex h-full w-full items-center justify-center bg-surface">
+          <div className="flex flex-col items-center gap-4">
+            <FaCircleNotch className="animate-spin text-4xl text-accent" />
+            <span className="text-sm font-themeFont font-medium text-muted">Loading image...</span>
+          </div>
         </div>
       )}
+
+      {/* Subtle overlay on hover */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
     </div>
   );
 };

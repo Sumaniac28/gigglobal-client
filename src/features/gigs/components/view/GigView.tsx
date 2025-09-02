@@ -44,68 +44,143 @@ const GigView: FC = (): ReactElement => {
       {isLoading ? (
         <CircularPageLoader />
       ) : (
-        <main className="max-w-8xl container mx-auto mt-8">
-          <h2 className="mb-4 px-4 text-xl font-bold text-[#111111] lg:text-3xl">{gig.current.title}</h2>
-          <div className="mb-4 flex flex-row gap-x-2 px-4">
-            <img className="flex h-8 w-8 self-center rounded-full object-cover" src={gig.current.profilePicture} alt="" />
-            <span className="flex self-center font-extrabold text-[#111111]">{gig.current.username}</span>
-            <>
-              {gig.current.ratingSum && gig.current.ratingsCount && gig.current.ratingSum >= 1 && gig.current.ratingsCount >= 1 ? (
-                <>
-                  <span className="flex self-center text-[#4B5563]">|</span>
-                  <div className="flex w-full gap-x-1 self-center">
-                    <div className="mt-1 w-20 gap-x-2">
-                      <Suspense fallback={<div className="w-20 h-4 bg-[#E5E7EB] animate-pulse" />}>
-                        <StarRating value={rating(gig.current.ratingSum / gig.current.ratingsCount)} size={14} />
-                      </Suspense>
+        <div className="min-h-screen bg-background">
+          <main className="max-w-7xl container mx-auto px-4 py-8 sm:px-6 lg:px-8">
+            {/* Hero Header Section */}
+            <div className="mb-12">
+              <div className="space-y-8">
+                {/* Gig Title */}
+                <div className="text-center lg:text-left">
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-themeFont font-bold text-primary leading-tight tracking-tight mb-4">
+                    {gig.current.title}
+                  </h1>
+                </div>
+
+                {/* Seller Info Card */}
+                <div className="bg-surface rounded-2xl border border-default shadow-lg p-6 lg:p-8 transition-all duration-300 hover:shadow-xl backdrop-blur-sm">
+                  <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 lg:gap-8">
+                    {/* Profile Image */}
+                    <div className="flex-shrink-0">
+                      <img
+                        className="h-20 w-20 sm:h-24 sm:w-24 lg:h-28 lg:w-28 rounded-full object-cover ring-4 ring-accent/20 shadow-xl transition-all duration-300 hover:ring-accent/40 hover:scale-105"
+                        src={gig.current.profilePicture}
+                        alt="Seller profile"
+                      />
                     </div>
-                    <div className="ml-2 mt-[1px] flex gap-1 text-sm">
-                      <span className="text-[#14B8A6]">{rating(gig.current.ratingSum / gig.current.ratingsCount)}</span>
-                      <span className="text-[#4B5563]">({shortenLargeNumbers(gig.current.ratingsCount)})</span>
+
+                    {/* Seller Details */}
+                    <div className="flex-1 text-center sm:text-left space-y-4">
+                      <div className="space-y-2">
+                        <h2 className="text-xl sm:text-2xl lg:text-3xl font-themeFont font-bold text-primary">
+                          {gig.current.username}
+                        </h2>
+                        <p className="text-sm sm:text-base text-muted leading-relaxed">
+                          {seller.current.oneliner}
+                        </p>
+                      </div>
+
+                      {/* Rating Section */}
+                      {gig.current.ratingSum && gig.current.ratingsCount && gig.current.ratingSum >= 1 && gig.current.ratingsCount >= 1 && (
+                        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
+                          <div className="flex items-center gap-3 bg-accent/10 px-5 py-3 rounded-full border border-accent/30 shadow-sm hover:shadow-md transition-all duration-300">
+                            <div className="flex items-center">
+                              <Suspense fallback={<div className="w-28 h-6 bg-muted/20 animate-pulse rounded" />}>
+                                <StarRating value={rating(gig.current.ratingSum / gig.current.ratingsCount)} size={20} />
+                              </Suspense>
+                            </div>
+                            <div className="flex items-center gap-2 text-sm lg:text-base">
+                              <span className="font-themeFont font-bold text-accent">
+                                {rating(gig.current.ratingSum / gig.current.ratingsCount) || '5.0'}
+                              </span>
+                              <span className="text-muted font-medium">
+                                ({shortenLargeNumbers(gig.current.ratingsCount)} reviews)
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
-                </>
-              ) : (
-                <></>
-              )}
-            </>
-          </div>
-
-          <GigContext.Provider
-            value={{
-              gig: gig.current,
-              seller: seller.current,
-              isSuccess: isGigDataSuccess,
-              isLoading: isGigLoading
-            }}
-          >
-            <div className="flex flex-wrap">
-              <div className="order-last w-full p-4 lg:order-first lg:w-2/3">
-                <Suspense fallback={<div className="w-20 h-4 bg-[#E5E7EB] animate-pulse" />}>
-                  <GigViewLeft />
-                </Suspense>
+                </div>
               </div>
+            </div>
 
-              <div className="w-full p-4 lg:w-1/3">
-                <StickyBox offsetTop={10} offsetBottom={10}>
-                  <Suspense fallback={<div className="w-20 h-4 bg-[#E5E7EB] animate-pulse" />}>
-                    <GigViewRight />
+            {/* Main Content Grid */}
+            <GigContext.Provider
+              value={{
+                gig: gig.current,
+                seller: seller.current,
+                isSuccess: isGigDataSuccess,
+                isLoading: isGigLoading
+              }}
+            >
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 xl:gap-16">
+                {/* Left Column - Main Content */}
+                <div className="lg:col-span-2 order-2 lg:order-1">
+                  <Suspense fallback={
+                    <div className="space-y-8">
+                      <div className="w-full h-96 bg-surface animate-pulse rounded-2xl border border-default shadow-sm" />
+                      <div className="w-full h-64 bg-surface animate-pulse rounded-2xl border border-default shadow-sm" />
+                      <div className="w-full h-48 bg-surface animate-pulse rounded-2xl border border-default shadow-sm" />
+                    </div>
+                  }>
+                    <GigViewLeft />
                   </Suspense>
-                </StickyBox>
-              </div>
-            </div>
-          </GigContext.Provider>
+                </div>
 
-          {moreGigs.current.length > 0 ? (
-            <div className="m-auto px-6 xl:container md:px-12 lg:px-6">
-              <Suspense fallback={<div className="w-20 h-4 bg-[#E5E7EB] animate-pulse" />}>
-                <TopGigsView gigs={moreGigs.current} title="Recommended for you" subTitle="" width="w-60" type="home" />
-              </Suspense>
-            </div>
-          ) : (
-            <></>
-          )}
-        </main>
+                {/* Right Column - Sidebar */}
+                <div className="lg:col-span-1 order-1 lg:order-2">
+                  <StickyBox offsetTop={40} offsetBottom={40}>
+                    <Suspense fallback={
+                      <div className="space-y-6">
+                        <div className="w-full h-80 bg-surface animate-pulse rounded-2xl border border-default shadow-sm" />
+                        <div className="w-full h-56 bg-surface animate-pulse rounded-2xl border border-default shadow-sm" />
+                        <div className="w-full h-40 bg-surface animate-pulse rounded-2xl border border-default shadow-sm" />
+                      </div>
+                    }>
+                      <GigViewRight />
+                    </Suspense>
+                  </StickyBox>
+                </div>
+              </div>
+            </GigContext.Provider>
+
+            {/* Related Gigs Section */}
+            {moreGigs.current.length > 0 && (
+              <div className="mt-20 lg:mt-24">
+                <div className="bg-surface rounded-2xl border border-default shadow-lg p-8 lg:p-10 transition-all duration-300 hover:shadow-xl">
+                  <div className="mb-8">
+                    <h3 className="text-2xl lg:text-3xl font-themeFont font-bold text-primary mb-3">
+                      Recommended for you
+                    </h3>
+                    <p className="text-muted font-medium leading-6">
+                      Discover more amazing services from talented freelancers in our marketplace
+                    </p>
+                  </div>
+
+                  <Suspense fallback={
+                    <div className="space-y-6">
+                      <div className="w-64 h-8 bg-muted/20 animate-pulse rounded" />
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {[...Array(4)].map((_, i) => (
+                          <div key={i} className="w-full h-72 bg-muted/10 animate-pulse rounded-xl border border-default" />
+                        ))}
+                      </div>
+                    </div>
+                  }>
+                    <TopGigsView
+                      gigs={moreGigs.current}
+                      title=""
+                      subTitle=""
+                      width="w-80"
+                      type="home"
+                    />
+                  </Suspense>
+                </div>
+              </div>
+            )}
+          </main>
+        </div>
       )}
     </>
   );

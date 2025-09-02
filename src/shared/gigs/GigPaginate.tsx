@@ -17,10 +17,12 @@ const GigPaginate: FC<IGigPaginateProps> = ({
 
   return (
     <div className="flex w-full justify-center">
-      <ul className="flex gap-8">
-        <div
-          className={`cursor-pointer p-3 ${
-            itemOffset - 1 > 0 ? 'rounded-full border border-[#14B8A6]' : 'cursor-not-allowed text-[#4B5563] opacity-50'
+      <nav className="flex items-center gap-2">
+        <button
+          className={`flex items-center justify-center p-3 rounded-lg transition-all duration-300 ${
+            itemOffset - 1 > 0
+              ? 'border border-default text-primary hover:border-accent hover:bg-accent hover:text-on-primary shadow-sm'
+              : 'cursor-not-allowed text-muted opacity-50 border border-default/30'
           }`}
           onClick={() => {
             if (itemOffset - 1 > 0) {
@@ -30,37 +32,45 @@ const GigPaginate: FC<IGigPaginateProps> = ({
               setItemFrom(`${firstItem.sortId}`);
             }
           }}
+          disabled={itemOffset - 1 <= 0}
         >
-          <FaArrowLeft className="flex self-center" />
-        </div>
+          <FaArrowLeft className="text-sm" />
+        </button>
 
-        {showNumbers &&
-          paginationCount.map((_, index: number) => (
-            <li
-              key={uuidv4()}
-              className={`cursor-pointer px-3 py-2 ${
-                itemOffset === index + 1 ? 'border-b-2 border-[#14B8A6] font-bold text-[#14B8A6]' : 'text-[#111111] hover:text-[#0F766E]'
-              }`}
-              onClick={() => {
-                const selectedPage = index + 1;
-                itemOffset += 1;
-                if (itemOffset < index + 1) {
-                  setPaginationType('forward');
-                  setItemFrom(`${selectedPage * itemsPerPage - itemsPerPage}`);
-                } else if (itemOffset > index + 1) {
-                  const selectedCount = selectedPage * itemsPerPage + 1;
-                  setPaginationType('backward');
-                  setItemFrom(`${selectedCount}`);
-                }
-              }}
-            >
-              {index + 1}
-            </li>
-          ))}
+        {showNumbers && (
+          <div className="flex items-center gap-1 mx-2">
+            {paginationCount.map((_, index: number) => (
+              <button
+                key={uuidv4()}
+                className={`px-4 py-2 rounded-lg font-themeFont font-medium transition-all duration-300 ${
+                  itemOffset === index + 1
+                    ? 'bg-accent text-on-primary shadow-sm border border-accent'
+                    : 'text-primary hover:text-accent hover:bg-accent/10 border border-default'
+                }`}
+                onClick={() => {
+                  const selectedPage = index + 1;
+                  itemOffset += 1;
+                  if (itemOffset < index + 1) {
+                    setPaginationType('forward');
+                    setItemFrom(`${selectedPage * itemsPerPage - itemsPerPage}`);
+                  } else if (itemOffset > index + 1) {
+                    const selectedCount = selectedPage * itemsPerPage + 1;
+                    setPaginationType('backward');
+                    setItemFrom(`${selectedCount}`);
+                  }
+                }}
+              >
+                {index + 1}
+              </button>
+            ))}
+          </div>
+        )}
 
-        <div
-          className={`cursor-pointer p-3 ${
-            itemOffset === paginationCount.length ? 'cursor-not-allowed text-[#4B5563] opacity-50' : 'rounded-full border border-[#14B8A6]'
+        <button
+          className={`flex items-center justify-center p-3 rounded-lg transition-all duration-300 ${
+            itemOffset < paginationCount.length
+              ? 'border border-default text-primary hover:border-accent hover:bg-accent hover:text-on-primary shadow-sm'
+              : 'cursor-not-allowed text-muted opacity-50 border border-default/30'
           }`}
           onClick={() => {
             if (itemOffset + 1 <= paginationCount.length) {
@@ -70,10 +80,11 @@ const GigPaginate: FC<IGigPaginateProps> = ({
               setItemFrom(`${lastItem.sortId}`);
             }
           }}
+          disabled={itemOffset >= paginationCount.length}
         >
-          <FaArrowRight className="flex self-center" />
-        </div>
-      </ul>
+          <FaArrowRight className="text-sm" />
+        </button>
+      </nav>
     </div>
   );
 };

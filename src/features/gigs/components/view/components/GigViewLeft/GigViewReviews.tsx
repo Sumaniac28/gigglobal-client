@@ -23,67 +23,83 @@ const GigViewReviews: FC<IGigViewReviewsProps> = ({ showRatings, reviews, hasFet
   };
 
   return (
-    <>
+    <div className="space-y-8">
       {showRatings && gig && (
-        <>
-          <div className="mb-10">
-            <h2 className="mb-4 text-lg font-bold text-[#111111]">Reviews</h2>
-            <div className="flex flex-col gap-y-3 pt-2 lg:flex-row lg:gap-x-6">
-              <div className="w-full">
-                {Object.entries(gig?.ratingCategories as IRatingCategories).map((rating: [string, IRatingCategoryItem]) => (
-                  <div key={uuidv4()} className="mb-8 flex flex-col gap-y-2 lg:flex-row lg:gap-x-2">
-                    <div className="w-full truncate text-sm text-[#4B5563] lg:w-1/12">
-                      {ratingTypes[`${rating[0]}`]} Star{rating[0] === 'one' ? '' : 's'}
-                    </div>
-                    <div className="flex h-2.5 w-full self-center rounded-full bg-[#E5E7EB] lg:w-full">
-                      <div
-                        className="h-2.5 rounded-full bg-[#14B8A6]"
-                        style={{ width: `${percentage(rating[1].value, parseInt(`${gig?.ratingSum}`))}%` }}
-                      ></div>
-                    </div>
-                    <div className="w-full text-start text-sm text-[#4B5563] lg:w-1/12 lg:text-end">
-                      ({shortenLargeNumbers(rating[1].count)})
-                    </div>
+        <div>
+          <h2 className="mb-6 text-lg font-themeFont font-bold text-primary">Reviews & Ratings</h2>
+          <div className="space-y-4">
+            {Object.entries(gig?.ratingCategories as IRatingCategories).map((rating: [string, IRatingCategoryItem]) => (
+              <div key={uuidv4()} className="flex items-center gap-4">
+                <div className="w-20 text-sm font-medium text-muted">
+                  {ratingTypes[`${rating[0]}`]} Star{rating[0] === 'one' ? '' : 's'}
+                </div>
+                <div className="flex-1 relative">
+                  <div className="h-3 rounded-full bg-default/30 overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-accent transition-all duration-500 ease-out"
+                      style={{ width: `${percentage(rating[1].value, parseInt(`${gig?.ratingSum}`))}%` }}
+                    />
                   </div>
-                ))}
-              </div>
-            </div>
-          </div>
-          <hr className="border-[#E5E7EB] my-3" />
-        </>
-      )}
-
-      <div className="flex flex-col gap-6">
-        {reviews &&
-          reviews.map((item: IReviewDocument) => (
-            <div key={uuidv4()}>
-              <div className="flex flex-col gap-y-3 md:flex-row md:gap-x-4">
-                <img
-                  className="flex self-center h-12 w-12 mt-4 rounded-full object-cover md:self-auto"
-                  src={item.reviewerImage}
-                  alt="Reviewer Image"
-                />
-                <div className="flex flex-col self-center">
-                  <div className="flex cursor-pointer self-center pt-0 no-underline md:block md:self-start md:pt-4">
-                    <span className="text-base font-bold text-[#111111] md:mb-5">{item.reviewerUsername}</span>
-                  </div>
-                  <span className="flex self-center text-sm text-[#4B5563] md:block md:self-start">{item.country}</span>
-                  <div className="flex w-full gap-x-1 self-center justify-center md:justify-start">
-                    <div className="mt-1 w-20 gap-x-2">
-                      <StarRating value={rating(item.rating)} size={14} />
-                    </div>
-                    <div className="ml-2 mt-[1px] flex gap-1 text-sm">
-                      <span className="text-[#14B8A6]">{rating(item.rating)}</span>|
-                      <span className="text-[#4B5563]">{TimeAgo.chatMessageTransform(`${item.createdAt}`)}</span>
-                    </div>
-                  </div>
-                  <p className="mt-2 text-sm text-center text-[#111111] md:text-base md:text-left">{item.review}</p>
+                </div>
+                <div className="w-16 text-sm text-muted text-right">
+                  ({shortenLargeNumbers(rating[1].count)})
                 </div>
               </div>
-            </div>
-          ))}
-      </div>
-    </>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {reviews && reviews.length > 0 && (
+        <div className="space-y-6">
+          <div className="border-t border-default pt-6">
+            <h3 className="text-lg font-themeFont font-bold text-primary mb-6">Customer Reviews</h3>
+          </div>
+
+          <div className="space-y-6">
+            {reviews.map((item: IReviewDocument) => (
+              <div key={uuidv4()} className="p-4 bg-surface/50 rounded-xl border border-default/50 hover:shadow-sm transition-all duration-300">
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="flex-shrink-0 flex sm:flex-col items-center sm:items-start gap-3 sm:gap-2">
+                    <img
+                      className="h-12 w-12 rounded-full object-cover ring-2 ring-default/20"
+                      src={item.reviewerImage}
+                      alt="Reviewer"
+                    />
+                    <div className="flex flex-col sm:text-center">
+                      <span className="text-sm font-themeFont font-semibold text-primary">{item.reviewerUsername}</span>
+                      <span className="text-xs text-muted">{item.country}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex-1 space-y-3">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <div className="flex items-center gap-1">
+                        <StarRating value={rating(item.rating)} size={16} />
+                        <span className="text-sm font-semibold text-accent">{rating(item.rating)}</span>
+                      </div>
+                      <span className="text-muted">•</span>
+                      <span className="text-xs text-muted">{TimeAgo.chatMessageTransform(`${item.createdAt}`)}</span>
+                    </div>
+
+                    <p className="text-sm sm:text-base text-primary leading-relaxed">{item.review}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {reviews && reviews.length === 0 && (
+        <div className="text-center py-12 bg-surface/30 rounded-xl border border-default/30">
+          <div className="space-y-2">
+            <p className="text-muted font-medium">No reviews yet</p>
+            <p className="text-sm text-muted">Be the first to review this gig!</p>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

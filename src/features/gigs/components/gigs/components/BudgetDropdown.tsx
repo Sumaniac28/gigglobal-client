@@ -12,17 +12,17 @@ const BudgetDropdown: FC = (): ReactElement => {
   const [selectedBudget, setSelectedBudget] = useState<ISelectedBudget>({ minPrice: '', maxPrice: '' });
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full sm:w-auto">
       <div className="relative">
         <Button
-          className="flex justify-between gap-5 rounded-lg border border-[#E5E7EB] px-5 py-3 font-medium text-[#111111]"
+          className="flex justify-between items-center gap-3 rounded-lg border border-default bg-surface px-4 py-3 font-themeFont font-medium text-primary hover:bg-accent hover:text-on-primary transition-all duration-300 min-w-[140px]"
           label={
             <>
               <span>Budget</span>
               {!toggleDropdown ? (
-                <FaChevronDown className="h-4 fill-current text-[#111111]" />
+                <FaChevronDown className="h-3 w-3 fill-current transition-transform duration-300" />
               ) : (
-                <FaChevronUp className="h-4 fill-current text-[#111111]" />
+                <FaChevronUp className="h-3 w-3 fill-current transition-transform duration-300" />
               )}
             </>
           }
@@ -30,66 +30,64 @@ const BudgetDropdown: FC = (): ReactElement => {
         />
 
         {toggleDropdown && (
-          <div className="absolute mt-2 w-96 divide-y divide-[#E5E7EB] rounded-lg border border-[#E5E7EB] bg-white drop-shadow-md sm:w-72">
-            <ul className="space-y-1 p-3 text-sm text-[#4B5563]">
-              <li>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="min" className="mb-2 block text-sm font-normal text-[#111111]">
-                      MIN.
-                    </label>
-                    <TextInput
-                      type="number"
-                      id="min"
-                      min="0"
-                      name="minPrice"
-                      value={selectedBudget.minPrice ?? ''}
-                      className="block w-full rounded border border-[#E5E7EB] p-2.5 text-sm text-[#4B5563] focus:border-[#14B8A6] focus:ring-[#14B8A6]"
-                      placeholder="Any"
-                      onChange={(event: ChangeEvent) =>
-                        setSelectedBudget({ ...selectedBudget, minPrice: `${(event.target as HTMLInputElement).value}` })
-                      }
-                      onKeyDown={(event: KeyboardEvent) => {
-                        if (event.key !== 'Backspace' && isNaN(parseInt(event.key))) event.preventDefault();
-                      }}
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="max" className="mb-2 block text-sm font-normal text-[#111111]">
-                      MAX.
-                    </label>
-                    <TextInput
-                      type="number"
-                      id="max"
-                      name="maxPrice"
-                      value={selectedBudget.maxPrice ?? ''}
-                      className="block w-full rounded border border-[#E5E7EB] p-2.5 text-sm text-[#4B5563] focus:border-[#14B8A6] focus:ring-[#14B8A6]"
-                      placeholder="Any"
-                      onChange={(event: ChangeEvent) =>
-                        setSelectedBudget({ ...selectedBudget, maxPrice: `${(event.target as HTMLInputElement).value}` })
-                      }
-                      onKeyDown={(event: KeyboardEvent) => {
-                        if (event.key !== 'Backspace' && isNaN(parseInt(event.key))) event.preventDefault();
-                      }}
-                    />
-                  </div>
+          <div className="absolute z-50 mt-2 w-80 sm:w-72 rounded-xl border border-default bg-surface shadow-lg backdrop-blur-sm">
+            <div className="p-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="min" className="mb-2 block text-sm font-themeFont font-semibold text-primary">
+                    MIN.
+                  </label>
+                  <TextInput
+                    type="number"
+                    id="min"
+                    min="0"
+                    name="minPrice"
+                    value={selectedBudget.minPrice ?? ''}
+                    className="block w-full rounded-lg border border-default bg-surface p-3 text-sm text-primary placeholder-text-muted focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all duration-300"
+                    placeholder="Any"
+                    onChange={(event: ChangeEvent) =>
+                      setSelectedBudget({ ...selectedBudget, minPrice: `${(event.target as HTMLInputElement).value}` })
+                    }
+                    onKeyDown={(event: KeyboardEvent) => {
+                      if (event.key !== 'Backspace' && isNaN(parseInt(event.key))) event.preventDefault();
+                    }}
+                  />
                 </div>
-              </li>
-            </ul>
 
-            <div className="my-4 flex cursor-pointer justify-evenly pt-3">
-              <div
-                className="px-4 py-2 text-sm font-medium text-[#111111] hover:text-[#4B5563]"
+                <div>
+                  <label htmlFor="max" className="mb-2 block text-sm font-themeFont font-semibold text-primary">
+                    MAX.
+                  </label>
+                  <TextInput
+                    type="number"
+                    id="max"
+                    name="maxPrice"
+                    value={selectedBudget.maxPrice ?? ''}
+                    className="block w-full rounded-lg border border-default bg-surface p-3 text-sm text-primary placeholder-text-muted focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all duration-300"
+                    placeholder="Any"
+                    onChange={(event: ChangeEvent) =>
+                      setSelectedBudget({ ...selectedBudget, maxPrice: `${(event.target as HTMLInputElement).value}` })
+                    }
+                    onKeyDown={(event: KeyboardEvent) => {
+                      if (event.key !== 'Backspace' && isNaN(parseInt(event.key))) event.preventDefault();
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center p-4 border-t border-default bg-surface/50 rounded-b-xl">
+              <button
+                className="px-4 py-2 text-sm font-themeFont font-medium text-muted hover:text-primary transition-colors duration-300"
                 onClick={() => {
                   setSelectedBudget({ minPrice: '', maxPrice: '' });
                   setToggleDropdown(false);
                 }}
               >
                 Clear All
-              </div>
-              <div
-                className="rounded bg-[#14B8A6] px-4 py-2 text-sm font-bold text-white hover:bg-[#0F766E]"
+              </button>
+              <button
+                className="rounded-lg bg-primary px-6 py-2 text-sm font-themeFont font-semibold text-on-primary hover:bg-primary/90 transition-all duration-300 shadow-sm"
                 onClick={() => {
                   const updatedSearchParams = new URLSearchParams(searchParams.toString());
                   updatedSearchParams.set('minPrice', selectedBudget.minPrice);
@@ -100,20 +98,20 @@ const BudgetDropdown: FC = (): ReactElement => {
                 }}
               >
                 Apply
-              </div>
+              </button>
             </div>
           </div>
         )}
       </div>
 
-      <div className="mt-2 flex h-10 gap-4 text-xs text-[#111111]">
+      <div className="mt-3 flex flex-wrap gap-2">
         {selectedBudget?.minPrice && selectedBudget?.maxPrice && (
           <Button
-            className="flex gap-4 self-center rounded-full bg-[#E5E7EB] px-5 py-1 font-bold hover:text-[#4B5563]"
+            className="flex items-center gap-2 rounded-full bg-accent/10 border border-accent/30 px-4 py-2 text-xs font-themeFont font-medium text-primary hover:bg-accent/20 transition-all duration-300"
             label={
               <>
-                ${selectedBudget.minPrice} - ${selectedBudget.maxPrice}
-                <FaTimes className="self-center font-normal" />
+                <span>${selectedBudget.minPrice} - ${selectedBudget.maxPrice}</span>
+                <FaTimes className="h-3 w-3" />
               </>
             }
             onClick={() => {
