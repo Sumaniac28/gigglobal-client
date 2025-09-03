@@ -18,27 +18,32 @@ const ChatFile: FC<IChatMessageProps> = ({ message }): ReactElement => {
   };
 
   return (
-    <div className="flex w-64 min-w-[100%] flex-col">
-      <div className="z-1 mt-2 flex flex-col rounded">
-        {checkUrlExtension(`${message.fileType}`) === 'image' && <img className="h-36 w-64 object-cover" src={message.file} alt="" />}
+    <div className="flex w-64 min-w-[100%] flex-col bg-surface rounded-lg shadow-sm border border-border-default overflow-hidden">
+      <div className="z-1 mt-2 flex flex-col">
+        {checkUrlExtension(`${message.fileType}`) === 'image' && (
+          <img className="h-36 w-64 object-cover rounded-t-lg" src={message.file} alt="Shared image" />
+        )}
         {checkUrlExtension(`${message.fileType}`) === 'zip' && (
-          <div className="border-grey relative flex h-[120px] w-64 items-center justify-center rounded-md border">
-            <FaRegFileArchive className="absolute" size={25} />
+          <div className="relative flex h-[120px] w-64 items-center justify-center rounded-t-lg bg-accent/10">
+            <FaRegFileArchive className="text-accent" size={32} />
           </div>
         )}
         {checkUrlExtension(`${message.fileType}`) === 'video' && (
-          <div className="border-grey relative flex h-[150px] w-64 items-center justify-center rounded-md border">
-            <FaRegPlayCircle className="absolute" size={25} />
-            <video width="100%" src="" />
+          <div className="relative flex h-[150px] w-64 items-center justify-center rounded-t-lg bg-accent/10">
+            <FaRegPlayCircle className="text-accent" size={32} />
+            <video width="100%" src="" className="absolute inset-0 w-full h-full object-cover rounded-t-lg" />
           </div>
         )}
       </div>
-      <div className="flex w-auto justify-between">
-        <div className="flex gap-1 truncate" onClick={() => downloadChatFile(`${message.file}`, `${message.fileName}`)}>
-          <FaDownload size={10} className="flex self-center" />
-          <span className="truncate text-xs md:text-sm">{message.fileName}</span>
+      <div className="flex w-auto justify-between items-center p-3 bg-surface border-t border-border-default">
+        <div
+          className="flex gap-2 truncate items-center cursor-pointer text-primary hover:text-primary-hover transition-colors duration-300"
+          onClick={() => downloadChatFile(`${message.file}`, `${message.fileName}`)}
+        >
+          <FaDownload size={12} className="flex-shrink-0" />
+          <span className="truncate text-sm font-medium">{message.fileName}</span>
         </div>
-        <span className="truncate text-xs md:text-sm">({bytesToSize(parseInt(`${message.fileSize}`))})</span>
+        <span className="truncate text-xs text-muted ml-2 flex-shrink-0">({bytesToSize(parseInt(`${message.fileSize}`))})</span>
       </div>
     </div>
   );

@@ -143,38 +143,65 @@ const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, isLoading, setSkip }):
         />
       )}
       {!isLoading && (
-        <div className="flex min-h-full w-full flex-col">
-          <div className="border-grey flex w-full flex-col border-b px-5 py-0.5 ">
+        <div className="h-full w-full flex flex-col bg-background">
+          <div className="flex w-full flex-col border-b border-border-default bg-surface px-6 py-4 shadow-sm flex-shrink-0">
             {receiverUsername.current === receiverRef?.current?.username ? (
               <>
-                <div className="text-lg font-semibold">{firstLetterUppercase(`${username}`)}</div>
-                <div className="flex gap-1 pb-1 text-xs font-normal">
+                <div className="text-lg font-themeFont font-bold text-primary">{firstLetterUppercase(`${username}`)}</div>
+                <div className="flex gap-2 items-center pb-1 text-sm font-normal text-accent">
                   Online
-                  <span className="flex h-2.5 w-2.5 self-center rounded-full border-2 border-white bg-green-400"></span>
+                  <span className="flex h-2 w-2 rounded-full bg-accent animate-pulse ring-2 ring-accent/30"></span>
                 </div>
               </>
             ) : (
               <>
-                <div className="py-2.5 text-lg font-semibold">{firstLetterUppercase(`${username}`)}</div>
-                <span className="py-2.5s text-xs font-normal"></span>
+                <div className="py-2 text-lg font-themeFont font-bold text-primary">{firstLetterUppercase(`${username}`)}</div>
+                <span className="text-sm font-normal text-muted">Offline</span>
               </>
             )}
           </div>
-          <div className="relative h-[100%]">
-            <div className="absolute flex h-[98%] w-screen grow flex-col overflow-scroll" ref={scrollRef}>
+          <div className="flex-1 bg-background overflow-hidden">
+            <div
+              className="h-full w-full flex flex-col overflow-y-auto px-4 pt-6 pb-12 scroll-smooth"
+              ref={scrollRef}
+              onWheel={(e) => {
+                const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+                const isAtTop = scrollTop === 0;
+                const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
+
+                if ((isAtTop && e.deltaY < 0) || (isAtBottom && e.deltaY > 0)) {
+                  e.preventDefault();
+                }
+              }}
+            >
               {chatMessages.map((message: IMessageDocument) => (
-                <div key={uuidv4()} className="mb-4">
-                  <div className="flex w-full cursor-pointer items-center space-x-4 px-5 py-2 hover:bg-[#f5fbff]">
-                    <div className="flex self-start">
-                      <img className="h-10 w-10 object-cover rounded-full" src={message.senderPicture} alt="" />
-                    </div>
-                    <div className="w-full text-sm dark:text-white">
-                      <div className="flex gap-x-2 pb-1 font-bold text-[#777d74]">
-                        <span>{message.senderUsername}</span>
-                        <span className="mt-1 self-center text-xs font-normal">{TimeAgo.dayMonthYear(`${message.createdAt}`)}</span>
+                <div
+                  key={uuidv4()}
+                  className={`mb-4 flex ${message.senderUsername === authUser.username ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div
+                    className={`flex max-w-[70%] ${message.senderUsername === authUser.username ? 'flex-row-reverse' : 'flex-row'} items-end space-x-2`}
+                  >
+                    <img
+                      className={`h-8 w-8 object-cover rounded-full ring-2 ring-border-default flex-shrink-0 ${message.senderUsername === authUser.username ? 'ml-2' : 'mr-2'}`}
+                      src={message.senderPicture}
+                      alt="Profile"
+                    />
+                    <div className={`flex flex-col ${message.senderUsername === authUser.username ? 'items-end' : 'items-start'}`}>
+                      <div
+                        className={`flex gap-x-2 pb-1 items-center ${message.senderUsername === authUser.username ? 'flex-row-reverse' : 'flex-row'}`}
+                      >
+                        <span className="font-themeFont font-semibold text-primary text-xs">{message.senderUsername}</span>
+                        <span className="text-xs font-normal text-muted">{TimeAgo.dayMonthYear(`${message.createdAt}`)}</span>
                       </div>
-                      <div className="flex flex-col text-[#777d74]">
-                        <span>{message.body}</span>
+                      <div
+                        className={`rounded-2xl px-4 py-3 max-w-full transition-all duration-300 ${
+                          message.senderUsername === authUser.username
+                            ? 'bg-primary text-on-primary rounded-br-md'
+                            : 'bg-surface text-primary border border-border-default rounded-bl-md shadow-sm'
+                        }`}
+                      >
+                        <span className="text-sm leading-relaxed break-words">{message.body}</span>
                         {message.hasOffer && <ChatOffer message={message} seller={seller} gig={data?.gig} />}
                         {message.file && <ChatFile message={message} />}
                       </div>
@@ -182,9 +209,10 @@ const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, isLoading, setSkip }):
                   </div>
                 </div>
               ))}
+              <div className="h-20"></div>
             </div>
           </div>
-          <div className="relative z-10 flex flex-col">
+          <div className="flex-shrink-0 flex flex-col bg-surface border-t border-border-default">
             {showImagePreview && (
               <ChatImagePreview
                 image={URL.createObjectURL(selectedFile as File)}
@@ -200,23 +228,29 @@ const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, isLoading, setSkip }):
               />
             )}
             {!showImagePreview && (
-              <div className="bottom-0 left-0 right-0 z-0 h-28 px-4 ">
-                <form onSubmit={sendMessage} className="mb-1 w-full">
+              <div className="bottom-0 left-0 right-0 z-0 p-4">
+                <form onSubmit={sendMessage} className="mb-3 w-full">
                   <TextInput
                     type="text"
                     name="message"
                     value={message}
-                    className="border-grey mb-1 w-full rounded border p-3.5 text-sm font-normal text-gray-600 focus:outline-none"
-                    placeholder="Enter your message..."
+                    className="w-full rounded-lg border border-border-default bg-surface p-4 text-sm font-normal text-primary placeholder-muted focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300"
+                    placeholder="Type your message..."
                     onChange={(event: ChangeEvent) => setMessage((event.target as HTMLInputElement).value)}
                   />
                 </form>
-                <div className="flex cursor-pointer flex-row justify-between">
-                  <div className="flex gap-4">
-                    {!showImagePreview && <FaPaperclip className="mt-1 self-center" onClick={() => fileRef?.current?.click()} />}
+                <div className="flex cursor-pointer flex-row justify-between items-center">
+                  <div className="flex gap-4 items-center">
+                    {!showImagePreview && (
+                      <FaPaperclip
+                        className="text-muted hover:text-primary transition-colors duration-300 cursor-pointer"
+                        size={18}
+                        onClick={() => fileRef?.current?.click()}
+                      />
+                    )}
                     {!showImagePreview && singleMessageRef.current && singleMessageRef.current.sellerId === seller?._id && (
                       <Button
-                        className="rounded bg-sky-500 px-6 py-3 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:px-4 md:py-2 md:text-base"
+                        className="rounded-lg bg-secondary hover:bg-secondary-hover px-6 py-3 text-center text-sm font-themeFont font-semibold text-on-primary focus:outline-none focus:ring-2 focus:ring-secondary/30 transition-all duration-300 md:px-4 md:py-2 md:text-base"
                         disabled={false}
                         label="Add Offer"
                         onClick={() => setDisplayCustomOffer(MESSAGE_STATUS.LOADING)}
@@ -237,7 +271,7 @@ const ChatWindow: FC<IChatWindowProps> = ({ chatMessages, isLoading, setSkip }):
                   </div>
                   <div className="flex gap-4">
                     <Button
-                      className="rounded bg-sky-500 px-6 py-3 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:px-4 md:py-2 md:text-base"
+                      className="rounded-lg bg-primary hover:bg-primary-hover px-6 py-3 text-center text-sm font-themeFont font-semibold text-on-primary focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all duration-300 md:px-4 md:py-2 md:text-base"
                       disabled={false}
                       label={<FaPaperPlane className="self-center" />}
                       onClick={sendMessage}

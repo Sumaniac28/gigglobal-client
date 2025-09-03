@@ -1,6 +1,6 @@
 import { filter, orderBy } from 'lodash';
 import { FC, ReactElement, useEffect, useRef, useState } from 'react';
-import { FaCheck, FaCheckDouble, FaCircle } from 'react-icons/fa';
+import { FaCheck, FaCheckDouble } from 'react-icons/fa';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { Location, NavigateFunction, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { updateNotification } from 'src/shared/header/reducers/notification.reducer';
@@ -71,56 +71,60 @@ const ChatList: FC = (): ReactElement => {
   }, [authUser.username, conversationId, chatList, dispatch]);
 
   return (
-    <>
-      <div className="border-grey truncate border-b px-5 py-3 text-base font-medium">
-        <h2 className="w-6/12 truncate text-sm md:text-base lg:text-lg">All Conversations</h2>
+    <div className="h-full flex flex-col">
+      <div className="border-b border-border-default bg-surface px-5 py-4 backdrop-blur-sm flex-shrink-0">
+        <h2 className="w-6/12 truncate text-sm font-themeFont font-bold text-primary md:text-base lg:text-lg">All Conversations</h2>
       </div>
-      <div className="absolute h-full w-full overflow-scroll pb-14">
+      <div className="flex-1 w-full overflow-y-auto bg-background">
         {chatList.map((data: IMessageDocument, index: number) => (
           <div
             key={uuidv4()}
             onClick={() => selectUserFromList(data)}
-            className={`flex w-full cursor-pointer items-center space-x-4 px-5 py-4 hover:bg-gray-50 ${
-              index !== chatList.length - 1 ? 'border-grey border-b' : ''
-            } ${!data.isRead ? 'bg-[#f5fbff]' : ''} ${data.conversationId === conversationId ? 'bg-[#f5fbff]' : ''}`}
+            className={`flex w-full cursor-pointer items-center space-x-4 px-5 py-4 transition-all duration-300 hover:bg-surface hover:shadow-sm ${
+              index !== chatList.length - 1 ? 'border-b border-border-default' : ''
+            } ${!data.isRead ? 'bg-accent/10 border-l-4 border-accent' : ''} ${
+              data.conversationId === conversationId ? 'bg-primary/5 border-l-4 border-primary' : ''
+            }`}
           >
             <LazyLoadImage
               src={data.receiverUsername !== authUser?.username ? data.receiverPicture : data.senderPicture}
               alt="profile image"
-              className="h-10 w-10 object-cover rounded-full"
+              className="h-12 w-12 object-cover rounded-full ring-2 ring-border-default"
               placeholderSrc="https://placehold.co/330x220?text=Profile+Image"
               effect="blur"
-              wrapperClassName="h-10 w-10 object-cover rounded-full"
+              wrapperClassName="h-12 w-12 object-cover rounded-full"
             />
-            <div className="w-full text-sm dark:text-white">
-              <div className="flex justify-between pb-1 font-bold text-[#777d74]">
+            <div className="w-full text-sm">
+              <div className="flex justify-between pb-2 font-themeFont font-semibold text-primary">
                 <span className={`${selectedUser && !data.body ? 'flex items-center' : ''}`}>
                   {data.receiverUsername !== authUser?.username ? data.receiverUsername : data.senderUsername}
                 </span>
-                {data.createdAt && <span className="font-normal">{TimeAgo.transform(`${data.createdAt}`)}</span>}
+                {data.createdAt && <span className="text-xs font-normal text-muted">{TimeAgo.transform(`${data.createdAt}`)}</span>}
               </div>
-              <div className="flex justify-between text-[#777d74]">
-                <span>
-                  {data.receiverUsername === authUser.username ? '' : 'Me: '}
+              <div className="flex justify-between items-center text-muted">
+                <span className="truncate max-w-[200px]">
+                  {data.receiverUsername === authUser.username ? '' : 'You: '}
                   {data.body}
                 </span>
-                {!data.isRead ? (
-                  <>
-                    {data.receiverUsername === authUser.username ? (
-                      <FaCircle className="mt-2 text-sky-500" size={8} />
-                    ) : (
-                      <FaCheck className="mt-2" size={8} />
-                    )}
-                  </>
-                ) : (
-                  <FaCheckDouble className="mt-2 text-sky-500" size={8} />
-                )}
+                <div className="flex-shrink-0 ml-2">
+                  {!data.isRead ? (
+                    <>
+                      {data.receiverUsername === authUser.username ? (
+                        <div className="h-2 w-2 rounded-full bg-accent animate-pulse" />
+                      ) : (
+                        <FaCheck className="text-accent" size={10} />
+                      )}
+                    </>
+                  ) : (
+                    <FaCheckDouble className="text-accent" size={10} />
+                  )}
+                </div>
               </div>
             </div>
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 };
 

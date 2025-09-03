@@ -35,23 +35,27 @@ const ChatOffer: FC<IChatMessageProps> = ({ message, seller, gig }): ReactElemen
   };
 
   return (
-    <div className="z-1 border-grey mt-2 flex h-72 max-w-xl flex-col overflow-hidden rounded border">
+    <div className="z-1 mt-4 flex h-72 max-w-xl flex-col overflow-hidden rounded-lg border border-border-default bg-surface shadow-lg">
       <div className="w-full">
-        <div className="border-grey flex flex-row justify-between border-b bg-[#fafafa] p-4 text-sm font-bold md:text-base">
-          <span className="">{message.offer?.gigTitle}</span>
-          <span>${message.offer?.price}</span>
+        <div className="flex flex-row justify-between border-b border-border-default bg-accent/10 p-4 text-sm font-themeFont font-bold md:text-base">
+          <span className="text-primary">{message.offer?.gigTitle}</span>
+          <span className="text-accent font-bold">${message.offer?.price}</span>
         </div>
-        <div className="border-grey h-28 max-h-28 overflow-y-scroll border-b px-4 py-3">{messageOffer.description}</div>
-        <div className="border-grey flex flex-row gap-x-2 border-b px-4 py-3 text-sm font-bold md:text-base">
-          <FaRegClock className="self-center" /> {messageOffer.deliveryInDays} Day
-          {parseInt(`${messageOffer.deliveryInDays}`) > 1 ? 's' : ''} Delivery
+        <div className="h-28 max-h-28 overflow-y-scroll border-b border-border-default px-4 py-3 bg-background">
+          <p className="text-primary leading-relaxed">{messageOffer.description}</p>
         </div>
-        <div className="relative top-[5%] mr-3 flex flex-row justify-end gap-4">
+        <div className="flex flex-row gap-x-3 items-center border-b border-border-default px-4 py-3 text-sm font-themeFont font-semibold md:text-base bg-surface">
+          <FaRegClock className="text-accent" size={16} />
+          <span className="text-primary">
+            {messageOffer.deliveryInDays} Day{parseInt(`${messageOffer.deliveryInDays}`) > 1 ? 's' : ''} Delivery
+          </span>
+        </div>
+        <div className="relative top-[5%] mr-3 flex flex-row justify-end gap-4 p-4">
           <Button
-            className={`rounded px-6 py-3 text-center text-sm font-bold text-white focus:outline-none md:px-4 md:py-2 md:text-base ${
+            className={`rounded-lg px-6 py-3 text-center text-sm font-themeFont font-semibold focus:outline-none focus:ring-2 md:px-4 md:py-2 md:text-base transition-all duration-300 ${
               messageOffer.accepted || messageOffer.cancelled
-                ? 'cursor-not-allowed bg-red-200 hover:bg-red-200'
-                : 'bg-red-500 hover:bg-red-400'
+                ? 'cursor-not-allowed bg-muted/20 text-muted hover:bg-muted/20'
+                : 'bg-red-500 hover:bg-red-600 text-on-primary focus:ring-red-500/30'
             }`}
             disabled={messageOffer.accepted || messageOffer.cancelled}
             label="Cancel Offer"
@@ -60,10 +64,10 @@ const ChatOffer: FC<IChatMessageProps> = ({ message, seller, gig }): ReactElemen
 
           {seller && seller._id !== message.sellerId && (
             <Button
-              className={`rounded px-6 py-3 text-center text-sm font-bold text-white focus:outline-none md:px-4 md:py-2 md:text-base ${
+              className={`rounded-lg px-6 py-3 text-center text-sm font-themeFont font-semibold focus:outline-none focus:ring-2 md:px-4 md:py-2 md:text-base transition-all duration-300 ${
                 messageOffer.accepted || messageOffer.cancelled
-                  ? 'cursor-not-allowed bg-sky-200 hover:bg-sky-200'
-                  : 'bg-sky-500 hover:bg-sky-400'
+                  ? 'cursor-not-allowed bg-muted/20 text-muted hover:bg-muted/20'
+                  : 'bg-primary hover:bg-primary-hover text-on-primary focus:ring-primary/30'
               }`}
               disabled={messageOffer.accepted || messageOffer.cancelled}
               label="Accept Offer"

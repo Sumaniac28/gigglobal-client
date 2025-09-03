@@ -1,4 +1,5 @@
 import { FC, lazy, LazyExoticComponent, Suspense } from 'react';
+import ChatLayout from 'src/features/chat/components/ChatLayout';
 import { useRoutes, RouteObject } from 'react-router-dom';
 import ProtectedRoute from 'src/features/ProtectedRoute';
 import { IGigsProps } from './features/gigs/interfaces/gig.interface';
@@ -208,21 +209,25 @@ const AppRouter: FC = () => {
     {
       path: '/inbox',
       element: (
-        <Suspense>
-          <ProtectedRoute>
-            <Chat />
-          </ProtectedRoute>
-        </Suspense>
+        <ChatLayout>
+          <Suspense>
+            <ProtectedRoute>
+              <Chat />
+            </ProtectedRoute>
+          </Suspense>
+        </ChatLayout>
       )
     },
     {
       path: '/inbox/:username/:conversationId',
       element: (
-        <Suspense>
-          <ProtectedRoute>
-            <Chat />
-          </ProtectedRoute>
-        </Suspense>
+        <ChatLayout>
+          <Suspense>
+            <ProtectedRoute>
+              <Chat />
+            </ProtectedRoute>
+          </Suspense>
+        </ChatLayout>
       )
     },
     {

@@ -40,16 +40,22 @@ const LoginModal: FC<IModalBgProps> = ({ onClose, onToggle, onTogglePassword }):
       const isValid: boolean = await schemaValidation();
       if (isValid) {
         const result: IResponse = await signIn(userInfo).unwrap();
-        if (result && (result.browserName || result.deviceType)) {
-          navigate('/verify_otp');
-        } else {
-          setAlertMessage('');
+        // if (result && (result.browserName || result.deviceType)) {
+        //   navigate('/verify_otp');
+        // } else {
+        //   setAlertMessage('');
+        //   dispatch(addAuthUser({ authInfo: result.user }));
+        //   dispatch(updateLogout(false));
+        //   dispatch(updateHeader('home'));
+        //   dispatch(updateCategoryContainer(true));
+        //   saveToSessionStorage(JSON.stringify(true), JSON.stringify(result.user?.username));
+        // }
+         setAlertMessage('');
           dispatch(addAuthUser({ authInfo: result.user }));
           dispatch(updateLogout(false));
           dispatch(updateHeader('home'));
           dispatch(updateCategoryContainer(true));
           saveToSessionStorage(JSON.stringify(true), JSON.stringify(result.user?.username));
-        }
       }
     } catch (error) {
       setAlertMessage(error?.data.message);
