@@ -29,23 +29,30 @@ const OrderActivities: ForwardRefExoticComponent<Omit<IOrderActivitiesProps, 're
   };
 
   return (
-    <div className="mb-3 mt-4 rounded-[4px] bg-white p-3">
-      <div className="flex">
-        <div className="my-5 rounded-full bg-[#e8e8e8] px-4 py-2 text-center text-sm font-bold">
+    <div className="mb-3 mt-4 rounded-lg border border-default bg-surface p-4 font-themeFont shadow-md">
+      <div className="flex justify-center">
+        <div className="my-4 rounded-full bg-background px-4 py-2 text-sm font-semibold text-muted">
           {TimeAgo.chatMessageTransform(`${order.dateOrdered}`)}
         </div>
       </div>
       <OrderContext.Provider value={{ order, authUser, viewDeliveryBtnClicked }}>
-        <OrderPlaced />
-        <OrderExtension />
-        <OrderDelivered ref={ref} />
-        <OrderReview />
-      </OrderContext.Provider>
-      <div className="px-3 pt-2 flex">
-        If you need to contact the {order.buyerUsername === authUser.username ? 'seller' : 'buyer'},
-        <div onClick={() => setShowChatBox((item: boolean) => !item)} className="px-2 text-blue-500 cursor-pointer hover:underline">
-          Go to Inbox
+        <div className="flex flex-col gap-6">
+          <OrderPlaced />
+          <OrderExtension />
+          <OrderDelivered ref={ref} />
+          <OrderReview />
         </div>
+      </OrderContext.Provider>
+      <div className="mt-6 flex justify-center border-t border-default pt-4">
+        <p className="text-sm text-muted">
+          Need to contact the {order.buyerUsername === authUser.username ? 'seller' : 'buyer'}?
+          <span
+            onClick={() => setShowChatBox((item: boolean) => !item)}
+            className="ml-2 cursor-pointer font-semibold text-primary hover:underline"
+          >
+            Go to Inbox
+          </span>
+        </p>
       </div>
       {showChatBox && <ChatBox seller={chatSeller} buyer={chatBuyer} gigId={order.gigId} onClose={() => setShowChatBox(false)} />}
     </div>

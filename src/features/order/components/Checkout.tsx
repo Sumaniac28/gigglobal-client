@@ -39,60 +39,61 @@ const Checkout: FC = (): ReactElement => {
   const options = { clientSecret } as StripeElementsOptions;
 
   return (
-    <div className="container mx-auto h-screen">
-      <div className="flex flex-wrap">
-        <div className="w-full p-4 lg:w-2/3 order-last lg:order-first">
-          <div className="border border-grey">
-            <div className="text-xl font-medium mb-3 pt-3 pb-4 px-4">
-              <span>Payment</span>
-            </div>
+    <div className="bg-background min-h-screen w-full font-themeFont">
+      <div className="container mx-auto flex flex-col-reverse gap-8 px-4 py-8 lg:flex-row">
+        {/* Payment Details */}
+        <div className="w-full lg:w-2/3">
+          <div className="rounded-lg border border-default bg-surface p-6 shadow-md">
+            <h2 className="mb-6 font-themeFont text-2xl font-bold text-primary">Payment</h2>
             {clientSecret && (
               <Elements options={options} key={clientSecret} stripe={stripePromise}>
                 <CheckoutForm gigId={`${gigId}`} offer={offer} />
               </Elements>
             )}
-            {/* <!-- CheckoutForm --> */}
           </div>
         </div>
 
-        <div className="w-full p-4 lg:w-1/3">
-          <div className="border border-grey mb-8">
-            <div className="pt-3 pb-4 px-4 mb-2 flex flex-col border-b md:flex-row">
-              <img className="object-cover w-20 h-11" src={state.coverImage} alt="Gig Cover Image" />
-              <h4 className="font-bold text-sm text-[#161c2d] mt-2 md:pl-4 md:mt-0">{state.title}</h4>
+        {/* Order Summary */}
+        <div className="w-full lg:w-1/3">
+          <div className="rounded-lg border border-default bg-surface p-6 shadow-md">
+            <div className="mb-4 flex items-center gap-4 border-b border-default pb-4">
+              <img className="h-16 w-24 rounded-md object-cover" src={state.coverImage} alt="Gig Cover Image" />
+              <h3 className="font-themeFont text-lg font-semibold text-primary">{state.title}</h3>
             </div>
-            <ul className="list-none mb-0">
-              <li className="flex px-4 pt-1 pb-3 border-b border-grey">
-                <div className="font-normal text-sm">{state.description}</div>
-              </li>
-              <li className="flex justify-between px-4 pt-2 pb-2">
-                <div className="text-sm font-normal flex gap-2">
-                  <FaRegClock className="self-center" /> Expected delivery time
+            <p className="mb-4 border-b border-default pb-4 text-sm text-muted">{state.description}</p>
+            <ul className="space-y-3 text-sm">
+              <li className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-muted">
+                  <FaRegClock className="text-lg" />
+                  <span>Expected Delivery</span>
                 </div>
-                <span className="text-sm">
+                <span className="font-semibold text-primary">
                   {offer.deliveryInDays} day{offer.deliveryInDays > 1 ? 's' : ''}
                 </span>
               </li>
-              <li className="flex justify-between px-4 pt-2 pb-2">
-                <div className="text-sm font-normal flex gap-2">
-                  <FaRegMoneyBillAlt className="self-center" /> Price
+              <li className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-muted">
+                  <FaRegMoneyBillAlt className="text-lg" />
+                  <span>Price</span>
                 </div>
-                <span className="text-sm">${offer.price}</span>
+                <span className="font-semibold text-primary">${offer.price.toFixed(2)}</span>
               </li>
-              <li className="flex justify-between px-4 pt-2 pb-2">
-                <div className="text-sm font-normal flex gap-2">
-                  <FaCog className="self-center" /> Service fee
+              <li className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-muted">
+                  <FaCog className="text-lg" />
+                  <span>Service Fee</span>
                 </div>
-                <span className="text-sm">${serviceFee.toFixed(2)}</span>
-              </li>
-              <div className="border-b border-grey" />
-              <li className="flex justify-between px-4 py-4">
-                <div className="text-sm md:text-base font-semibold flex gap-2">
-                  <FaCog className="self-center" /> Total
-                </div>
-                <span className="text-sm md:text-base font-semibold">${offer.price + serviceFee}</span>
+                <span className="font-semibold text-primary">${serviceFee.toFixed(2)}</span>
               </li>
             </ul>
+            <div className="my-4 border-t border-default" />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 font-themeFont text-lg font-bold text-primary">
+                <FaCog />
+                <span>Total</span>
+              </div>
+              <span className="font-themeFont text-xl font-bold text-primary">${(offer.price + serviceFee).toFixed(2)}</span>
+            </div>
           </div>
         </div>
       </div>

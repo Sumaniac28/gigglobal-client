@@ -32,25 +32,41 @@ const ExtendDateModal: FC<IExtendedDateModalProps> = ({ order, onClose }): React
 
   return (
     <ModalBg>
-      <div className="fixed bottom-0 left-0 right-0 top-0 z-[30] flex w-full items-center justify-center">
-        <div className="relative bottom-auto left-auto right-auto top-auto max-h-[90vh] min-w-[350px] bg-white p-4">
-          <div className="w-full text-left">
-            <h4 className="mb-3 text-base font-bold">Request: Extend delivery date</h4>
-            <div className="alerts alert-warning rounded-none pb-[6px] text-sm font-semibold text-white">
-              Extending the delivery date might affect buyer satisfaction.
+      <div className="fixed bottom-0 left-0 right-0 top-0 z-[130] flex w-full items-center justify-center p-4">
+        <div className="relative w-full max-w-lg sm:max-w-xl md:max-w-2xl rounded-2xl bg-surface shadow-2xl backdrop-blur-sm p-0 z-[130]">
+          {/* Header */}
+          <div className="bg-background border-b border-border-default px-6 py-4">
+            <h4 className="font-themeFont text-lg font-semibold text-primary leading-6">
+              Request: Extend Delivery Date
+            </h4>
+            <div className="mt-3 rounded-md bg-warning/10 border border-warning/20 px-3 py-2">
+              <p className="text-sm font-medium text-warning">
+                ⚠️ Extending delivery dates may impact buyer satisfaction
+              </p>
             </div>
           </div>
-          <div className="">
-            <div className="mb-5">
-              <h4 className="mb-0 text-sm font-bold">Original date</h4>
-              <span className="text-[13px]">{TimeAgo.dayMonthYear(order.offer.oldDeliveryDate)}</span>
+
+          {/* Content */}
+          <div className="px-6 py-4 space-y-5">
+            {/* Original Date */}
+            <div className="space-y-1">
+              <h4 className="font-themeFont text-sm font-semibold text-primary">
+                Original Delivery Date
+              </h4>
+              <p className="text-sm text-muted font-medium">
+                {TimeAgo.dayMonthYear(order.offer.oldDeliveryDate)}
+              </p>
             </div>
-            <div className="relative mb-[66px]">
-              <h4 className="mb-[5px] text-sm font-bold">How many days do you want to add?</h4>
+
+            {/* Days Selection */}
+            <div className="relative space-y-2">
+              <h4 className="font-themeFont text-sm font-semibold text-primary">
+                Additional Days Needed
+              </h4>
               <Dropdown
                 text={selectedDay}
                 maxHeight="300"
-                mainClassNames="absolute bg-white z-40"
+                mainClassNames="absolute bg-surface border border-border-default rounded-md shadow-lg z-40"
                 values={['1', '2', '3', '4', '5']}
                 setValue={setSelectedDay}
                 onClick={(item: string) => {
@@ -60,32 +76,44 @@ const ExtendDateModal: FC<IExtendedDateModalProps> = ({ order, onClose }): React
                   setDeliveryDate(`${currentDate}`);
                 }}
               />
+              <div className="h-12"></div>
             </div>
-            <div className="mb-5">
-              <h4 className="mb-[5px] text-sm font-bold">Help the buyer understand</h4>
+
+            {/* Reason */}
+            <div className="space-y-2">
+              <h4 className="font-themeFont text-sm font-semibold text-primary">
+                Explanation for Buyer
+              </h4>
               <TextAreaInput
-                className="border-grey mb-1 w-full rounded border p-2.5 text-sm font-normal text-gray-600 focus:outline-none"
+                className="w-full rounded-md border border-border-default bg-surface px-3 py-2.5 text-sm text-primary placeholder-muted transition-all duration-300 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                 name="description"
                 value={reason}
                 rows={3}
+                placeholder="Please explain why you need additional time..."
                 onChange={(event: ChangeEvent) => setReason((event.target as HTMLTextAreaElement).value)}
               />
             </div>
           </div>
-          <div className="flex justify-end gap-2">
-            <Button
-              className="rounded bg-gray-200 px-6 py-3 text-center text-sm font-bold text-black focus:outline-none md:px-4 md:py-2 md:text-base"
-              label="Cancel"
-              onClick={onClose}
-            />
-            <Button
-              disabled={!reason || !deliveryDate}
-              className={`cursor-pointer rounded px-6 py-3 text-center text-sm font-bold text-white focus:outline-none md:px-4 md:py-2 md:text-base ${
-                !reason || !deliveryDate ? 'cursor-not-allowed bg-sky-200' : 'bg-sky-500 hover:bg-sky-400'
-              }`}
-              label="Send Request"
-              onClick={requestExtension}
-            />
+
+          {/* Footer */}
+          <div className="bg-background border-t border-border-default px-6 py-4">
+            <div className="flex gap-3 sm:justify-end">
+              <Button
+                className="flex-1 sm:flex-none rounded-md border border-border-default bg-surface px-4 py-2.5 text-sm font-semibold text-muted transition-all duration-300 hover:bg-background focus:outline-none focus:ring-2 focus:ring-border-default"
+                label="Cancel"
+                onClick={onClose}
+              />
+              <Button
+                disabled={!reason || !deliveryDate}
+                className={`flex-1 sm:flex-none rounded-md px-4 py-2.5 text-sm font-semibold transition-all duration-300 focus:outline-none focus:ring-2 ${
+                  !reason || !deliveryDate 
+                    ? 'cursor-not-allowed bg-muted/20 text-muted' 
+                    : 'bg-primary text-on-primary hover:bg-primary-hover focus:ring-primary/30'
+                }`}
+                label="Send Request"
+                onClick={requestExtension}
+              />
+            </div>
           </div>
         </div>
       </div>

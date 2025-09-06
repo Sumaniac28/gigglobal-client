@@ -36,33 +36,35 @@ const Order: FC = (): ReactElement => {
   }, [orderId]);
 
   return (
-    <div className="container mx-auto">
-      <div className="flex flex-wrap">
-        <div className="order-last w-full p-4 lg:order-first lg:w-2/3">
-          <OrderDetailsTable order={order} authUser={authUser} />
-          {order && order.buyerUsername === authUser.username && (
-            <div className="mt-4 flex flex-col justify-between bg-white md:flex-row">
-              <div className="flex w-full flex-col flex-wrap p-4 md:w-2/3">
-                <span className="text-base font-bold text-black lg:text-lg">
-                  {order.delivered ? 'Your delivery is here!' : 'Your delivery is now in the works'}
-                </span>
-                {order?.delivered ? (
-                  <p className="mt-1 w-5/6 flex-wrap text-sm">
-                    View the delivery to make sure you have exactly what you need. Let {order.sellerUsername} know your thoughts.
-                  </p>
-                ) : (
-                  <>
-                    <p className="mt-1 w-5/6 flex-wrap text-sm">We notified {order.sellerUsername} about your order.</p>
-                    <p className="mt-1 w-5/6 flex-wrap text-sm">
-                      You should receive your delivery by {TimeAgo.dayMonthYear(order.offer.newDeliveryDate)}
+    <div className="bg-background min-h-screen w-full font-themeFont">
+      <div className="container mx-auto flex flex-col gap-8 px-4 py-8 lg:flex-row">
+        {/* Main Content */}
+        <div className="w-full lg:w-2/3">
+          <div className="flex flex-col gap-6">
+            <OrderDetailsTable order={order} authUser={authUser} />
+
+            {order && order.buyerUsername === authUser.username && (
+              <div className="flex flex-col items-start justify-between gap-4 rounded-lg border border-default bg-surface p-6 shadow-md md:flex-row md:items-center">
+                <div className="flex-1">
+                  <h3 className="font-themeFont text-xl font-bold text-primary">
+                    {order.delivered ? 'Your delivery is here!' : 'Your delivery is in the works'}
+                  </h3>
+                  {order?.delivered ? (
+                    <p className="mt-2 text-muted">
+                      Review the delivery to ensure it meets your expectations. Share your feedback with {order.sellerUsername}.
                     </p>
-                  </>
-                )}
-              </div>
-              <div className="mb-4 ml-5 w-full justify-center self-center text-left md:mr-3 md:w-1/3 md:text-right">
-                {order && order.delivered && order.buyerUsername === authUser.username && (
+                  ) : (
+                    <>
+                      <p className="mt-2 text-muted">We've notified {order.sellerUsername} about your order.</p>
+                      <p className="text-muted">
+                        Your delivery is expected by {TimeAgo.dayMonthYear(order.offer.newDeliveryDate)}.
+                      </p>
+                    </>
+                  )}
+                </div>
+                {order?.delivered && (
                   <Button
-                    className="rounded bg-sky-500 px-2 py-2 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:px-4 md:py-2 md:text-base"
+                    className="rounded-md bg-primary px-6 py-3 text-base font-semibold text-on-primary transition-all duration-300 hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary/50"
                     label="View Delivery"
                     onClick={() => {
                       if (elementRef.current) {
@@ -73,57 +75,66 @@ const Order: FC = (): ReactElement => {
                   />
                 )}
               </div>
-            </div>
-          )}
-          {order && Object.keys(order).length > 0 && (
-            <OrderActivities ref={elementRef} order={order} authUser={authUser} viewDeliveryBtnClicked={showDeliveryPanel} />
-          )}
+            )}
+
+            {order && Object.keys(order).length > 0 && (
+              <OrderActivities ref={elementRef} order={order} authUser={authUser} viewDeliveryBtnClicked={showDeliveryPanel} />
+            )}
+          </div>
         </div>
 
-        <div className="w-full p-4 lg:w-1/3 ">
+        {/* Sidebar */}
+        <div className="w-full lg:w-1/3">
           {Object.keys(order).length > 0 ? (
-            <>
-              {order.delivered && authUser.username === order.sellerUsername && <DeliveryTimer order={order} authUser={authUser} />}
-              {order.delivered && authUser.username === order.sellerUsername && <></>}
-              {!order.delivered && <DeliveryTimer order={order} authUser={authUser} />}
+            <div className="flex flex-col gap-6">
+              {order.delivered && authUser.username === order.sellerUsername ? (
+                <DeliveryTimer order={order} authUser={authUser} />
+              ) : !order.delivered ? (
+                <DeliveryTimer order={order} authUser={authUser} />
+              ) : null}
 
-              <div className="bg-white">
-                <div className="mb-2 flex flex-col border-b px-4 pb-4 pt-3 md:flex-row">
-                  <img className="h-11 w-20 object-cover" src={order?.gigCoverImage} alt="Gig Cover Image" />
-                  <div className="flex flex-col">
-                    <h4 className="mt-2 text-sm font-bold text-[#161c2d] md:mt-0 md:pl-4">{order.offer.gigTitle}</h4>
+              <div className="rounded-lg border border-default bg-surface p-6 shadow-md">
+                <div className="mb-4 flex items-center gap-4 border-b border-default pb-4">
+                  <img className="h-16 w-24 rounded-md object-cover" src={order?.gigCoverImage} alt="Gig Cover Image" />
+                  <div className="flex-1">
+                    <h4 className="font-themeFont text-lg font-semibold text-primary">{order.offer.gigTitle}</h4>
                     <span
-                      className={`status mt-1 w-24 rounded px-[3px] py-[3px] text-xs font-bold uppercase text-white md:ml-4 ${order.status.replace(
-                        / /g,
-                        ''
-                      )}`}
+                      className={`mt-1 inline-block rounded-full px-3 py-1 text-xs font-bold text-on-primary ${
+                        order.status === 'in progress'
+                          ? 'bg-yellow-500'
+                          : order.status === 'completed'
+                            ? 'bg-green-500'
+                            : 'bg-red-500'
+                      }`}
                     >
                       {order.status}
                     </span>
                   </div>
                 </div>
-                <ul className="mb-0 list-none">
-                  <li className="flex justify-between px-4 pb-2 pt-2">
-                    <div className="flex gap-2 text-sm font-normal">Ordered from</div>
-                    <span className="text-sm font-bold text-green-500">{order?.sellerUsername}</span>
+                <ul className="space-y-3 text-sm">
+                  <li className="flex items-center justify-between">
+                    <span className="text-muted">Ordered From</span>
+                    <span className="font-semibold text-primary">{order?.sellerUsername}</span>
                   </li>
-                  <li className="flex justify-between px-4 pb-2 pt-2">
-                    <div className="flex gap-2 text-sm font-normal">Order</div>
-                    <span className="text-sm font-bold">#{order?.orderId}</span>
+                  <li className="flex items-center justify-between">
+                    <span className="text-muted">Order Number</span>
+                    <span className="font-semibold text-primary">#{order?.orderId}</span>
                   </li>
-                  <li className="flex justify-between px-4 pb-2 pt-2">
-                    <div className="flex gap-2 text-sm font-normal">Delivery date</div>
-                    <span className="text-sm font-bold">{TimeAgo.dayMonthYear(order?.offer?.newDeliveryDate)}</span>
+                  <li className="flex items-center justify-between">
+                    <span className="text-muted">Delivery Date</span>
+                    <span className="font-semibold text-primary">{TimeAgo.dayMonthYear(order?.offer?.newDeliveryDate)}</span>
                   </li>
-                  <li className="flex justify-between px-4 pb-4 pt-2">
-                    <div className="flex gap-2 text-sm font-normal">Total price</div>
-                    <span className="text-sm font-bold">${order?.price}</span>
+                  <li className="flex items-center justify-between">
+                    <span className="text-muted">Total Price</span>
+                    <span className="font-semibold text-primary">${order?.price.toFixed(2)}</span>
                   </li>
                 </ul>
               </div>
-            </>
+            </div>
           ) : (
-            <></>
+            <div className="flex h-full items-center justify-center rounded-lg border border-default bg-surface p-6 text-muted shadow-md">
+              Loading order details...
+            </div>
           )}
         </div>
       </div>

@@ -9,22 +9,22 @@ const ApprovalModal: FC<IModalProps> = ({ approvalModalContent, hideCancel = fal
 
   return (
     <ModalBg>
-      <div className="fixed bottom-0 left-0 right-0 top-0 flex items-center justify-center">
-        <div className="relative bottom-auto left-auto right-auto top-auto max-h-[90vh] max-w-[400px] bg-white p-4 text-[#404145]">
-          <div className="border-grey mb-[10px] w-full border-b text-left">
-            <h4 className="text-[17px] font-bold">{header}</h4>
+      <div className="fixed inset-0 z-[130] flex items-center justify-center p-4">
+        <div className="relative w-full max-w-md rounded-2xl bg-surface border border-default shadow-2xl p-6 text-primary font-themeFont transition-all duration-300">
+          <div className="mb-4 border-b border-default pb-2">
+            <h4 className="text-lg sm:text-xl font-bold font-themeFont text-primary leading-6 tracking-tight">{header}</h4>
           </div>
-          <div className="mb-5 text-base">{body}</div>
-          <div className="flex justify-end gap-3">
+          <div className="mb-6 text-base text-muted font-themeFont leading-6">{body}</div>
+          <div className="flex flex-col sm:flex-row justify-end gap-3">
             {!hideCancel && (
               <Button
-                className="rounded bg-gray-200 px-6 py-3 text-center text-sm font-bold text-black focus:outline-none md:px-4 md:py-2 md:text-base"
+                className="rounded-md bg-secondary px-6 py-3 text-center text-sm font-semibold font-themeFont text-on-primary transition-all duration-300 hover:bg-secondary focus:outline-none"
                 label="Cancel"
                 onClick={onClose}
               />
             )}
             <Button
-              className={`${btnColor} rounded px-6 py-3 text-center text-sm font-bold text-white focus:outline-none md:px-4 md:py-2 md:text-base`}
+              className={`rounded-md px-6 py-3 text-center text-sm font-semibold font-themeFont text-on-primary transition-all duration-300 ${btnColor || 'bg-primary'} hover:bg-primary focus:outline-none`}
               label={`${btnText}`}
               onClick={onClick}
             />

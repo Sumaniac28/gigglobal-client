@@ -33,118 +33,104 @@ const OrderDetailsTable: FC<IOrderProps> = ({ order, authUser }): ReactElement =
   }
 
   return (
-    <div className="flex rounded-[4px] bg-white px-4 py-3">
-      <div className="w-full">
-        <div className="flex gap-4">
-          <div>
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#c8ecfa]">
-              <FaBox size={18} color="#32b1e3" />
+    <div className="w-full rounded-lg border border-default bg-surface p-6 shadow-md font-themeFont">
+      <div className="flex items-start gap-4">
+        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-primary/10">
+          <FaBox size={24} className="text-primary" />
+        </div>
+        <div className="w-full">
+          <div
+            className="flex cursor-pointer items-center justify-between"
+            onClick={() => setShowOrderDetailsPanel((prev) => !prev)}
+          >
+            <h3 className="font-themeFont text-xl font-semibold text-primary">Your Order Details</h3>
+            <div className="transition-transform duration-300">
+              {showOrderDetailsPanel ? <FaChevronUp size={18} /> : <FaChevronDown size={18} />}
             </div>
           </div>
-          <div className="w-full cursor-pointer">
-            <div className="mt-2 flex items-center justify-between font-medium text-gray-500">
-              <span>Your order details</span>
-              <div onClick={() => setShowOrderDetailsPanel((item: boolean) => !item)}>
-                {!showOrderDetailsPanel ? <FaChevronDown size={15} /> : <FaChevronUp size={15} />}
+
+          {showOrderDetailsPanel && order && (
+            <div className="mt-6 flex flex-col gap-4">
+              <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted">
+                  <div className="flex items-center gap-2">
+                    <span>Buyer:</span>
+                    <Link to="#" className="font-semibold text-primary hover:underline">
+                      {order.buyerUsername}
+                    </Link>
+                  </div>
+                  <div className="hidden md:block">|</div>
+                  <div className="flex items-center gap-2">
+                    <span>Date Ordered:</span>
+                    <p className="font-semibold text-primary">{TimeAgo.dayMonthYear(`${order?.dateOrdered}`)}</p>
+                  </div>
+                </div>
+                {order.buyerUsername === authUser.username && (
+                  <PDFDownloadLink
+                    document={
+                      <OrderContext.Provider value={{ orderInvoice: orderInvoice.current }}>
+                        <Invoice />
+                      </OrderContext.Provider>
+                    }
+                    fileName={`${orderInvoice.current.invoiceId}.pdf`}
+                    className="flex items-center gap-2 text-sm font-semibold text-primary underline transition-colors hover:text-primary-dark"
+                  >
+                    Download Invoice
+                  </PDFDownloadLink>
+                )}
+              </div>
+
+              <div className="overflow-x-auto rounded-lg border border-default">
+                <table className="w-full text-left text-sm text-primary">
+                  <thead className="bg-background text-xs uppercase text-muted">
+                    <tr>
+                      <th scope="col" className="px-6 py-3" style={{ width: '50%' }}>
+                        Item
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-center">
+                        Qty
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-center">
+                        Duration
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-right">
+                        Price
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="border-b border-default bg-surface">
+                      <td scope="row" className="whitespace-normal px-6 py-4 font-semibold">
+                        {order.offer.gigTitle}
+                        <p className="mt-1 font-normal text-muted">{order.offer.description}</p>
+                      </td>
+                      <td className="px-6 py-4 text-center">{order.quantity}</td>
+                      <td className="px-6 py-4 text-center">
+                        {order.offer.deliveryInDays} day{order.offer.deliveryInDays > 1 ? 's' : ''}
+                      </td>
+                      <td className="px-6 py-4 text-right font-semibold">${order.price.toFixed(2)}</td>
+                    </tr>
+                  </tbody>
+                  <tfoot className="bg-background font-semibold">
+                    <tr>
+                      <td scope="row" colSpan={3} className="px-6 py-3 text-right text-base">
+                        Service Fee
+                      </td>
+                      <td className="px-6 py-3 text-right">${order.serviceFee?.toFixed(2)}</td>
+                    </tr>
+                    <tr className="text-lg">
+                      <td scope="row" colSpan={3} className="px-6 py-4 text-right font-bold">
+                        Total
+                      </td>
+                      <td className="px-6 py-4 text-right font-bold">
+                        ${(order.price + (order.serviceFee || 0)).toFixed(2)}
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
               </div>
             </div>
-            {showOrderDetailsPanel && order && (
-              <div className="my-3 flex flex-col">
-                <div className="flex justify-between">
-                  <div className="flex gap-2 text-sm md:text-base">
-                    <div className="flex gap-2">
-                      Buyer:
-                      <Link to="" className="font-bold text-blue-400 hover:underline">
-                        {order.buyerUsername}
-                      </Link>
-                    </div>
-                    <div className="flex gap-1">|</div>
-                    <div className="flex gap-2">
-                      Date ordered <p className="font-bold italic">{TimeAgo.dayMonthYear(`${order?.dateOrdered}`)}</p>
-                    </div>
-                  </div>
-                  {order.buyerUsername === authUser.username && (
-                    <PDFDownloadLink
-                      document={
-                        <OrderContext.Provider value={{ orderInvoice: orderInvoice.current }}>
-                          <Invoice />
-                        </OrderContext.Provider>
-                      }
-                      fileName={`${orderInvoice.current.invoiceId}.pdf`}
-                    >
-                      <div className="cursor-pointer text-blue-400 underline">Download invoice</div>
-                    </PDFDownloadLink>
-                  )}
-                </div>
-                <div className="mt-4">
-                  <div className="relative overflow-x-auto">
-                    <table className="border-grey w-full border text-left text-sm text-gray-500">
-                      <thead className="bg-[#f3f3f3] text-xs uppercase text-gray-700">
-                        <tr>
-                          <th scope="col" className="px-4 py-3" style={{ width: '60%' }}>
-                            Item
-                          </th>
-                          <th scope="col" className="px-4 py-3">
-                            Qty
-                          </th>
-                          <th scope="col" className="px-4 py-3">
-                            Duration
-                          </th>
-                          <th scope="col" className="px-4 py-3">
-                            Price
-                          </th>
-                        </tr>
-                        <tr>
-                          <th style={{ width: '70%' }}></th>
-                          <th></th>
-                          <th></th>
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr className="bg-white">
-                          <td scope="row" className="whitespace-wrap px-4 py-4 font-bold">
-                            {order.offer.gigTitle}
-                          </td>
-                          <td className="px-4 py-4">{order.quantity}</td>
-                          <td className="px-4 py-4">
-                            {order.offer.deliveryInDays} day{order.offer.deliveryInDays > 1 ? 's' : ''}
-                          </td>
-                          <td className="px-4 py-4">${order.price}</td>
-                        </tr>
-                        <tr className="bg-white">
-                          <th scope="row" className="whitespace-wrap px-4 py-4 font-normal">
-                            {order.offer.description}
-                          </th>
-                          <td className="px-4 py-4"></td>
-                          <td className="px-4 py-4"></td>
-                          <td className="px-4 py-4"></td>
-                        </tr>
-                      </tbody>
-                      <tfoot className="bg-[#f3f3f3]">
-                        <tr>
-                          <th scope="row" className="px-4 py-3 text-base">
-                            Service Fee
-                          </th>
-                          <td className="px-4 py-3"></td>
-                          <td className="px-4 py-3"></td>
-                          <td className="px-4 py-3 font-bold">${order.serviceFee?.toFixed(2)}</td>
-                        </tr>
-                        <tr>
-                          <th scope="row" className="px-4 py-3 text-base">
-                            Total
-                          </th>
-                          <td className="px-4 py-3"></td>
-                          <td className="px-4 py-3"></td>
-                          <td className="px-4 py-3 font-bold">${order.price + parseInt(`${order.serviceFee}`)}</td>
-                        </tr>
-                      </tfoot>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
+          )}
         </div>
       </div>
     </div>

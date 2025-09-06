@@ -58,49 +58,93 @@ const ReviewModal: FC<IModalProps> = ({ order, type, onClose }): ReactElement =>
 
   return (
     <ModalBg>
-      <div className="fixed bottom-0 left-0 right-0 top-0 flex items-center justify-center">
+      <div className="fixed bottom-0 left-0 right-0 top-0 flex items-center justify-center p-4">
         {isLoading && (
-          <div className="fixed bottom-0 left-0 right-0 top-0 z-[50] flex w-full items-center justify-center opacity-80">
-            <div className="absolute bottom-auto left-auto right-auto top-auto flex min-h-[290px] min-w-[500px] flex-col items-center justify-center bg-white p-4 text-[#404145]">
-              <FaCircleNotch className="animate-spin" size={40} color="#50b5ff" />
-              <span>Adding...</span>
+          <div className="fixed bottom-0 left-0 right-0 top-0 z-[60] flex w-full items-center justify-center bg-primary/10 backdrop-blur-sm">
+            <div className="flex min-h-[200px] min-w-[320px] flex-col items-center justify-center rounded-xl bg-surface p-8 shadow-2xl">
+              <FaCircleNotch className="animate-spin text-primary" size={40} />
+              <span className="mt-3 font-themeFont text-sm font-medium text-primary">Adding your review...</span>
             </div>
           </div>
         )}
-        <div className="relative bottom-auto left-auto right-auto top-auto max-h-[90vh] min-w-[500px] bg-white p-4 text-[#404145]">
-          <div className="border-grey mb-[10px] w-full border-b text-left">
-            <h4 className="pb-2 text-[17px] font-bold">{type === 'buyer-review' ? 'Review Seller' : 'Review Buyer'}</h4>
+        <div className="relative w-full max-w-lg overflow-hidden rounded-xl bg-surface shadow-2xl">
+          {/* Header */}
+          <div className="border-b border-border-default bg-background px-6 py-4">
+            <h4 className="font-themeFont text-xl font-semibold text-primary">
+              {type === 'buyer-review' ? '📝 Review Seller' : '📝 Review Buyer'}
+            </h4>
+            <p className="mt-1 text-sm text-muted">
+              Share your experience to help the community
+            </p>
           </div>
 
-          <div className="mb-4s relative mt-4 h-10">
-            <StarRating setReviewRating={setReviewRating} size={20} />
+          {/* Content */}
+          <div className="px-6 py-6 space-y-6">
+            {/* Star Rating */}
+            <div className="space-y-3">
+              <h5 className="font-themeFont text-sm font-semibold text-primary">
+                Rate your experience
+              </h5>
+              <div className="flex items-center justify-center rounded-lg bg-background p-4">
+                <StarRating setReviewRating={setReviewRating} size={24} />
+              </div>
+              {reviewRating > 0 && (
+                <p className="text-center text-sm text-accent font-medium">
+                  {reviewRating === 5 ? 'Excellent!' : reviewRating === 4 ? 'Great!' : reviewRating === 3 ? 'Good!' : reviewRating === 2 ? 'Fair' : 'Poor'}
+                </p>
+              )}
+            </div>
+
+            {/* Review Text */}
+            <div className="space-y-3">
+              <h5 className="font-themeFont text-sm font-semibold text-primary">
+                Share your detailed experience
+              </h5>
+              <TextAreaInput
+                className="w-full rounded-lg border border-border-default bg-surface px-4 py-3 text-sm text-primary placeholder-muted transition-all duration-300 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                name="review"
+                placeholder={type === 'buyer-review' 
+                  ? "How was your experience working with this seller? What did you like most?"
+                  : "How was your experience working with this buyer? Were they communicative and clear about their needs?"
+                }
+                value={review}
+                rows={4}
+                onChange={(event: ChangeEvent) => {
+                  setReview((event.target as HTMLTextAreaElement).value);
+                }}
+              />
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted">
+                  {review.length}/500 characters
+                </span>
+                {review.length > 0 && (
+                  <span className="text-xs text-accent font-medium">
+                    Looking good! 👍
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
-          <div className="mb-5 text-base">
-            <TextAreaInput
-              className="border-grey mb-1 w-full rounded border p-2.5 text-sm font-normal text-gray-600 focus:outline-none"
-              name="review"
-              placeholder="What was it like working with the seller?"
-              value={review}
-              rows={4}
-              onChange={(event: ChangeEvent) => {
-                setReview((event.target as HTMLTextAreaElement).value);
-              }}
-            />
-          </div>
-          <div className="flex justify-end gap-3">
-            <Button
-              className="rounded bg-gray-200 px-6 py-3 text-center text-sm font-bold text-black focus:outline-none md:px-4 md:py-2 md:text-base"
-              onClick={onClose}
-              label="Cancel"
-            />
-            <Button
-              className={`rounded px-6 py-3 text-center text-sm font-bold text-white focus:outline-none md:px-4 md:py-2 md:text-base ${
-                !review || reviewRating === 0 ? 'cursor-not-allowed bg-sky-200' : 'bg-sky-500 hover:bg-sky-400'
-              }`}
-              disabled={!review || reviewRating === 0}
-              onClick={onAddReview}
-              label="Send"
-            />
+
+          {/* Footer */}
+          <div className="border-t border-border-default bg-background px-6 py-4">
+            <div className="flex gap-3 sm:justify-end">
+              <Button
+                className="flex-1 sm:flex-none rounded-lg border border-border-default bg-surface px-4 py-2.5 font-themeFont text-sm font-semibold text-muted transition-all duration-300 hover:bg-background focus:outline-none focus:ring-2 focus:ring-border-default"
+                onClick={onClose}
+                label="Cancel"
+              />
+              <Button
+                className={`flex-1 sm:flex-none rounded-lg px-4 py-2.5 font-themeFont text-sm font-semibold transition-all duration-300 focus:outline-none focus:ring-2 ${
+                  !review || reviewRating === 0 
+                    ? 'cursor-not-allowed bg-muted/20 text-muted' 
+                    : 'bg-primary text-on-primary hover:bg-primary-hover focus:ring-primary/30 shadow-md hover:shadow-lg'
+                }`}
+                disabled={!review || reviewRating === 0}
+                onClick={onAddReview}
+                label="✨ Submit Review"
+              />
+            </div>
           </div>
         </div>
       </div>

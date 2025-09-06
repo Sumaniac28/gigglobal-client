@@ -1,4 +1,4 @@
-import './CheckoutForm.scss';
+
 
 import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { Stripe, StripeElements, StripePaymentElement } from '@stripe/stripe-js';
@@ -79,17 +79,34 @@ const CheckoutForm: FC<ICheckoutProps> = ({ gigId, offer }): ReactElement => {
   };
 
   return (
-    <form id="payment-form" onSubmit={handleSubmit}>
+    <form id="payment-form" onSubmit={handleSubmit} className="w-full font-themeFont">
       {isStripeLoading && <CheckoutFormSkeleton />}
-      <PaymentElement id="payment-element" onReady={() => setIsStripeLoading(false)} />
+      <div className="mb-6">
+        <PaymentElement id="payment-element" onReady={() => setIsStripeLoading(false)} />
+      </div>
       <Button
         id="submit"
-        className={`w-full rounded px-6 py-3 text-center text-sm font-bold text-white focus:outline-none md:px-4 md:py-2 md:text-base ${
-          isLoading || !stripe || !elements ? 'cursor-not-allowed bg-sky-200' : 'bg-sky-500 hover:bg-sky-400'
+        className={`w-full rounded-md px-6 py-3 text-base font-semibold text-on-primary transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 ${
+          isLoading || !stripe || !elements
+            ? 'cursor-not-allowed bg-primary/50'
+            : 'bg-primary hover:bg-primary-dark'
         }`}
-        label={<span id="button-text">{isLoading ? <div className="spinner" id="spinner"></div> : 'Confirm & Pay'}</span>}
+        disabled={isLoading || !stripe || !elements}
+        label={
+          <span className="flex items-center justify-center">
+            {isLoading ? (
+              <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-white"></div>
+            ) : (
+              'Confirm & Pay'
+            )}
+          </span>
+        }
       />
-      {message && <div id="payment-message">{message}</div>}
+      {message && (
+        <div id="payment-message" className="mt-4 text-center text-sm text-red-500">
+          {message}
+        </div>
+      )}
     </form>
   );
 };

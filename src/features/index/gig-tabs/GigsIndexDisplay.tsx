@@ -67,14 +67,17 @@ const GigsIndexDisplay: FC<IGigsProps> = ({ type }): ReactElement => {
                 </div>
               </>
             ) : (
-              <PageMessage
-                header="No services found for your search"
-                body="Try a new search or get a free quote for your project from our commnunity of freelancers."
-              />
+              isError ? (
+                <PageMessage header="Services issue" body="A network issue occured. Try agin later." />
+              ) : (
+                <PageMessage
+                  header="No services found for your search"
+                  body="Try a new search or get a free quote for your project from our commnunity of freelancers."
+                />
+              )
             )}
           </>
         )}
-        {isError && <PageMessage header="Services issue" body="A network issue occured. Try agin later." />}
         {gigs.length > 0 && (
           <GigPaginate
             gigs={gigsCurrent.current}

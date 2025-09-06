@@ -75,132 +75,153 @@ const OrderDelivered: ForwardRefExoticComponent<Omit<IOrderDeliveredProps, 'ref'
           />
         )}
         {order?.delivered && order?.deliveredWork && order?.deliveredWork.length > 0 && (
-          <div className="flex rounded-[4px] bg-white px-4 py-3">
-            <div className="w-full">
-              <div className="flex gap-4">
-                <div>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fcc5c5]">
-                    <FaGift size={18} color="#ed3939" />
-                  </div>
+          <div className="flex items-start gap-4">
+            <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-accent/10 ring-2 ring-accent/20">
+              <FaGift size={20} className="text-accent" />
+            </div>
+            <div ref={ref} className="w-full border-b border-border-default pb-6">
+              <div
+                className="group flex cursor-pointer items-center justify-between rounded-md p-2 transition-all duration-300 hover:bg-background"
+                onClick={() => setOrderDeliveredModal({ ...orderDeliveredModal, delivery: !orderDeliveredModal.delivery })}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="font-themeFont text-base font-semibold text-primary">
+                    {order.buyerUsername === authUser?.username ? order.sellerUsername : 'You'} delivered the order
+                  </span>
+                  <span className="rounded-full bg-accent/10 px-2 py-1 text-xs font-medium text-accent">
+                    {TimeAgo.dayWithTime(`${order?.events.orderDelivered}`)}
+                  </span>
                 </div>
-                <div className="border-grey w-full cursor-pointer border-b pb-5" ref={ref}>
-                  <div className="mt-2 flex items-center justify-between font-medium text-gray-500">
-                    <div className="flex gap-2">
-                      <span>
-                        {order.buyerUsername === authUser?.username ? order.sellerUsername : 'You'} delivered{' '}
-                        {order.buyerUsername === authUser?.username ? 'your' : 'the'} order
-                      </span>
-                      <p className="flex self-center text-sm font-normal italic">
-                        {TimeAgo.dayWithTime(`${order?.events.orderDelivered}`)}
-                      </p>
-                    </div>
-                    <div onClick={() => setOrderDeliveredModal({ ...orderDeliveredModal, delivery: !orderDeliveredModal.delivery })}>
-                      {!orderDeliveredModal.delivery ? <FaChevronDown size={15} /> : <FaChevronUp size={15} />}
-                    </div>
-                  </div>
-                  {orderDeliveredModal.delivery && (
-                    <div className="my-3 flex flex-col">
-                      <div className="relative overflow-x-auto">
-                        <div className="border-grey w-full rounded  border text-left text-sm text-gray-500">
-                          <div className="border-grey border-b bg-[#fafafb] py-3 font-medium uppercase">
-                            <span className="px-5">Deliver{order?.deliveredWork.length > 1 ? 'ies' : 'y'}</span>
-                          </div>
-                          {order.deliveredWork.map((work: IDeliveredWork) => (
-                            <div
-                              key={uuidv4()}
-                              className="border-grey flex w-full cursor-pointer flex-col items-center space-x-4 border-b px-5 pt-2 last:border-none md:flex-row"
-                            >
-                              <div className="flex w-full justify-center md:w-12 md:self-start">
-                                <img className="h-10 w-10 rounded-full object-cover" src={order.sellerImage} alt="Seller Image" />
-                              </div>
-                              <div className="w-full text-sm dark:text-white">
-                                <div className="flex justify-between text-sm font-bold text-[#777d74] md:text-base">
-                                  <span>{authUser?.username === order.buyerUsername ? `${order.sellerUsername}'s message` : 'Me'}</span>
-                                </div>
-                                <div className="flex flex-col justify-between text-[#777d74]">
-                                  <span className="text-sm md:text-[15px]">{work.message}</span>
-                                  <div className="mt-3 flex flex-col">
-                                    <div className="mb-5 text-sm font-bold uppercase">Attachments</div>
-                                    <div
-                                      onClick={() => downloadOrderFile(work.file, work.fileName)}
-                                      className="border-grey relative mb-5 flex max-w-[250px] cursor-pointer items-center justify-between rounded-md border py-3 text-xs font-bold"
-                                    >
-                                      <div className="absolute h-full rounded-l border-l-8 border-[#4aa1f3]"></div>
-                                      <span className="ml-4 w-[50%] truncate whitespace-nowrap">{work.fileName}</span>
-                                      <p className="mr-1">({bytesToSize(work.fileSize)})</p>{' '}
-                                      <FaDownload size={15} color="#4aa1f3" className="mr-4" />
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
+                <div className="transition-transform duration-300 group-hover:scale-110">
+                  {orderDeliveredModal.delivery ? (
+                    <FaChevronUp size={16} className="text-muted" />
+                  ) : (
+                    <FaChevronDown size={16} className="text-muted" />
                   )}
                 </div>
               </div>
+              {orderDeliveredModal.delivery && (
+                <div className="mt-4 overflow-hidden rounded-lg border border-border-default bg-surface shadow-sm">
+                  <div className="border-b border-border-default bg-background px-6 py-3">
+                    <span className="font-themeFont text-sm font-semibold uppercase tracking-wide text-muted">
+                      Deliver{order?.deliveredWork.length > 1 ? 'ies' : 'y'} ({order?.deliveredWork.length})
+                    </span>
+                  </div>
+                  {order.deliveredWork?.map((work: IDeliveredWork, index: number) => (
+                    <div key={uuidv4()} className={`p-6 ${index < (order.deliveredWork?.length ?? 0) - 1 ? 'border-b border-border-default' : ''}`}>
+                      <div className="flex items-start gap-4">
+                        <div className="relative">
+                          <img
+                            className="h-12 w-12 flex-shrink-0 rounded-full object-cover ring-2 ring-border-default"
+                            src={order.sellerImage}
+                            alt="Seller Avatar"
+                          />
+                          <div className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-accent ring-2 ring-surface"></div>
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="mb-2">
+                            <h4 className="font-themeFont text-base font-semibold text-primary">
+                              {authUser?.username === order.buyerUsername ? `${order.sellerUsername}'s Delivery` : 'Your Delivery'}
+                            </h4>
+                          </div>
+                          <div className="mb-4 rounded-lg bg-background p-3 border-l-4 border-primary">
+                            <p className="text-sm leading-relaxed text-primary">{work.message}</p>
+                          </div>
+                          <div className="space-y-3">
+                            <h5 className="font-themeFont text-sm font-semibold uppercase tracking-wide text-muted">
+                              Attachments
+                            </h5>
+                            <div
+                              onClick={() => downloadOrderFile(work.file, work.fileName)}
+                              className="group relative flex max-w-sm cursor-pointer items-center justify-between rounded-lg border border-border-default bg-background p-4 transition-all duration-300 hover:shadow-md hover:border-primary/30"
+                            >
+                              <div className="absolute left-0 top-0 h-full w-1 rounded-l-lg bg-primary transition-all duration-300 group-hover:w-2"></div>
+                              <div className="ml-3 flex min-w-0 flex-1 items-center gap-3">
+                                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                                  <FaDownload size={16} className="text-primary" />
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                  <p className="truncate text-sm font-semibold text-primary group-hover:text-primary-hover">
+                                    {work.fileName}
+                                  </p>
+                                  <p className="text-xs text-muted">
+                                    {bytesToSize(work.fileSize)}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="ml-2 opacity-60 transition-opacity group-hover:opacity-100">
+                                <FaDownload size={14} className="text-primary" />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}
 
         {order?.delivered && order?.deliveredWork && order?.deliveredWork.length > 0 && (
-          <div className="flex rounded-[4px] bg-white px-4 py-1">
-            <div className="w-full">
-              <div className="flex gap-4">
-                <div>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#f4befa]">
-                    <FaCheck size={18} color="#e439f7" />
-                  </div>
-                </div>
-                <div className="border-grey w-full cursor-pointer border-b pb-6">
-                  <div className="mt-2 flex items-center gap-2 font-medium text-gray-500">
-                    <span>{order.approved && `${authUser?.username === order.buyerUsername ? 'Your' : 'The'} order was completed`}</span>
-                    {!order.approved && authUser?.username === order.buyerUsername && <span>Are you ready to approve the delivery?</span>}
-                    {!order.approved && authUser?.username !== order.buyerUsername && (
-                      <span className="italic">Waiting for order to be approved.</span>
-                    )}
-                    {order.approved && <p className="text-sm font-normal italic">{TimeAgo.dayWithTime(`${order?.approvedAt}`)}</p>}
-                  </div>
-                  {!order.approved && authUser?.username === order.buyerUsername && (
-                    <div className="my-3 flex flex-col">
-                      <div className="relative overflow-x-auto">
-                        <div className="text-left text-sm text-gray-500">
-                          <div className="border-grey flex w-full cursor-pointer flex-col items-center space-x-4 border-b md:flex-row">
-                            <div className="w-full text-sm dark:text-white">
-                              <div className="flex flex-col justify-between text-[#777d74]">
-                                <span className="text-sm md:text-[15px]">
-                                  If you have any issue to discuss with the seller before approving, you can go to
-                                  <a onClick={() => setShowChatBox(!showChatBox)} className="px-1 text-blue-500 hover:underline" href="#">
-                                    Go to Inbox
-                                  </a>
-                                  to contact the seller.
-                                </span>
-                                <div className="mt-3 flex pb-6">
-                                  <Button
-                                    className="rounded bg-green-500 px-6 py-3 text-center text-sm font-bold text-white hover:bg-green-400 focus:outline-none md:px-4 md:py-2 md:text-base"
-                                    onClick={() => {
-                                      setApprovalModalContent({
-                                        header: 'Approve Final Delivery',
-                                        body: 'Got everything you need? Great! Once you approve the delivery, your work will be marked as complete.',
-                                        btnText: 'Approve Final Delivery',
-                                        btnColor: 'bg-sky-500 hover:bg-sky-400'
-                                      });
-                                      setOrderDeliveredModal({ ...orderDeliveredModal, deliveryApproval: true });
-                                    }}
-                                    label="Yes, Approve delivery"
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
+          <div className="flex items-start gap-4">
+            <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-secondary/10 ring-2 ring-secondary/20">
+              <FaCheck size={20} className="text-secondary" />
+            </div>
+            <div className="w-full pb-6">
+              <div className="flex items-center gap-3">
+                {order.approved ? (
+                  <>
+                    <span className="font-themeFont text-base font-semibold text-primary">
+                      {`${authUser?.username === order.buyerUsername ? 'Your' : 'The'} order was completed`}
+                    </span>
+                    <span className="rounded-full bg-secondary/10 px-3 py-1 text-xs font-medium text-secondary">
+                      {TimeAgo.dayWithTime(`${order?.approvedAt}`)}
+                    </span>
+                  </>
+                ) : authUser?.username === order.buyerUsername ? (
+                  <span className="font-themeFont text-base font-semibold text-primary">
+                    Ready to approve the delivery? 🎯
+                  </span>
+                ) : (
+                  <span className="text-base italic text-muted">
+                    Waiting for buyer approval...
+                  </span>
+                )}
               </div>
+              {!order.approved && authUser?.username === order.buyerUsername && (
+                <div className="mt-4 rounded-lg bg-background p-4 border border-border-default">
+                  <div className="mb-4 flex items-start gap-3">
+                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-accent/10">
+                      <span className="text-sm">💡</span>
+                    </div>
+                    <p className="text-sm leading-relaxed text-muted">
+                      If you have any issues, please contact the seller from the
+                      <span 
+                        onClick={() => setShowChatBox(!showChatBox)} 
+                        className="mx-1 cursor-pointer font-semibold text-primary transition-colors hover:text-primary-hover hover:underline"
+                      >
+                        Inbox
+                      </span>
+                      before approving the delivery.
+                    </p>
+                  </div>
+                  <Button
+                    className="w-full rounded-lg bg-primary px-6 py-3 font-themeFont text-sm font-semibold text-on-primary transition-all duration-300 hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-primary/30 sm:w-auto"
+                    onClick={() => {
+                      setApprovalModalContent({
+                        header: 'Approve Final Delivery',
+                        body: 'Once you approve the delivery, your order will be marked as complete. This action cannot be undone.',
+                        btnText: 'Approve Delivery',
+                        btnColor: 'bg-primary hover:bg-primary-hover'
+                      });
+                      setOrderDeliveredModal({ ...orderDeliveredModal, deliveryApproval: true });
+                    }}
+                    label="✓ Yes, Approve Delivery"
+                  />
+                </div>
+              )}
             </div>
           </div>
         )}

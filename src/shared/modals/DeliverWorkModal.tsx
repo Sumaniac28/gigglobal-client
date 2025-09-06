@@ -52,84 +52,83 @@ const DeliverWorkModal: FC<IModalProps> = ({ order, onClose }): ReactElement => 
 
   return (
     <ModalBg>
-      <div className="fixed bottom-0 left-0 right-0 top-0 z-[30] flex w-full items-center justify-center">
+      <div className="fixed inset-0 z-[130] flex items-center justify-center p-4">
         {isLoading && (
-          <div className="fixed bottom-0 left-0 right-0 top-0 z-[50] flex w-full items-center justify-center opacity-80">
-            <div className="absolute bottom-auto left-auto right-auto top-auto flex min-h-[280px] min-w-[500px] flex-col items-center justify-center bg-white p-4 text-[#404145]">
-              <FaCircleNotch className="animate-spin" size={40} color="#50b5ff" />
-              <span>Uploading...</span>
+          <div className="fixed inset-0 z-[140] flex items-center justify-center bg-background/80">
+            <div className="flex flex-col items-center justify-center rounded-2xl bg-surface border border-default shadow-lg p-8">
+              <FaCircleNotch className="animate-spin text-accent mb-2" size={40} />
+              <span className="text-primary font-themeFont text-lg">Uploading...</span>
             </div>
           </div>
         )}
-        <div className="">
-          <div className="relative bottom-auto left-auto right-auto top-auto max-h-[90vh] min-w-[500px] bg-white p-4">
-            <div className="mb-5 w-full text-left">
-              <h4 className="text-base font-bold">Deliver your work</h4>
-              <p>Images, Pdfs, Videos or Zip: Max. 1GB</p>
-            </div>
-            <div>
-              <TextAreaInput
-                className="w-full rounded-t-lg border border-[#f1f1f1] p-2.5 text-sm font-normal text-gray-600 focus:outline-none"
-                name="description"
-                placeholder="Add a response to buyer..."
-                value={description}
-                rows={4}
-                onChange={(event: ChangeEvent) => setDescription((event.target as HTMLTextAreaElement).value)}
-              />
-              {showImagePreview ? (
-                <div className="mb-5">
-                  <div className="flex rounded pb-2">
-                    <div className="flex h-[80px] w-[100px] flex-col items-center justify-center rounded border border-[#f1f1f1] p-3">
-                      <FaRegFile className="text-gray-200" size={25} />
-                      <span className="w-[100px] truncate px-3 py-1 text-xs font-bold text-black">{selectedFile?.name}</span>
-                      <p className="mb-0 text-xs">{bytesToSize(parseInt(`${selectedFile?.size}`))}</p>
-                    </div>
-                    <FaTimes
-                      onClick={() => {
-                        setSelectedFile(null);
-                        setShowImagePreview(false);
-                      }}
-                      className="absolute right-[18px] mt-[5px] cursor-pointer text-[#bdbdbd]"
-                    />
-                  </div>
+        <div className="w-full max-w-lg rounded-2xl bg-surface border border-default shadow-2xl p-6 text-primary font-themeFont transition-all duration-300">
+          <div className="mb-4 w-full text-left border-b border-default pb-2">
+            <h4 className="text-lg sm:text-xl font-bold font-themeFont text-primary leading-6">Deliver your work</h4>
+            <p className="text-sm text-muted font-themeFont">Images, PDFs, Videos or Zip: Max. 1GB</p>
+          </div>
+          <div className="mb-6">
+            <TextAreaInput
+              className="w-full rounded-md border border-default bg-surface px-3 py-2.5 text-sm text-primary font-themeFont placeholder:text-muted transition-all duration-300 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+              name="description"
+              placeholder="Add a response to buyer..."
+              value={description}
+              rows={4}
+              onChange={(event: ChangeEvent) => setDescription((event.target as HTMLTextAreaElement).value)}
+            />
+          </div>
+          {showImagePreview ? (
+            <div className="mb-6">
+              <div className="flex items-center gap-4 rounded-md border border-default bg-background p-3">
+                <div className="flex flex-col items-center justify-center h-20 w-24 rounded bg-surface border border-default">
+                  <FaRegFile className="text-muted mb-2" size={28} />
+                  <span className="w-24 truncate text-xs font-bold text-primary font-themeFont">{selectedFile?.name}</span>
+                  <p className="text-xs text-muted font-themeFont">{bytesToSize(parseInt(`${selectedFile?.size}`))}</p>
                 </div>
-              ) : (
-                <div
-                  onClick={() => fileRef?.current?.click()}
-                  className="mt-2 flex w-[30%] cursor-pointer gap-2 rounded bg-[#efefef] px-[0.75rem] py-[0.3rem]"
-                >
-                  <FaPaperclip className="flex self-center" />
-                  <span className="bg-transparent text-sm">Upload work</span>
-                  <TextInput
-                    name="chatFile"
-                    ref={fileRef}
-                    type="file"
-                    style={{ display: 'none' }}
-                    onClick={() => {
-                      if (fileRef?.current) {
-                        fileRef.current.value = '';
-                      }
-                    }}
-                    onChange={handleFileChange}
-                  />
-                </div>
-              )}
+                <FaTimes
+                  onClick={() => {
+                    setSelectedFile(null);
+                    setShowImagePreview(false);
+                  }}
+                  className="ml-2 cursor-pointer text-muted hover:text-primary transition-all duration-300"
+                  size={20}
+                />
+              </div>
             </div>
-            <div className="flex justify-end gap-2">
-              <Button
-                className="rounded bg-gray-200 px-6 py-3 text-center text-sm font-bold text-black focus:outline-none md:px-4 md:py-2 md:text-base"
-                label="Cancel"
-                onClick={onClose}
-              />
-              <Button
-                disabled={!description || !selectedFile}
-                className={`cursor-pointer rounded px-6 py-3 text-center text-sm font-bold text-white focus:outline-none md:px-4 md:py-2 md:text-base ${
-                  !description || !selectedFile ? 'cursor-not-allowed bg-sky-200' : 'bg-sky-500 hover:bg-sky-400'
-                }`}
-                label="Deliver"
-                onClick={deliverWork}
+          ) : (
+            <div
+              onClick={() => fileRef?.current?.click()}
+              className="mt-2 flex w-full sm:w-1/2 cursor-pointer gap-2 rounded-md bg-background border border-default px-4 py-2 items-center transition-all duration-300 hover:bg-surface"
+            >
+              <FaPaperclip className="text-accent" />
+              <span className="text-sm text-primary font-themeFont">Upload work</span>
+              <TextInput
+                name="chatFile"
+                ref={fileRef}
+                type="file"
+                style={{ display: 'none' }}
+                onClick={() => {
+                  if (fileRef?.current) {
+                    fileRef.current.value = '';
+                  }
+                }}
+                onChange={handleFileChange}
               />
             </div>
+          )}
+          <div className="flex justify-end gap-3 mt-6">
+            <Button
+              className="rounded-md bg-secondary px-6 py-3 text-center text-sm font-semibold font-themeFont text-on-primary transition-all duration-300 hover:bg-secondary focus:outline-none"
+              label="Cancel"
+              onClick={onClose}
+            />
+            <Button
+              disabled={!description || !selectedFile}
+              className={`rounded-md px-6 py-3 text-center text-sm font-semibold font-themeFont text-on-primary transition-all duration-300 ${
+                !description || !selectedFile ? 'cursor-not-allowed bg-muted' : 'bg-primary hover:bg-primary focus:outline-none'
+              }`}
+              label="Deliver"
+              onClick={deliverWork}
+            />
           </div>
         </div>
       </div>

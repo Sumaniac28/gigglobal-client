@@ -105,78 +105,88 @@ const Requirement: FC = (): ReactElement => {
   };
 
   return (
-    <div className="container mx-auto lg:h-screen">
-      <div className="flex flex-wrap">
-        <div className="order-last w-full p-4 lg:order-first lg:w-2/3">
-          <div className="mb-4 flex w-full flex-col flex-wrap bg-[#d4edda] p-4">
-            <span className="text-base font-bold text-black lg:text-xl">Thank you for your purchase</span>
-            <div className="flex gap-1">
-              You can{' '}
-              <PDFDownloadLink
-                document={
-                  <OrderContext.Provider value={{ orderInvoice }}>
-                    <Invoice />
-                  </OrderContext.Provider>
-                }
-                fileName={`${orderInvoice.invoiceId}.pdf`}
-              >
-                <div className="cursor-pointer text-blue-400 underline">download your invoice</div>
-              </PDFDownloadLink>
+    <div className="bg-background min-h-screen w-full font-themeFont">
+      <div className="container mx-auto flex flex-col-reverse gap-8 px-4 py-8 lg:flex-row">
+        {/* Main Content */}
+        <div className="w-full lg:w-2/3">
+          <div className="flex flex-col gap-6">
+            <div className="rounded-lg border border-default bg-accent/10 p-6">
+              <h2 className="font-themeFont text-2xl font-bold text-primary">Thank you for your purchase!</h2>
+              <div className="mt-2 flex items-center gap-1 text-muted">
+                <span>You can</span>
+                <PDFDownloadLink
+                  document={
+                    <OrderContext.Provider value={{ orderInvoice }}>
+                      <Invoice />
+                    </OrderContext.Provider>
+                  }
+                  fileName={`${orderInvoice.invoiceId}.pdf`}
+                  className="cursor-pointer text-primary underline transition-colors hover:text-primary-dark"
+                >
+                  download your invoice
+                </PDFDownloadLink>
+              </div>
             </div>
-          </div>
-          <div className="border-grey border">
-            <div className="mb-3 px-4 pb-2 pt-3">
-              <span className="mb-3 text-base font-medium text-black md:text-lg lg:text-xl">
-                Any information you would like the seller to know?
-              </span>
-              <p className="text-sm">Click the button to start the order.</p>
-            </div>
-            <div className="flex flex-col px-4 pb-4">
-              <TextAreaInput
-                rows={5}
-                name="requirement"
-                value={requirement}
-                placeholder="Write a brief description..."
-                className="border-grey mb-1 w-full rounded border p-3.5 text-sm font-normal text-gray-600 focus:outline-none"
-                onChange={(event: ChangeEvent) => setRequirement((event.target as HTMLTextAreaElement).value)}
-              />
-              <Button
-                className="mt-3 rounded bg-sky-500 px-6 py-3 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:px-4 md:py-2 md:text-base"
-                label="Start Order"
-                onClick={startOrder}
-              />
+
+            <div className="rounded-lg border border-default bg-surface p-6 shadow-md">
+              <div className="mb-4">
+                <h3 className="font-themeFont text-xl font-semibold text-primary">
+                  Tell the seller what you need for this project
+                </h3>
+                <p className="mt-1 text-muted">Provide as much detail as possible to get the best results.</p>
+              </div>
+              <div className="flex flex-col gap-4">
+                <TextAreaInput
+                  rows={5}
+                  name="requirement"
+                  value={requirement}
+                  placeholder="For example: I need a logo for my new coffee shop. The name is 'Brew & Co.' I'd like a modern, minimalist design..."
+                  className="w-full rounded-md border border-default bg-background p-3 text-sm text-primary placeholder-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                  onChange={(event: ChangeEvent) => setRequirement((event.target as HTMLTextAreaElement).value)}
+                />
+                <Button
+                  className="w-full rounded-md bg-primary px-6 py-3 text-base font-semibold text-on-primary transition-all duration-300 hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  label="Start Order"
+                  onClick={startOrder}
+                />
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="w-full p-4 lg:w-1/3">
-          <div className="border-grey mb-8 border">
-            <div className="mb-2 flex flex-col border-b md:flex-row">
-              <img className="w-full object-cover" src={gigRef.current?.coverImage ?? placeholder} alt="Gig Cover Image" />
-            </div>
-            <ul className="mb-0 list-none">
-              <li className="border-grey flex border-b px-4 pb-3 pt-1">
-                <div className="text-sm font-normal">{offer.gigTitle}</div>
+        {/* Order Summary */}
+        <div className="w-full lg:w-1/3">
+          <div className="rounded-lg border border-default bg-surface p-6 shadow-md">
+            <img
+              className="mb-4 w-full rounded-md object-cover"
+              src={gigRef.current?.coverImage ?? placeholder}
+              alt="Gig Cover Image"
+            />
+            <h3 className="mb-4 border-b border-default pb-4 font-themeFont text-lg font-semibold text-primary">
+              {offer.gigTitle}
+            </h3>
+            <ul className="space-y-3 text-sm">
+              <li className="flex items-center justify-between">
+                <span className="text-muted">Status</span>
+                <span className="rounded-full bg-orange-300 px-3 py-1 text-xs font-bold uppercase text-on-primary">
+                  Incomplete
+                </span>
               </li>
-              <li className="flex justify-between px-4 pb-2 pt-4">
-                <div className="flex gap-2 text-sm font-normal">Status</div>
-                <span className="rounded bg-orange-300 px-[5px] py-[2px] text-xs font-bold uppercase text-white">incomplete</span>
+              <li className="flex items-center justify-between">
+                <span className="text-muted">Order</span>
+                <span className="font-semibold text-primary">#{orderId}</span>
               </li>
-              <li className="flex justify-between px-4 pb-2 pt-2">
-                <div className="flex gap-2 text-sm font-normal">Order</div>
-                <span className="text-sm">#{orderId}</span>
+              <li className="flex items-center justify-between">
+                <span className="text-muted">Order Date</span>
+                <span className="font-semibold text-primary">{TimeAgo.dayMonthYear(`${new Date()}`)}</span>
               </li>
-              <li className="flex justify-between px-4 pb-2 pt-2">
-                <div className="flex gap-2 text-sm font-normal">Order Date</div>
-                <span className="text-sm">{TimeAgo.dayMonthYear(`${new Date()}`)}</span>
+              <li className="flex items-center justify-between">
+                <span className="text-muted">Quantity</span>
+                <span className="font-semibold text-primary">1</span>
               </li>
-              <li className="flex justify-between px-4 pb-2 pt-2">
-                <div className="flex gap-2 text-sm font-normal">Quantity</div>
-                <span className="text-sm">X 1</span>
-              </li>
-              <li className="flex justify-between px-4 pb-4 pt-2">
-                <div className="flex gap-2 text-sm font-normal">Price</div>
-                <span className="text-sm">${offer.price}</span>
+              <li className="flex items-center justify-between">
+                <span className="text-muted">Price</span>
+                <span className="font-semibold text-primary">${offer.price.toFixed(2)}</span>
               </li>
             </ul>
           </div>

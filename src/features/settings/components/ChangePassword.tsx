@@ -43,10 +43,17 @@ const ChangePassword: FC = (): ReactElement => {
   };
 
   return (
-    <div>
-      {alertMessage && <Alert type="error" message={alertMessage} />}
-      <>
-        <label htmlFor="currentPassword" className="text-sm font-bold leading-tight tracking-normal text-gray-800">
+    <div className="space-y-6">
+      {/* Alert Message */}
+      {alertMessage && (
+        <div className="rounded-lg border border-accent/20 bg-accent/10 p-4">
+          <Alert type="error" message={alertMessage} />
+        </div>
+      )}
+
+      {/* Current Password */}
+      <div className="space-y-2">
+        <label htmlFor="currentPassword" className="font-themeFont text-sm font-semibold text-primary">
           Current Password
         </label>
         <TextInput
@@ -54,47 +61,97 @@ const ChangePassword: FC = (): ReactElement => {
           name="currentPassword"
           type="password"
           value={passwordItem.currentPassword}
-          className="mb-5 mt-2 flex h-10 w-full items-center rounded border border-gray-300 pl-3 text-sm font-normal text-gray-600 focus:border focus:border-sky-500/50 focus:outline-none"
-          placeholder="Enter current password"
+          className="w-full rounded-lg border border-border-default bg-surface px-4 py-3 text-sm text-primary placeholder-muted transition-all duration-300 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+          placeholder="Enter your current password"
           onChange={(event: ChangeEvent) => {
             setPasswordItem({ ...passwordItem, currentPassword: (event.target as HTMLInputElement).value });
           }}
         />
-      </>
-      <>
-        <label htmlFor="newPassword" className="text-sm font-bold leading-tight tracking-normal text-gray-800">
+      </div>
+
+      {/* New Password */}
+      <div className="space-y-2">
+        <label htmlFor="newPassword" className="font-themeFont text-sm font-semibold text-primary">
           New Password
         </label>
-        <div className="relative flex gap-4">
+        <div className="relative">
           <TextInput
             id="newPassword"
             name="newPassword"
             type={passwordItem.passwordType}
             value={passwordItem.newPassword}
-            className="mb-5 mt-2 flex h-10 w-full items-center rounded border border-gray-300 pl-3 text-sm font-normal text-gray-600 focus:border focus:border-sky-500/50 focus:outline-none"
-            placeholder="Enter new password"
+            className="w-full rounded-lg border border-border-default bg-surface px-4 py-3 pr-12 text-sm text-primary placeholder-muted transition-all duration-300 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            placeholder="Create a strong new password"
             onChange={(event: ChangeEvent) => {
               setPasswordItem({ ...passwordItem, newPassword: (event.target as HTMLInputElement).value });
             }}
           />
-          <div className="absolute right-0  flex h-full cursor-pointer items-center pr-3 text-gray-600">
+          <div className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-4 text-muted hover:text-primary transition-colors duration-200">
             {passwordItem.passwordType === PASSWORD_TYPE.PASSWORD ? (
-              <FaEyeSlash className="mb-2" onClick={() => setPasswordItem({ ...passwordItem, passwordType: PASSWORD_TYPE.TEXT })} />
+              <FaEyeSlash 
+                size={18}
+                onClick={() => setPasswordItem({ ...passwordItem, passwordType: PASSWORD_TYPE.TEXT })} 
+              />
             ) : (
-              <FaEye className="mb-2" onClick={() => setPasswordItem({ ...passwordItem, passwordType: PASSWORD_TYPE.PASSWORD })} />
+              <FaEye 
+                size={18}
+                onClick={() => setPasswordItem({ ...passwordItem, passwordType: PASSWORD_TYPE.PASSWORD })} 
+              />
             )}
           </div>
         </div>
-        <div className="flex w-full items-center justify-center">
-          <Button
-            className={`text-md block w-full cursor-pointer rounded  px-8 py-2 text-center font-bold text-white focus:outline-none ${
-              !passwordItem.currentPassword || !passwordItem.newPassword ? 'cursor-not-allowed bg-sky-200' : 'bg-sky-500 cursor-pointer'
-            }`}
-            label="Save Changes"
-            onClick={updatePassword}
-          />
-        </div>
-      </>
+        {/* Password strength indicator */}
+        {passwordItem.newPassword && (
+          <div className="mt-2">
+            <div className="flex items-center gap-2">
+              <div className="flex-1 h-2 bg-border-default rounded-full overflow-hidden">
+                <div 
+                  className={`h-full transition-all duration-300 ${
+                    passwordItem.newPassword.length < 6 
+                      ? 'w-1/4 bg-error' 
+                      : passwordItem.newPassword.length < 8 
+                      ? 'w-2/4 bg-warning' 
+                      : 'w-full bg-accent'
+                  }`}
+                ></div>
+              </div>
+              <span className="text-xs font-medium text-muted">
+                {passwordItem.newPassword.length < 6 
+                  ? 'Weak' 
+                  : passwordItem.newPassword.length < 8 
+                  ? 'Fair' 
+                  : 'Strong'}
+              </span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Submit Button */}
+      <div className="pt-4">
+        <Button
+          className={`w-full rounded-lg px-6 py-3 font-themeFont text-sm font-semibold transition-all duration-300 focus:outline-none focus:ring-2 ${
+            !passwordItem.currentPassword || !passwordItem.newPassword 
+              ? 'cursor-not-allowed bg-muted/20 text-muted' 
+              : 'bg-primary text-on-primary hover:bg-primary-hover focus:ring-primary/30 shadow-md hover:shadow-lg'
+          }`}
+          disabled={!passwordItem.currentPassword || !passwordItem.newPassword}
+          label="Save Changes"
+          onClick={updatePassword}
+        />
+      </div>
+
+      {/* Security Tips */}
+      <div className="rounded-lg border border-accent/20 bg-accent/10 p-4">
+        <h4 className="font-themeFont text-sm font-semibold text-accent mb-2">
+          Security Tips
+        </h4>
+        <ul className="space-y-1 text-xs text-muted">
+          <li>• Include numbers and symbols</li>
+          <li>• Avoid common words or personal information</li>
+          <li>• Don't reuse passwords from other sites</li>
+        </ul>
+      </div>
     </div>
   );
 };

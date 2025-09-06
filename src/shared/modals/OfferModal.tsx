@@ -64,89 +64,77 @@ const OfferModal: FC<IModalProps> = ({ header, gigTitle, receiver, authUser, sin
 
   return (
     <ModalBg>
-      <div className="fixed bottom-0 left-0 right-0 top-0 z-[30] flex w-full items-center justify-center">
-        <div className="relative bottom-auto left-auto right-auto top-auto max-h-[90vh] min-w-[500px] bg-white p-4">
-          <div className="relative px-5 py-5">
-            <div className="flex justify-between text-2xl font-bold ">
-              <h1 className="flex w-full justify-center">{header}</h1>
-              <Button
-                onClick={cancelBtnHandler}
-                className="cursor-pointer rounded text-gray-400 hover:text-gray-600"
-                role="button"
-                label={<FaTimes className="" />}
-              />
-            </div>
+      <div className="fixed inset-0 z-[130] flex items-center justify-center p-4">
+        <div className="relative w-full max-w-lg rounded-2xl bg-surface border border-default shadow-2xl p-6 text-primary font-themeFont transition-all duration-300">
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="flex-1 text-lg sm:text-xl font-bold font-themeFont text-primary text-center leading-6">{header}</h1>
+            <Button
+              onClick={cancelBtnHandler}
+              className="ml-2 cursor-pointer rounded-md text-muted hover:text-primary transition-all duration-300"
+              role="button"
+              label={<FaTimes />}
+            />
           </div>
-
-          <div className="relative mb-16 px-5">
-            <div className="py-4">
-              <label htmlFor="username" className="text-[20px] font-medium leading-tight tracking-normal">
-                {gigTitle}
-              </label>
-            </div>
-            <div>
-              <label htmlFor="description" className="text-sm font-bold leading-tight tracking-normal">
-                Description<sup className="top-[-0.1em] text-base text-red-500">*</sup>
+          <div className="mb-6">
+            <label htmlFor="username" className="text-base font-semibold font-themeFont text-primary leading-tight tracking-normal mb-2 block">
+              {gigTitle}
+            </label>
+            <div className="mb-4">
+              <label htmlFor="description" className="text-sm font-bold font-themeFont text-primary leading-tight tracking-normal mb-1 block">
+                Description<sup className="top-[-0.1em] text-base text-accent">*</sup>
               </label>
               <TextAreaInput
-                className="border-grey mb-1 w-full rounded border p-2.5 text-sm font-normal text-gray-600 focus:outline-none"
+                className="w-full rounded-md border border-default bg-surface px-3 py-2.5 text-sm text-primary font-themeFont placeholder:text-muted transition-all duration-300 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 mb-2"
                 placeholder="Write a description..."
                 name="description"
                 value={offer.description}
-                rows={5}
+                rows={4}
                 onChange={(event: ChangeEvent) => setOffer({ ...offer, description: (event.target as HTMLInputElement).value })}
               />
             </div>
-            <div>
-              <label htmlFor="price" className="text-sm font-bold leading-tight tracking-normal">
-                Price<sup className="top-[-0.1em] text-base text-red-500">*</sup>
+            <div className="mb-4">
+              <label htmlFor="price" className="text-sm font-bold font-themeFont text-primary leading-tight tracking-normal mb-1 block">
+                Price<sup className="top-[-0.1em] text-base text-accent">*</sup>
               </label>
-              <div className="relative mb-5 mt-2">
-                <TextInput
-                  id="price"
-                  name="price"
-                  type="number"
-                  value={offer.price}
-                  className="flex h-10 w-full items-center rounded border border-gray-300 pl-3 text-sm font-normal text-gray-600 focus:border focus:border-sky-500/50 focus:outline-none"
-                  placeholder="Enter custom price"
-                  onChange={(event: ChangeEvent) => {
-                    const value = (event.target as HTMLInputElement).value;
-                    setOffer({ ...offer, price: parseInt(value) > 0 ? value : '' });
-                  }}
-                />
-              </div>
-            </div>
-            <div className="mb-6">
-              <label htmlFor="country" className="text-sm font-bold leading-tight tracking-normal">
-                Delivery<sup className="top-[-0.1em] text-base text-red-500">*</sup>
-              </label>
-              <div id="country" className="relative mb-5 mt-2">
-                <Dropdown
-                  text={offer.delivery}
-                  maxHeight="200"
-                  mainClassNames="absolute bg-white z-50"
-                  showSearchInput={false}
-                  values={expectedGigDelivery()}
-                  onClick={(item: string) => {
-                    const deliveryInDays: number = parseInt(item);
-                    const newDate: Date = new Date();
-                    newDate.setDate(newDate.getDate() + deliveryInDays);
-                    setOffer({ ...offer, deliveryDate: `${newDate}`, delivery: item });
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="px-5 py-4">
-            <div className="ml-2 flex w-full justify-center text-sm font-medium">
-              <Button
-                className="rounded bg-sky-500 px-6 py-3 text-center text-sm font-bold text-white hover:bg-sky-400 focus:outline-none md:px-4 md:py-2 md:text-base"
-                disabled={!offer.description || !offer.price || !offer.delivery}
-                label="Send Offer"
-                onClick={sendGigOffer}
+              <TextInput
+                id="price"
+                name="price"
+                type="number"
+                value={offer.price}
+                className="w-full h-10 rounded-md border border-default bg-surface px-3 text-sm text-primary font-themeFont placeholder:text-muted transition-all duration-300 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                placeholder="Enter custom price"
+                onChange={(event: ChangeEvent) => {
+                  const value = (event.target as HTMLInputElement).value;
+                  setOffer({ ...offer, price: parseInt(value) > 0 ? value : '' });
+                }}
               />
             </div>
+            <div className="mb-4">
+              <label htmlFor="country" className="text-sm font-bold font-themeFont text-primary leading-tight tracking-normal mb-1 block">
+                Delivery<sup className="top-[-0.1em] text-base text-accent">*</sup>
+              </label>
+              <Dropdown
+                text={offer.delivery}
+                maxHeight="200"
+                mainClassNames="absolute bg-surface border border-default rounded-md shadow-lg z-50"
+                showSearchInput={false}
+                values={expectedGigDelivery()}
+                onClick={(item: string) => {
+                  const deliveryInDays: number = parseInt(item);
+                  const newDate: Date = new Date();
+                  newDate.setDate(newDate.getDate() + deliveryInDays);
+                  setOffer({ ...offer, deliveryDate: `${newDate}`, delivery: item });
+                }}
+              />
+            </div>
+          </div>
+          <div className="flex w-full justify-center mt-4">
+            <Button
+              className="rounded-md bg-primary px-6 py-3 text-center text-sm font-semibold font-themeFont text-on-primary transition-all duration-300 hover:bg-primary focus:outline-none"
+              disabled={!offer.description || !offer.price || !offer.delivery}
+              label="Send Offer"
+              onClick={sendGigOffer}
+            />
           </div>
         </div>
       </div>
