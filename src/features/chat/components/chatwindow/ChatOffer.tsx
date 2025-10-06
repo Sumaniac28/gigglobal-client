@@ -35,13 +35,13 @@ const ChatOffer: FC<IChatMessageProps> = ({ message, seller, gig }): ReactElemen
   };
 
   return (
-    <div className="z-1 mt-4 flex h-72 max-w-xl flex-col overflow-hidden rounded-lg border border-border-default bg-surface shadow-lg">
-      <div className="w-full">
+    <div className="z-1 mt-4 flex min-h-fit max-w-xl flex-col rounded-lg border border-border-default bg-surface shadow-lg">
+      <div className="w-full flex flex-col">
         <div className="flex flex-row justify-between border-b border-border-default bg-accent/10 p-4 text-sm font-themeFont font-bold md:text-base">
           <span className="text-primary">{message.offer?.gigTitle}</span>
           <span className="text-accent font-bold">${message.offer?.price}</span>
         </div>
-        <div className="h-28 max-h-28 overflow-y-scroll border-b border-border-default px-4 py-3 bg-background">
+        <div className="min-h-20 max-h-32 overflow-y-auto border-b border-border-default px-4 py-3 bg-background">
           <p className="text-primary leading-relaxed">{messageOffer.description}</p>
         </div>
         <div className="flex flex-row gap-x-3 items-center border-b border-border-default px-4 py-3 text-sm font-themeFont font-semibold md:text-base bg-surface">
@@ -50,7 +50,7 @@ const ChatOffer: FC<IChatMessageProps> = ({ message, seller, gig }): ReactElemen
             {messageOffer.deliveryInDays} Day{parseInt(`${messageOffer.deliveryInDays}`) > 1 ? 's' : ''} Delivery
           </span>
         </div>
-        <div className="relative top-[5%] mr-3 flex flex-row justify-end gap-4 p-4">
+        <div className="flex flex-row justify-end gap-4 p-4 mt-auto">
           <Button
             className={`rounded-lg px-6 py-3 text-center text-sm font-themeFont font-semibold focus:outline-none focus:ring-2 md:px-4 md:py-2 md:text-base transition-all duration-300 ${
               messageOffer.accepted || messageOffer.cancelled

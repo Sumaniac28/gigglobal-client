@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, KeyboardEvent, ReactElement, useState } from 'react';
+import { ChangeEvent, FC, KeyboardEvent, ReactElement, useEffect, useState } from 'react';
 import { FaChevronDown, FaChevronUp, FaTimes } from 'react-icons/fa';
 import { useSearchParams } from 'react-router-dom';
 import { ISelectedBudget } from 'src/features/gigs/interfaces/gig.interface';
@@ -10,6 +10,62 @@ const BudgetDropdown: FC = (): ReactElement => {
   const [searchParams, setSearchParams] = useSearchParams({});
   const [toggleDropdown, setToggleDropdown] = useState<boolean>(false);
   const [selectedBudget, setSelectedBudget] = useState<ISelectedBudget>({ minPrice: '', maxPrice: '' });
+  const [validationError, setValidationError] = useState<string>('');
+
+  // Initialize budget from URL parameters
+  useEffect(() => {
+    const minPrice = searchParams.get('minPrice') || '';
+    const maxPrice = searchParams.get('maxPrice') || '';
+    setSelectedBudget({ minPrice, maxPrice });
+  }, [searchParams]);
+
+  const handleApplyFilter = () => {
+    setValidationError('');
+    
+    // Validate that both min and max prices are provided
+    if (!selectedBudget.minPrice || !selectedBudget.maxPrice) {
+      setValidationError('Please enter both minimum and maximum prices');
+      return;
+    }
+
+    const minPrice = parseFloat(selectedBudget.minPrice);
+    const maxPrice = parseFloat(selectedBudget.maxPrice);
+
+    // Validate that prices are valid numbers
+    if (isNaN(minPrice) || isNaN(maxPrice)) {
+      setValidationError('Please enter valid prices');
+      return;
+    }
+
+    // Validate that min price is less than or equal to max price
+    if (minPrice > maxPrice) {
+      setValidationError('Minimum price cannot be greater than maximum price');
+      return;
+    }
+
+    // Validate that prices are positive
+    if (minPrice < 0 || maxPrice < 0) {
+      setValidationError('Prices must be positive numbers');
+      return;
+    }
+
+    const updatedSearchParams = new URLSearchParams(searchParams.toString());
+    updatedSearchParams.set('minPrice', selectedBudget.minPrice);
+    updatedSearchParams.set('maxPrice', selectedBudget.maxPrice);
+    setSearchParams(updatedSearchParams);
+    setToggleDropdown(false);
+    saveToLocalStorage('filterApplied', JSON.stringify(true));
+  };
+
+  const handleClearFilter = () => {
+    const updatedSearchParams = new URLSearchParams(searchParams.toString());
+    updatedSearchParams.delete('minPrice');
+    updatedSearchParams.delete('maxPrice');
+    setSearchParams(updatedSearchParams);
+    setToggleDropdown(false);
+    setSelectedBudget({ minPrice: '', maxPrice: '' });
+    setValidationError('');
+  };
 
   return (
     <div className="flex flex-col w-full sm:w-auto">
@@ -49,7 +105,9 @@ const BudgetDropdown: FC = (): ReactElement => {
                       setSelectedBudget({ ...selectedBudget, minPrice: `${(event.target as HTMLInputElement).value}` })
                     }
                     onKeyDown={(event: KeyboardEvent) => {
-                      if (event.key !== 'Backspace' && isNaN(parseInt(event.key))) event.preventDefault();
+                      if (event.key !== 'Backspace' && event.key !== 'Delete' && event.key !== 'Tab' && event.key !== 'Enter' && isNaN(parseInt(event.key))) {
+                        event.preventDefault();
+                      }
                     }}
                   />
                 </div>
@@ -69,11 +127,19 @@ const BudgetDropdown: FC = (): ReactElement => {
                       setSelectedBudget({ ...selectedBudget, maxPrice: `${(event.target as HTMLInputElement).value}` })
                     }
                     onKeyDown={(event: KeyboardEvent) => {
-                      if (event.key !== 'Backspace' && isNaN(parseInt(event.key))) event.preventDefault();
+                      if (event.key !== 'Backspace' && event.key !== 'Delete' && event.key !== 'Tab' && event.key !== 'Enter' && isNaN(parseInt(event.key))) {
+                        event.preventDefault();
+                      }
                     }}
                   />
                 </div>
               </div>
+
+              {validationError && (
+                <div className="mt-3 text-sm text-red-500 font-medium">
+                  {validationError}
+                </div>
+              )}
             </div>
 
             <div className="flex justify-between items-center p-4 border-t border-default bg-surface/50 rounded-b-xl">
@@ -81,6 +147,7 @@ const BudgetDropdown: FC = (): ReactElement => {
                 className="px-4 py-2 text-sm font-themeFont font-medium text-muted hover:text-primary transition-colors duration-300"
                 onClick={() => {
                   setSelectedBudget({ minPrice: '', maxPrice: '' });
+                  setValidationError('');
                   setToggleDropdown(false);
                 }}
               >
@@ -88,14 +155,7 @@ const BudgetDropdown: FC = (): ReactElement => {
               </button>
               <button
                 className="rounded-lg bg-primary px-6 py-2 text-sm font-themeFont font-semibold text-on-primary hover:bg-primary/90 transition-all duration-300 shadow-sm"
-                onClick={() => {
-                  const updatedSearchParams = new URLSearchParams(searchParams.toString());
-                  updatedSearchParams.set('minPrice', selectedBudget.minPrice);
-                  updatedSearchParams.set('maxPrice', selectedBudget.maxPrice);
-                  setSearchParams(updatedSearchParams);
-                  setToggleDropdown(false);
-                  saveToLocalStorage('filterApplied', JSON.stringify(true));
-                }}
+                onClick={handleApplyFilter}
               >
                 Apply
               </button>
@@ -114,14 +174,7 @@ const BudgetDropdown: FC = (): ReactElement => {
                 <FaTimes className="h-3 w-3" />
               </>
             }
-            onClick={() => {
-              const updatedSearchParams = new URLSearchParams(searchParams.toString());
-              updatedSearchParams.delete('minPrice');
-              updatedSearchParams.delete('maxPrice');
-              setSearchParams(updatedSearchParams);
-              setToggleDropdown(false);
-              setSelectedBudget({ minPrice: '', maxPrice: '' });
-            }}
+            onClick={handleClearFilter}
           />
         )}
       </div>
